@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Plugins/OpenGLRendering/OGLRenderer.h"
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
+#include "../../Plugins/OpenGLRendering/OGLComputeShader.h"
 #include "../../Plugins/OpenGLRendering/OGLTexture.h"
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 
@@ -16,6 +17,8 @@ namespace NCL {
 		public:
 			GameTechRenderer(GameWorld& world);
 			~GameTechRenderer();
+
+			
 
 		protected:
 			void RenderFrame()	override;
@@ -42,6 +45,8 @@ namespace NCL {
 			Vector4		lightColour;
 			float		lightRadius;
 			Vector3		lightPosition;
+
+			
 		};
 	}
 }

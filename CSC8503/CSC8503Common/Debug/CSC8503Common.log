@@ -1,9 +1,16 @@
-﻿  CollisionDetection.cpp
+﻿  BoundingAABB.cpp
+  BoundingOOBB.cpp
+  BoundingSphere.cpp
+  BoundingVolume.cpp
+  CollisionDetection.cpp
   Debug.cpp
+  GameClient.cpp
   GameObject.cpp
   GameServer.cpp
   GameWorld.cpp
   NavigationGrid.cpp
+  NavigationMesh.cpp
+  NetworkBase.cpp
   NetworkObject.cpp
   NetworkState.cpp
   PhysicsObject.cpp
@@ -11,6 +18,12 @@
   PositionConstraint.cpp
   PushdownMachine.cpp
   PushdownState.cpp
+  Generating Code...
+  Compiling...
+  QuadTree.cpp
+  RenderObject.cpp
+  StateMachine.cpp
+  StateTransition.cpp
   Transform.cpp
   Generating Code...
-  CSC8503Common.vcxproj -> C:\scratch\CSC8503 2019 Download\Win32\Debug\CSC8503Common.lib
+  CSC8503Common.vcxproj -> H:\Computer Science\Stage 4\Dissertation\GPU Flocking\Win32\Debug\CSC8503Common.lib

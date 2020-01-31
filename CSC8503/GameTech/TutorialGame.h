@@ -14,6 +14,7 @@ namespace NCL {
 
 		protected:
 			void InitialiseAssets();
+			void InitCompute();
 
 			void InitCamera();
 			void UpdateKeys();
@@ -62,6 +63,13 @@ namespace NCL {
 			OGLMesh*	sphereMesh	= nullptr;
 			OGLTexture* basicTex	= nullptr;
 			OGLShader*	basicShader = nullptr;
+
+			// Compute shader things 
+			GLuint	numSSbo;
+			// Test compute shader to fill a buffer with numbers. 
+			OGLComputeShader* numberShader = nullptr;
+			
+			void RenderComputeShader();
 
 			//Coursework Meshes
 			OGLMesh*	gooseMesh	= nullptr;

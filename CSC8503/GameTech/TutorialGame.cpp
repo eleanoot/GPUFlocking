@@ -49,8 +49,22 @@ void TutorialGame::InitialiseAssets() {
 	basicTex	= (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 
+	numberShader = new OGLComputeShader("NumberComputeShader.glsl"); 
+	InitCompute();
+
 	InitCamera();
 	InitWorld();
+}
+
+void TutorialGame::InitCompute()
+{
+	// Copies buffer of values into the SSBO.
+	int originalNums[10] = { 2 };
+
+	glGenBuffers(1, &numSSbo);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, numSSbo);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(originalNums), originalNums, GL_STATIC_DRAW);
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 }
 
 TutorialGame::~TutorialGame()	{
@@ -89,8 +103,21 @@ void TutorialGame::UpdateGame(float dt) {
 	renderer->Update(dt);
 	physics->Update(dt);
 
+	RenderComputeShader();
+
 	Debug::FlushRenderables();
 	renderer->Render();
+}
+
+void TutorialGame::RenderComputeShader()
+{
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, numSSbo);
+
+	numberShader->Bind();
+	numberShader->Execute(100,1,1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	numberShader->Unbind();
 }
 
 void TutorialGame::UpdateKeys() {
