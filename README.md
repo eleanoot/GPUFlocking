@@ -2,7 +2,8 @@
 
 ## Tasks
 * Investigate compute shaders by writing numbers to a buffer [Complete]
-* Use compute shader data to render something to screen
+* Pull the numbers out of that buffer [Complete]
+* Use a compute shader to update the position of a GameObject
 
 ## References
 * [Introduction to Compute Shaders - Mike Bailey, Oregon State University](http://web.engr.oregonstate.edu/~mjb/cs575/Handouts/compute.shader.2pp.pdf)
