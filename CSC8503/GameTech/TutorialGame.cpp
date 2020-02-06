@@ -49,7 +49,8 @@ void TutorialGame::InitialiseAssets() {
 	basicTex	= (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 
-	numberShader = new OGLComputeShader("NumberComputeShader.glsl"); 
+	//computeShader = new OGLComputeShader("ParticleComputeShader.glsl"); 
+	computeShader = new OGLComputeShader("NumberComputeShader.glsl"); 
 	InitCompute();
 
 	InitCamera();
@@ -58,13 +59,59 @@ void TutorialGame::InitialiseAssets() {
 
 void TutorialGame::InitCompute()
 {
+	
+
+	/*glGenBuffers(1, &posSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, posSSBO);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_PARTICLES * sizeof(struct pos), NULL, GL_STATIC_DRAW);
+
+	GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
+	struct pos* points = (struct pos*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, NUM_PARTICLES * sizeof(struct pos), bufMask);
+	for (int i = 0; i < NUM_PARTICLES; i++)
+	{
+		points[i].x = rand() % 30;
+		points[i].y = rand() % 30;
+		points[i].z = rand() % 30;
+		points[i].w = 1;
+	}
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+	glGenBuffers(1, &velSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, velSSBO);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_PARTICLES * sizeof(struct vel), NULL, GL_STATIC_DRAW);
+
+	struct vel* vels = (struct vel*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, NUM_PARTICLES * sizeof(struct vel), bufMask);
+	for (int i = 0; i < NUM_PARTICLES; i++)
+	{
+		vels[i].vx = rand() % 30;
+		vels[i].vy = rand() % 30;
+		vels[i].vz = rand() % 30;
+		vels[i].vw = 1;
+	}
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+	glGenBuffers(1, &colSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, colSSBO);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_PARTICLES * sizeof(struct color), NULL, GL_STATIC_DRAW);
+
+	struct color* cols = (struct color*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, NUM_PARTICLES * sizeof(struct color), bufMask);
+	for (int i = 0; i < NUM_PARTICLES; i++)
+	{
+		cols[i].r = 1;
+		cols[i].g = 0;
+		cols[i].b = 0;
+		cols[i].a = 1;
+	}
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);*/
+
+
 	// Copies buffer of values into the SSBO.
 	int originalNums[10] = { 2 };
 
 	glGenBuffers(1, &numSSbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, numSSbo);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(originalNums), originalNums, GL_STATIC_DRAW);
-	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	//glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 }
 
 TutorialGame::~TutorialGame()	{
@@ -111,13 +158,50 @@ void TutorialGame::UpdateGame(float dt) {
 
 void TutorialGame::RenderComputeShader()
 {
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, numSSbo);
 
-	numberShader->Bind();
-	numberShader->Execute(100,1,1);
+
+
+
+
+	// Particle attempt
+	/*glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, posSSBO);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, velSSBO);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, colSSBO);
+
+	computeShader->Bind();
+	computeShader->Execute(NUM_PARTICLES / WORK_GROUP_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
-	numberShader->Unbind();
+	GLuint vao;
+	glUseProgram(basicShader->GetProgramID());
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, posSSBO);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(4);
+
+	glDrawArrays(GL_POINTS, 0, NUM_PARTICLES);
+	
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);*/
+
+	// Number example
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, numSSbo);
+
+	computeShader->Bind();
+	computeShader->Execute(100,1,1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	glFinish();
+
+	computeShader->Unbind();
+
+	glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, numSSbo, 0, sizeof(int) * 10);
+	int* points = (int*) glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 10, GL_MAP_READ_BIT);
+
+	std::cout << points[0] << std::endl;
+
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 }
 
 void TutorialGame::UpdateKeys() {

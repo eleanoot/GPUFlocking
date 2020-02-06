@@ -2,6 +2,8 @@
 #include "GameTechRenderer.h"
 #include "../CSC8503Common/PhysicsSystem.h"
 
+#define NUM_PARTICLES	1024*1024
+#define WORK_GROUP_SIZE	128
 
 namespace NCL {
 	namespace CSC8503 {
@@ -65,9 +67,27 @@ namespace NCL {
 			OGLShader*	basicShader = nullptr;
 
 			// Compute shader things 
+			struct pos
+			{
+				float x, y, z, w;
+			};
+			struct vel
+			{
+				float vx, vy, vz, vw;
+			};
+			struct color
+			{
+				float r, g, b, a;
+			};
+
+			GLuint posSSBO;
+			GLuint velSSBO;
+			GLuint colSSBO;
+
+
 			GLuint	numSSbo;
 			// Test compute shader to fill a buffer with numbers. 
-			OGLComputeShader* numberShader = nullptr;
+			OGLComputeShader* computeShader = nullptr;
 			
 			void RenderComputeShader();
 
