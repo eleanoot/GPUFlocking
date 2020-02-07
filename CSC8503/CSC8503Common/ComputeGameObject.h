@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "../../Plugins/OpenGLRendering/OGLComputeShader.h"
+#include "../../Plugins/OpenGLRendering/OGLShader.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -12,7 +13,7 @@ namespace NCL {
 			~ComputeGameObject();
 
 			virtual void OnDraw();
-			virtual void SendUniforms();
+			virtual void SendUniforms(OGLShader* s);
 
 		protected:
 			OGLComputeShader* colourShader;

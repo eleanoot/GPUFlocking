@@ -46,6 +46,8 @@ namespace NCL {
 				return colour;
 			}
 
+			virtual void SendUniforms() {};
+
 		protected:
 			MeshGeometry*	mesh;
 			TextureBase*	texture;

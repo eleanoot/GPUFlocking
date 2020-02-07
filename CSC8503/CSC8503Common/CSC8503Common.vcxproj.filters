@@ -123,9 +123,6 @@
     <ClInclude Include="Debug.h">
       <Filter>Other</Filter>
     </ClInclude>
-    <ClInclude Include="UniformsRenderObject.h">
-      <Filter>Other</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CollisionDetection.cpp">
@@ -201,9 +198,6 @@
       <Filter>Other</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
-      <Filter>Other</Filter>
-    </ClCompile>
-    <ClCompile Include="UniformsRenderObject.cpp">
       <Filter>Other</Filter>
     </ClCompile>
   </ItemGroup>

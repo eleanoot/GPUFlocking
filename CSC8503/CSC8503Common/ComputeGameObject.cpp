@@ -28,9 +28,9 @@ void ComputeGameObject::OnDraw()
 	colourShader->Unbind();
 }
 
-void ComputeGameObject::SendUniforms()
+void ComputeGameObject::SendUniforms(OGLShader* s)
 {
-	glUniform1i(glGetUniformLocation(colourShader->GetProgramID(), "colourIndex"), colourCount);
+	glUniform1i(glGetUniformLocation(s->GetProgramID(), "colourIndex"), 1);
 
 	colourCount++;
 	if (colourCount >= noOfColours) colourCount = 0;

@@ -6,6 +6,15 @@ namespace NCL {
 		class UniformsRenderObject :
 			public RenderObject
 		{
+		public:
+			UniformsRenderObject(Transform* parentTransform, MeshGeometry* mesh, TextureBase* tex, ShaderBase* shader);
+			~UniformsRenderObject();
+
+			virtual void SendUniforms();
+
+		protected:
+
+
 		};
 	}
 }

@@ -78,7 +78,7 @@ namespace NCL {
 			// Methods to be used for objects that need compute shader calls.
 			virtual void OnDraw() {};
 
-			virtual void SendUniforms() {};
+			//virtual void SendUniforms(OGLShader* s) {};
 
 		protected:
 			Transform			transform;
