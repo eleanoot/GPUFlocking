@@ -103,6 +103,7 @@ void GameTechRenderer::BuildObjectList() {
 
 	for (std::vector<GameObject*>::const_iterator i = first; i != last; ++i) {
 		if ((*i)->IsActive()) {
+			(*i)->OnDraw();
 			const RenderObject*g = (*i)->GetRenderObject();
 			if (g) {
 				activeObjects.emplace_back(g);
@@ -150,13 +151,13 @@ void GameTechRenderer::RenderShadowMap() {
 
 void GameTechRenderer::RenderCamera() {
 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, colourSSBO);
+	/*glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, colourSSBO);
 	colourShader->Bind();
 	colourShader->Execute(4, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glFinish();
 
-	colourShader->Unbind();
+	colourShader->Unbind();*/
 
 	float screenAspect = (float)currentWidth / (float)currentHeight;
 	Matrix4 viewMatrix = gameWorld.GetMainCamera()->BuildViewMatrix();
@@ -206,7 +207,7 @@ void GameTechRenderer::RenderCamera() {
 			cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
 			glUniform3fv(cameraLocation, 1, (float*)&gameWorld.GetMainCamera()->GetPosition());
 
-			colourIndex = glGetUniformLocation(shader->GetProgramID(), "colourIndex");
+			//colourIndex = glGetUniformLocation(shader->GetProgramID(), "colourIndex");
 
 			glUniformMatrix4fv(projLocation, 1, false, (float*)&projMatrix);
 			glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);
@@ -231,18 +232,18 @@ void GameTechRenderer::RenderCamera() {
 
 		glUniform1i(hasVColLocation, !(*i).GetMesh()->GetColourData().empty());
 
-		glUniform1i(hasTexLocation, (OGLTexture*)(*i).GetDefaultTexture() ? 1:0);
+		glUniform1i(hasTexLocation, (OGLTexture*)(*i).GetDefaultTexture() ? 1 : 0);
 
-		glUniform1i(colourIndex, c);
-		c++;
+		//glUniform1i(colourIndex, c);
+		//c++;
 
-		if (c > 3) c = 0;
+		//if (c > 3) c = 0;
 
 		BindMesh((*i).GetMesh());
 		DrawBoundMesh();
 	}
 
-	c = 0;
+	//c = 0;
 }
 
 void GameTechRenderer::SetupDebugMatrix(OGLShader*s) {

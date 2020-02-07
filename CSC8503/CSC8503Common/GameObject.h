@@ -75,6 +75,11 @@ namespace NCL {
 
 			void UpdateBroadphaseAABB();
 
+			// Methods to be used for objects that need compute shader calls.
+			virtual void OnDraw() {};
+
+			virtual void SendUniforms() {};
+
 		protected:
 			Transform			transform;
 

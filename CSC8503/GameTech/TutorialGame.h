@@ -1,6 +1,7 @@
 #pragma once
 #include "GameTechRenderer.h"
 #include "../CSC8503Common/PhysicsSystem.h"
+#include "../CSC8503Common/ComputeGameObject.h"
 
 #define NUM_PARTICLES	1024*1024
 #define WORK_GROUP_SIZE	128
@@ -45,6 +46,7 @@ namespace NCL {
 			GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
 			//IT'S HAPPENING
 			GameObject* AddGooseToWorld(const Vector3& position);
+			ComputeGameObject* AddComputeGooseToWorld(const Vector3& position);
 			GameObject* AddParkKeeperToWorld(const Vector3& position);
 			GameObject* AddCharacterToWorld(const Vector3& position);
 			GameObject* AddAppleToWorld(const Vector3& position);
@@ -65,6 +67,7 @@ namespace NCL {
 			OGLMesh*	sphereMesh	= nullptr;
 			OGLTexture* basicTex	= nullptr;
 			OGLShader*	basicShader = nullptr;
+			OGLShader*	cShader = nullptr;
 
 			// Compute shader things 
 			struct pos

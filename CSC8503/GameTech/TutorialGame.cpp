@@ -47,8 +47,8 @@ void TutorialGame::InitialiseAssets() {
 	loadFunc("Apple.msh"	 , &appleMesh);
 
 	basicTex	= (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-	//basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
-	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFragModified.glsl");
+	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	cShader = new OGLShader("GameTechVert.glsl", "GameTechFragModified.glsl");
 
 	//computeShader = new OGLComputeShader("ParticleComputeShader.glsl"); 
 	computeShader = new OGLComputeShader("NumberComputeShader.glsl"); 
@@ -414,7 +414,8 @@ void TutorialGame::InitWorld() {
 	physics->Clear();
 
 	InitMixedGridWorld(10, 10, 3.5f, 3.5f);
-	AddGooseToWorld(Vector3(30, 2, 0));
+	//AddGooseToWorld(Vector3(30, 2, 0));
+	AddComputeGooseToWorld(Vector3(30, 2, 0));
 	AddAppleToWorld(Vector3(35, 2, 0));
 
 	AddParkKeeperToWorld(Vector3(40, 2, 0));
@@ -513,6 +514,31 @@ GameObject* TutorialGame::AddGooseToWorld(const Vector3& position)
 	goose->GetTransform().SetWorldPosition(position);
 
 	goose->SetRenderObject(new RenderObject(&goose->GetTransform(), gooseMesh, nullptr, basicShader));
+	goose->SetPhysicsObject(new PhysicsObject(&goose->GetTransform(), goose->GetBoundingVolume()));
+
+	goose->GetPhysicsObject()->SetInverseMass(inverseMass);
+	goose->GetPhysicsObject()->InitSphereInertia();
+
+	world->AddGameObject(goose);
+
+	return goose;
+}
+
+ComputeGameObject* TutorialGame::AddComputeGooseToWorld(const Vector3& position)
+{
+	float size = 1.0f;
+	float inverseMass = 1.0f;
+
+	ComputeGameObject* goose = new ComputeGameObject();
+
+
+	SphereVolume* volume = new SphereVolume(size);
+	goose->SetBoundingVolume((CollisionVolume*)volume);
+
+	goose->GetTransform().SetWorldScale(Vector3(size, size, size));
+	goose->GetTransform().SetWorldPosition(position);
+
+	goose->SetRenderObject(new RenderObject(&goose->GetTransform(), gooseMesh, nullptr, cShader));
 	goose->SetPhysicsObject(new PhysicsObject(&goose->GetTransform(), goose->GetBoundingVolume()));
 
 	goose->GetPhysicsObject()->SetInverseMass(inverseMass);
