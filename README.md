@@ -3,6 +3,7 @@
 ## Tasks
 * Investigate compute shaders by writing numbers to a buffer [Complete]
 * Pull the numbers out of that buffer [Complete]
+* Use a compute shader to fill a buffer with colours and shade with the fragment shader [Complete]
 * Use a compute shader to update the position of a GameObject
 
 ## References

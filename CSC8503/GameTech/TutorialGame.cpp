@@ -47,11 +47,12 @@ void TutorialGame::InitialiseAssets() {
 	loadFunc("Apple.msh"	 , &appleMesh);
 
 	basicTex	= (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
-	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	//basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
+	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFragModified.glsl");
 
 	//computeShader = new OGLComputeShader("ParticleComputeShader.glsl"); 
 	computeShader = new OGLComputeShader("NumberComputeShader.glsl"); 
-	InitCompute();
+	//InitCompute();
 
 	InitCamera();
 	InitWorld();
@@ -150,7 +151,7 @@ void TutorialGame::UpdateGame(float dt) {
 	renderer->Update(dt);
 	physics->Update(dt);
 
-	RenderComputeShader();
+	//RenderComputeShader();
 
 	Debug::FlushRenderables();
 	renderer->Render();

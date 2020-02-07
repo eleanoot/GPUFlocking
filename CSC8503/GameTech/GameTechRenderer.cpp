@@ -15,6 +15,7 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	glEnable(GL_DEPTH_TEST);
 
 	shadowShader = new OGLShader("GameTechShadowVert.glsl", "GameTechShadowFrag.glsl");
+	colourShader = new OGLComputeShader("ColourComputeShader.glsl");
 
 	glGenTextures(1, &shadowTex);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
@@ -40,6 +41,41 @@ GameTechRenderer::GameTechRenderer(GameWorld& world) : OGLRenderer(*Window::GetW
 	lightColour = Vector4(0.8f, 0.8f, 0.5f, 1.0f);
 	lightRadius = 1000.0f;
 	lightPosition = Vector3(-200.0f, 60.0f, -200.0f);
+
+	// Set up the colour SSBO
+	glGenBuffers(1, &colourSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, colourSSBO);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, noOfColours * sizeof(Vector4), NULL, GL_STATIC_DRAW);
+
+	/*colourShader->Bind();
+	colourShader->Execute(128,1,1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	glFinish();
+
+	colourShader->Unbind();*/
+	/*GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
+	Vector4* colours = (Vector4*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, noOfColours * sizeof(Vector4), bufMask);
+
+	colours[0].x = 1;
+	colours[0].y = 0;
+	colours[0].z = 0;
+	colours[0].w = 1;
+
+	colours[1].x = 0;
+	colours[1].y = 1;
+	colours[1].z = 0;
+	colours[1].w = 1;
+
+	colours[2].x = 0;
+	colours[2].y = 0;
+	colours[2].z = 1;
+	colours[2].w = 1;
+
+	colours[3].x = 1;
+	colours[3].y = 1;
+	colours[3].z = 1;
+	colours[3].w = 1;*/
+	//glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 }
 
 GameTechRenderer::~GameTechRenderer()	{
@@ -113,6 +149,15 @@ void GameTechRenderer::RenderShadowMap() {
 
 
 void GameTechRenderer::RenderCamera() {
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, colourSSBO);
+	colourShader->Bind();
+	colourShader->Execute(4, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	glFinish();
+
+	colourShader->Unbind();
+
 	float screenAspect = (float)currentWidth / (float)currentHeight;
 	Matrix4 viewMatrix = gameWorld.GetMainCamera()->BuildViewMatrix();
 	Matrix4 projMatrix = gameWorld.GetMainCamera()->BuildProjectionMatrix(screenAspect);
@@ -132,9 +177,12 @@ void GameTechRenderer::RenderCamera() {
 
 	int cameraLocation = 0;
 
+	int colourIndex = 0;
+
 	//TODO - PUT IN FUNCTION
 	glActiveTexture(GL_TEXTURE0 + 1);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
+
 
 	for (const auto&i : activeObjects) {
 		OGLShader* shader = (OGLShader*)(*i).GetShader();
@@ -157,6 +205,8 @@ void GameTechRenderer::RenderCamera() {
 
 			cameraLocation = glGetUniformLocation(shader->GetProgramID(), "cameraPos");
 			glUniform3fv(cameraLocation, 1, (float*)&gameWorld.GetMainCamera()->GetPosition());
+
+			colourIndex = glGetUniformLocation(shader->GetProgramID(), "colourIndex");
 
 			glUniformMatrix4fv(projLocation, 1, false, (float*)&projMatrix);
 			glUniformMatrix4fv(viewLocation, 1, false, (float*)&viewMatrix);
@@ -183,9 +233,16 @@ void GameTechRenderer::RenderCamera() {
 
 		glUniform1i(hasTexLocation, (OGLTexture*)(*i).GetDefaultTexture() ? 1:0);
 
+		glUniform1i(colourIndex, c);
+		c++;
+
+		if (c > 3) c = 0;
+
 		BindMesh((*i).GetMesh());
 		DrawBoundMesh();
 	}
+
+	c = 0;
 }
 
 void GameTechRenderer::SetupDebugMatrix(OGLShader*s) {

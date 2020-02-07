@@ -46,6 +46,12 @@ namespace NCL {
 			float		lightRadius;
 			Vector3		lightPosition;
 
+			// Colour changing with compute shader test 
+			GLuint colourSSBO;
+			OGLComputeShader* colourShader = nullptr;
+			const int noOfColours = 4;
+			int c = 0;
+
 			
 		};
 	}
