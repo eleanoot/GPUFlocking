@@ -7,6 +7,7 @@ ComputeGameObject::ComputeGameObject(string name) : GameObject(name)
 {
 	// Persistent buffer creation
 	positionShader = new OGLComputeShader("PositionComputeShader.glsl");
+
 	glGenBuffers(1, &posSSBO);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, posSSBO);
 	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(Vector3), NULL, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
