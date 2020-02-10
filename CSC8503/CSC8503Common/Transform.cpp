@@ -6,6 +6,7 @@ Transform::Transform()
 {
 	parent		= nullptr;
 	localScale	= Vector3(1, 1, 1);
+	localPosition = new Vector3(0, 0, 0);
 }
 
 Transform::Transform(const Vector3& position, Transform* p) {
@@ -19,7 +20,7 @@ Transform::~Transform()
 
 void Transform::UpdateMatrices() {
 	localMatrix = 
-		Matrix4::Translation(localPosition) * 
+		Matrix4::Translation(*(localPosition)) * 
 		Matrix4(localOrientation) *
 		Matrix4::Scale(localScale);
 
@@ -38,18 +39,18 @@ void Transform::SetWorldPosition(const Vector3& worldPos) {
 		Vector3 parentPos = parent->GetWorldMatrix().GetPositionVector();
 		Vector3 posDiff = parentPos - worldPos;
 
-		localPosition = posDiff;
+		*localPosition = posDiff;
 		localMatrix.SetPositionVector(posDiff);
 	}
 	else {
-		localPosition = worldPos;
+		*localPosition = worldPos;
 
 		worldMatrix.SetPositionVector(worldPos);
 	}
 }
 
 void Transform::SetLocalPosition(const Vector3& localPos) {
-	localPosition = localPos;
+	*localPosition = localPos;
 }
 
 void Transform::SetWorldScale(const Vector3& worldScale) {

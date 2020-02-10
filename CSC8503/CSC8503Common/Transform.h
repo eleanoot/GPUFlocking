@@ -45,7 +45,7 @@ namespace NCL {
 				return worldMatrix.GetPositionVector();
 			}
 
-			Vector3 GetLocalPosition() const {
+			Vector3* GetLocalPosition() const {
 				return localPosition;
 			}
 
@@ -75,7 +75,7 @@ namespace NCL {
 			Matrix4		localMatrix;
 			Matrix4		worldMatrix;
 
-			Vector3		localPosition;
+			Vector3*		localPosition;
 			Vector3		localScale;
 			Quaternion	localOrientation;
 			Quaternion  worldOrientation;

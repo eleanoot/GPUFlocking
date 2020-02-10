@@ -260,7 +260,7 @@ void PhysicsSystem::IntegrateVelocity(float dt) {
 
 		Transform& transform = (*i)->GetTransform();
 		// Position stuff
-		Vector3 position = transform.GetLocalPosition();
+		Vector3 position = *(transform.GetLocalPosition());
 		Vector3 linearVel = object->GetLinearVelocity();
 		position += linearVel * dt;
 		transform.SetLocalPosition(position);
