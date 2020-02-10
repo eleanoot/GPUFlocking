@@ -121,6 +121,7 @@ TutorialGame::~TutorialGame()	{
 	delete gooseMesh;
 	delete basicTex;
 	delete basicShader;
+	delete cShader;
 
 	delete physics;
 	delete renderer;
@@ -556,11 +557,14 @@ ComputeGameObject* TutorialGame::AddComputeGooseToWorld(const Vector3& position)
 	goose->GetTransform().SetWorldScale(Vector3(size, size, size));
 	goose->GetTransform().SetWorldPosition(position);
 
-	goose->SetRenderObject(new RenderObject(&goose->GetTransform(), gooseMesh, nullptr, cShader));
+	//goose->SetRenderObject(new RenderObject(&goose->GetTransform(), gooseMesh, nullptr, cShader));
+	goose->SetRenderObject(new RenderObject(&goose->GetTransform(), gooseMesh, nullptr, basicShader));
 	goose->SetPhysicsObject(new PhysicsObject(&goose->GetTransform(), goose->GetBoundingVolume()));
 
 	goose->GetPhysicsObject()->SetInverseMass(inverseMass);
 	goose->GetPhysicsObject()->InitSphereInertia();
+
+	goose->OnSetup();
 
 	world->AddGameObject(goose);
 

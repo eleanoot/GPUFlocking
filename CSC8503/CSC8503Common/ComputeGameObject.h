@@ -12,12 +12,15 @@ namespace NCL {
 			ComputeGameObject(string name = "");
 			~ComputeGameObject();
 
+			virtual void OnSetup();
 			virtual void OnDraw();
 			virtual void SendUniforms(OGLShader* s);
 
 		protected:
 			OGLComputeShader* colourShader;
+			OGLComputeShader* positionShader;
 			GLuint colourSSBO;
+			GLuint posSSBO;
 			const int noOfColours = 2;
 
 			int colourCount = 0;
