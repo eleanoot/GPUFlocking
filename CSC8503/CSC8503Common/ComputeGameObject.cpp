@@ -34,12 +34,14 @@ ComputeGameObject::~ComputeGameObject()
 
 void ComputeGameObject::OnSetup()
 {
-	// Persisten buffer mapping
+	// Persistent buffer mapping
 	GLint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
 	posPtr = (Vector3*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(Vector3), flags);
 	// Persistence position setting
 	Vector3 startPos = transform.GetWorldPosition();
-	posPtr[0] = startPos;
+	*posPtr = startPos;
+
+	transform.SetPositionPointer(posPtr);
 
 	// Basic movement
 	//Vector3 startPos = transform.GetWorldPosition();
@@ -54,6 +56,15 @@ void ComputeGameObject::OnSetup()
 
 void ComputeGameObject::OnDraw()
 {
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posSSBO);
+	positionShader->Bind();
+	positionShader->Execute(128, 1, 1);
+	
+	glFinish();
+	positionShader->Unbind();
+
+
+
 	// Basic movement
 	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posSSBO);
 	//positionShader->Bind();

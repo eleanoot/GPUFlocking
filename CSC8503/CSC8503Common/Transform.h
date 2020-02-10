@@ -21,6 +21,9 @@ namespace NCL {
 
 			void SetWorldPosition(const Vector3& worldPos);
 			void SetLocalPosition(const Vector3& localPos);
+			void SetPositionPointer(Vector3* ptr) {
+				localPosition = ptr;
+			}
 
 			void SetWorldScale(const Vector3& worldScale);
 			void SetLocalScale(const Vector3& localScale);
