@@ -26,7 +26,8 @@ ComputeGameObject::~ComputeGameObject()
 
 void ComputeGameObject::OnSetup()
 {
-	Vector3 startPos = transform.GetWorldPosition();
+	//Vector3 startPos = transform.GetWorldPosition();
+	Vector3 startPos = physicsObject->GetLinearVelocity();
 	GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
 	Vector3* ptr = (Vector3*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(Vector3), bufMask);
 
@@ -45,7 +46,8 @@ void ComputeGameObject::OnDraw()
 
 	Vector3* ptr = (Vector3*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(Vector3), GL_MAP_READ_BIT);
 
-	transform.SetWorldPosition(ptr[0]);
+	//transform.SetWorldPosition(ptr[0]);
+	physicsObject->SetLinearVelocity(ptr[0]);
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 

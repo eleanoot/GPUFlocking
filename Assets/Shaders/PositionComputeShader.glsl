@@ -11,6 +11,6 @@ void main(void)
 {
 	uint gid = gl_GlobalInvocationID.x;
 
-	posBuffer.posData[gid].z += 0.01;
+	posBuffer.posData[gid].z += 1.0;
 	
 }
