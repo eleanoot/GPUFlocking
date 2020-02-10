@@ -1,1 +1,6 @@
-﻿  GameTech.vcxproj -> H:\Computer Science\Stage 4\Dissertation\GPU Flocking\Win32\Debug\GameTech2.exe
+﻿  TutorialGame.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
+H:\Computer Science\Stage 4\Dissertation\GPU Flocking\CSC8503\GameTech\TutorialGame.cpp : message : see previous definition of '_WINSOCKAPI_'
+H:\Computer Science\Stage 4\Dissertation\GPU Flocking\CSC8503\GameTech\TutorialGame.cpp(577,60): warning C4305: 'argument': truncation from 'double' to 'float'
+H:\Computer Science\Stage 4\Dissertation\GPU Flocking\CSC8503\GameTech\TutorialGame.cpp(613,60): warning C4305: 'argument': truncation from 'double' to 'float'
+  GameTech.vcxproj -> H:\Computer Science\Stage 4\Dissertation\GPU Flocking\Win32\Debug\GameTech2.exe
