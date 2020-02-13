@@ -21,8 +21,13 @@ namespace NCL {
 			OGLComputeShader* positionShader;
 			GLuint colourSSBO;
 
-			GLuint posSSBO; // will be used as the persistent buffer in this case
+			GLuint posSSBO[2]; // will be used as the persistent buffer in this case
+								// double buffering
+			Vector3* posPtrBegin;
+			Vector3* posPtrSecond;
 			Vector3* posPtr;
+			GLuint bufferIndex = 0;
+			GLuint flags;
 
 			const int noOfColours = 2;
 			int colourCount = 0;
