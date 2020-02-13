@@ -6,11 +6,20 @@ using namespace NCL::CSC8503;
 ComputeGameObject::ComputeGameObject(string name) : GameObject(name)
 {
 	// Persistent buffer creation
-	positionShader = new OGLComputeShader("PositionComputeShader.glsl");
+	positionShader = new OGLComputeShader("DoubleBufferPositionComputeShader.glsl");
+	flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
 
-	glGenBuffers(1, &posSSBO);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, posSSBO);
+	glGenBuffers(2, posSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, posSSBO[0]);
 	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(Vector3), NULL, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	// Persistent buffer mapping
+	posPtrBegin = (Vector3*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(Vector3), flags);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, posSSBO[1]);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(Vector3), NULL, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	posPtrSecond = (Vector3*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(Vector3), flags);
+
+	bufferIndex = 0;
 
 	// Basic movement
 	/*positionShader = new OGLComputeShader("PositionComputeShader.glsl");
@@ -36,13 +45,15 @@ ComputeGameObject::~ComputeGameObject()
 void ComputeGameObject::OnSetup()
 {
 	// Persistent buffer mapping
-	GLint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-	posPtr = (Vector3*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(Vector3), flags);
+	//posPtrBegin = (Vector3*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(Vector3), flags);
+	//posPtrSecond = (Vector3*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(Vector3), flags); // cant map a buffer again after mapping it 
+	
 	// Persistence position setting
 	Vector3 startPos = transform.GetWorldPosition();
-	*posPtr = startPos;
+	*posPtrBegin = startPos;
+	*posPtrSecond = startPos;
 
-	transform.SetPositionPointer(posPtr);
+	transform.SetPositionPointer(posPtrBegin);
 
 	// Basic movement
 	//Vector3 startPos = transform.GetWorldPosition();
@@ -57,14 +68,26 @@ void ComputeGameObject::OnSetup()
 
 void ComputeGameObject::OnDraw()
 {
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posSSBO);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posSSBO[bufferIndex]);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, posSSBO[bufferIndex ^ 1]);
+
 	positionShader->Bind();
-	positionShader->Execute(128, 1, 1);
-	
+	positionShader->Execute(1, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glFinish();
 	positionShader->Unbind();
 
+	// edit the position shader to output to the buffer bound to index 1 instead like the opengl superbible example
+	// then switch the one the pointer points to
 
+	bufferIndex ^= 1;
+
+	if (bufferIndex == 0)
+		transform.SetPositionPointer(posPtrBegin);
+	else
+		transform.SetPositionPointer(posPtrSecond);
+
+	
 
 	// Basic movement
 	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posSSBO);
