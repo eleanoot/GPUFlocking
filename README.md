@@ -6,7 +6,8 @@
 * Use a compute shader to fill a buffer with colours and shade with the fragment shader [Complete]
 * Use a compute shader to update the position of a GameObject [Complete]
 * Use a persistently mapped buffer to hold and update the changed position [Complete]
-* Double buffer to help synchronisation issues 
+* Double buffer to help synchronisation issues [Complete]
+* Basic Flocking class derived as a compute object
 
 ## References
 * [Introduction to Compute Shaders - Mike Bailey, Oregon State University](http://web.engr.oregonstate.edu/~mjb/cs575/Handouts/compute.shader.2pp.pdf)
