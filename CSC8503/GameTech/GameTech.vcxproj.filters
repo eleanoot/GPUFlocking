@@ -30,10 +30,13 @@
     <ClCompile Include="NetworkPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\CSC8503Common\ComputeGameObject.cpp">
+    <ClCompile Include="..\CSC8503Common\UniformsRenderObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\CSC8503Common\UniformsRenderObject.cpp">
+    <ClCompile Include="ComputeGoose.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CSC8503Common\ComputeGameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,11 +53,14 @@
     <ClInclude Include="NetworkPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\CSC8503Common\ComputeGameObject.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\CSC8503Common\UniformsRenderObject.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ComputeGoose.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CSC8503Common\ComputeGameObject.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

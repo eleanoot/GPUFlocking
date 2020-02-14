@@ -543,12 +543,12 @@ GameObject* TutorialGame::AddGooseToWorld(const Vector3& position)
 	return goose;
 }
 
-ComputeGameObject* TutorialGame::AddComputeGooseToWorld(const Vector3& position)
+ComputeGoose* TutorialGame::AddComputeGooseToWorld(const Vector3& position)
 {
 	float size = 1.0f;
 	float inverseMass = 1.0f;
 
-	ComputeGameObject* goose = new ComputeGameObject();
+	ComputeGoose* goose = new ComputeGoose();
 
 
 	SphereVolume* volume = new SphereVolume(size);
