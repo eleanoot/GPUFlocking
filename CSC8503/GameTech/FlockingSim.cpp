@@ -44,6 +44,7 @@ void FlockingSim::InitialiseAssets() {
 
 	loadFunc("cube.msh", &cubeMesh);
 	loadFunc("sphere.msh", &sphereMesh);
+	loadFunc("goose.msh", &gooseMesh);
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
@@ -96,6 +97,7 @@ void FlockingSim::InitWorld() {
 	physics->Clear();
 
 	AddFloorToWorld(Vector3(0, -2, 0));
+	flock = new FlockSystem(10, world, gooseMesh, basicShader);
 }
 
 GameObject* FlockingSim::AddFloorToWorld(const Vector3& position) {

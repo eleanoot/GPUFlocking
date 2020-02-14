@@ -1,4 +1,8 @@
-﻿  Main.cpp
+﻿  FlockingSim.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
+H:\Computer Science\Stage 4\Dissertation\GPU Flocking\CSC8503\GameTech\FlockingSim.cpp : message : see previous definition of '_WINSOCKAPI_'
+  Main.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
 H:\Computer Science\Stage 4\Dissertation\GPU Flocking\CSC8503\GameTech\Main.cpp : message : see previous definition of '_WINSOCKAPI_'
+  Generating Code...
   GameTech.vcxproj -> H:\Computer Science\Stage 4\Dissertation\GPU Flocking\Win32\Debug\GameTech2.exe

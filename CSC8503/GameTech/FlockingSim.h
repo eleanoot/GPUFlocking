@@ -2,6 +2,7 @@
 #include "GameTechRenderer.h"
 #include "../CSC8503Common/PhysicsSystem.h"
 #include "../CSC8503Common/ComputeGameObject.h"
+#include "FlockSystem.h"
 namespace NCL {
 	namespace CSC8503 {
 		class FlockingSim
@@ -31,8 +32,11 @@ namespace NCL {
 
 			OGLMesh* cubeMesh = nullptr;
 			OGLMesh* sphereMesh = nullptr;
+			OGLMesh* gooseMesh = nullptr;
 			OGLTexture* basicTex = nullptr;
 			OGLShader* basicShader = nullptr;
+
+			FlockSystem* flock;
 		};
 	}
 }

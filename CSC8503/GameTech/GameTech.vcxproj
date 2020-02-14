@@ -145,6 +145,7 @@
     <ClCompile Include="..\CSC8503Common\UniformsRenderObject.cpp" />
     <ClCompile Include="ComputeGoose.cpp" />
     <ClCompile Include="FlockingSim.cpp" />
+    <ClCompile Include="FlockSystem.cpp" />
     <ClCompile Include="GameTechRenderer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NetworkedGame.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="..\CSC8503Common\UniformsRenderObject.h" />
     <ClInclude Include="ComputeGoose.h" />
     <ClInclude Include="FlockingSim.h" />
+    <ClInclude Include="FlockSystem.h" />
     <ClInclude Include="GameTechRenderer.h" />
     <ClInclude Include="NetworkedGame.h" />
     <ClInclude Include="NetworkPlayer.h" />
