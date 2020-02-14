@@ -11,6 +11,7 @@
 
 #include "TutorialGame.h"
 #include "NetworkedGame.h"
+#include "FlockingSim.h"
 
 using namespace NCL;
 using namespace CSC8503;
@@ -59,7 +60,8 @@ int main() {
 	w->ShowOSPointer(false);
 	w->LockMouseToWindow(true);
 
-	TutorialGame* g = new TutorialGame();
+	//TutorialGame* g = new TutorialGame();
+	FlockingSim* g = new FlockingSim();
 
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyboardKeys::ESCAPE)) {
 		float dt = w->GetTimer()->GetTimeDeltaSeconds();
