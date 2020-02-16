@@ -62,7 +62,7 @@ void FlockingSim::UpdateGame(float dt)
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);
-
+	flock->UpdateFlock();
 
 	Debug::FlushRenderables();
 	renderer->Render();

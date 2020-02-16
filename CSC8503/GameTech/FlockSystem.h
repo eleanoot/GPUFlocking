@@ -16,7 +16,7 @@ namespace NCL {
 			FlockSystem(int noOfBoids, GameWorld* world, OGLMesh* mesh, OGLShader* shader);
 			~FlockSystem();
 
-			void UpdateFlock() {};
+			void UpdateFlock();
 
 			void Separation(GameObject* b) {};
 			void Alignment(GameObject* b) {};

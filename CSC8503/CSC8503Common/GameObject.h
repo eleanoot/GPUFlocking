@@ -16,7 +16,7 @@ namespace NCL {
 
 		class GameObject	{
 		public:
-			GameObject(string name = "");
+			GameObject(string name = "", bool physics = true);
 			~GameObject();
 
 			void SetBoundingVolume(CollisionVolume* vol) {
@@ -63,6 +63,10 @@ namespace NCL {
 				return name;
 			}
 
+			bool ShouldUsePhysics() const {
+				return applyPhysics;
+			}
+
 			virtual void OnCollisionBegin(GameObject* otherObject) {
 				//std::cout << "OnCollisionBegin event occured!\n";
 			}
@@ -92,6 +96,8 @@ namespace NCL {
 			string	name;
 
 			Vector3 broadphaseAABB;
+
+			bool applyPhysics;
 		};
 	}
 }

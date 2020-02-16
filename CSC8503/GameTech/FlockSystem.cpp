@@ -10,7 +10,7 @@ FlockSystem::FlockSystem(int noOfBoids, GameWorld* world, OGLMesh* mesh, OGLShad
 	// Randomly create a number of boids with a position, velocity, colour, rotation(?)
 	for (int i = 0; i < noOfBoids; i++)
 	{
-		GameObject* boid = new GameObject();
+		GameObject* boid = new GameObject("BOID", false);
 
 		SphereVolume* volume = new SphereVolume(1.0f);
 		boid->SetBoundingVolume((CollisionVolume*)volume);
@@ -31,10 +31,21 @@ FlockSystem::FlockSystem(int noOfBoids, GameWorld* world, OGLMesh* mesh, OGLShad
 		colourCount++;
 
 		world->AddGameObject(boid);
+		allBoids.push_back(boid);
 	}
 }
 
 FlockSystem::~FlockSystem()
 {
 	allBoids.clear();
+}
+
+void FlockSystem::UpdateFlock()
+{
+	Vector3 dir = Vector3(0, 0, 1);
+	for (int i = 0; i < allBoids.size(); i++)
+	{
+		allBoids[i]->GetTransform().SetWorldPosition(allBoids[i]->GetTransform().GetWorldPosition() + dir);
+	}
+	
 }

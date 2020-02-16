@@ -211,7 +211,7 @@ void PhysicsSystem::IntegrateAccel(float dt) {
 	for (auto i = first; i != last; ++i)
 	{
 		PhysicsObject* object = (*i)->GetPhysicsObject();
-		if (object == nullptr)
+		if (object == nullptr || !(*i)->ShouldUsePhysics())
 		{
 			continue;
 		}
@@ -255,7 +255,7 @@ void PhysicsSystem::IntegrateVelocity(float dt) {
 	for (auto i = first; i != last; ++i)
 	{
 		PhysicsObject* object = (*i)->GetPhysicsObject();
-		if (object == nullptr)
+		if (object == nullptr || !(*i)->ShouldUsePhysics())
 			continue;
 
 		Transform& transform = (*i)->GetTransform();

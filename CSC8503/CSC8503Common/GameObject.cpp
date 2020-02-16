@@ -3,13 +3,14 @@
 
 using namespace NCL::CSC8503;
 
-GameObject::GameObject(string objectName)	{
+GameObject::GameObject(string objectName, bool physics)	{
 	name			= objectName;
 	isActive		= true;
 	boundingVolume	= nullptr;
 	physicsObject	= nullptr;
 	renderObject	= nullptr;
 	networkObject	= nullptr;
+	applyPhysics = physics;
 }
 
 GameObject::~GameObject()	{
