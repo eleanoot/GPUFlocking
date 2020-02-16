@@ -7,7 +7,9 @@ namespace NCL {
 		{
 		public:
 			CPUBoid(string name = "", bool physics = true) : GameObject(name, physics) {};
-			~CPUBoid();
+			~CPUBoid() {
+				neighbours.clear();
+			};
 
 			void AddNeighbour(CPUBoid* n) { neighbours.push_back(n); }
 

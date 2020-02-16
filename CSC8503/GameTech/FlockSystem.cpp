@@ -10,7 +10,7 @@ FlockSystem::FlockSystem(int noOfBoids, GameWorld* world, OGLMesh* mesh, OGLShad
 	// Randomly create a number of boids with a position, velocity, colour, rotation(?)
 	for (int i = 0; i < noOfBoids; i++)
 	{
-		CPUBoid* boid = new CPUBoid("BOID", false);
+		CPUBoid* boid = new CPUBoid("BOID", true);
 
 		SphereVolume* volume = new SphereVolume(1.0f);
 		boid->SetBoundingVolume((CollisionVolume*)volume);
@@ -50,11 +50,11 @@ void FlockSystem::UpdateFlock(float dt)
 		//allBoids[i]->GetTransform().SetWorldPosition(allBoids[i]->GetTransform().GetWorldPosition() + dir);
 		dir += Separation(allBoids[i]);
 		dir += Alignment(allBoids[i]);
-		//dir += Cohesion(allBoids[i]);
+		dir += Cohesion(allBoids[i]);
 
 		//allBoids[i]->GetTransform().SetWorldPosition(allBoids[i]->GetTransform().GetWorldPosition() + dir);
 		allBoids[i]->GetPhysicsObject()->SetLinearVelocity(dir);
-		allBoids[i]->GetTransform().SetWorldPosition(dir + allBoids[i]->GetTransform().GetWorldPosition());
+		//allBoids[i]->GetTransform().SetWorldPosition((dir * dt) + allBoids[i]->GetTransform().GetWorldPosition());
 		// position += velocity * dt
 	}
 	
@@ -81,7 +81,10 @@ void FlockSystem::FindNeighbours()
 
 Vector3 FlockSystem::Separation(CPUBoid* b)
 {
-	Vector3 dir;
+	// each boid calculates distance to its neighbours 
+	// if distance under seperation value, apply velocity to boid inv proportional to distance between 
+
+	Vector3 dir = Vector3(0,0,0);
 	std::vector<CPUBoid*>::const_iterator first;
 	std::vector<CPUBoid*>::const_iterator last;
 	b->GetNeighourIterators(first, last);
@@ -122,5 +125,18 @@ Vector3 FlockSystem::Alignment(CPUBoid* b)
 
 Vector3 FlockSystem::Cohesion(CPUBoid* b)
 {
-	return Vector3(0, 0, 0);
+	Vector3 centre = b->GetPhysicsObject()->GetLinearVelocity();
+
+	std::vector<CPUBoid*>::const_iterator first;
+	std::vector<CPUBoid*>::const_iterator last;
+	b->GetNeighourIterators(first, last);
+	int neighbourCount = 0;
+	for (auto it = first; it != last; it++)
+	{
+		centre += (*it)->GetPhysicsObject()->GetLinearVelocity();
+		neighbourCount++;
+	}
+	centre /= (neighbourCount - 1);
+
+	return ((centre - b->GetTransform().GetWorldPosition()) / FLOCK_COHESION).Normalised();
 }
