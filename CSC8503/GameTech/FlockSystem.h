@@ -1,12 +1,13 @@
 #pragma once
-#include "../CSC8503Common/GameObject.h"
+#include "../GameTech/CPUBoid.h"
 #include "../CSC8503Common/GameWorld.h"
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 
-#define FLOCK_SEPARATION	10
-#define FLOCK_ALIGNMENT		10
-#define FLOCK_COHESION		10
+#define FLOCK_SEPARATION	25.0f
+#define FLOCK_ALIGNMENT		0.125f
+#define FLOCK_COHESION		0.01f
+#define NEIGHBOUR_RADIUS	8.0f
 
 namespace NCL {
 	namespace CSC8503 {
@@ -17,13 +18,14 @@ namespace NCL {
 			~FlockSystem();
 
 			void UpdateFlock();
+			void FindNeighbours();
 
-			void Separation(GameObject* b) {};
-			void Alignment(GameObject* b) {};
-			void Cohesion(GameObject* b) {};
+			void Separation(CPUBoid* b) {};
+			void Alignment(CPUBoid* b) {};
+			void Cohesion(CPUBoid* b) {};
 
 		protected:
-			std::vector<GameObject*> allBoids; // cpu flock: will contain position and velocity to edit through physics objects 
+			std::vector<CPUBoid*> allBoids; // cpu flock: will contain position and velocity to edit through physics objects 
 
 			Vector4 colours[3] = { Vector4(1,0,0,1), Vector4(0,1,0,1), Vector4(0,0,1,1) };
 

@@ -144,6 +144,7 @@
     <ClCompile Include="..\CSC8503Common\ComputeGameObject.cpp" />
     <ClCompile Include="..\CSC8503Common\UniformsRenderObject.cpp" />
     <ClCompile Include="ComputeGoose.cpp" />
+    <ClCompile Include="CPUBoid.cpp" />
     <ClCompile Include="FlockingSim.cpp" />
     <ClCompile Include="FlockSystem.cpp" />
     <ClCompile Include="GameTechRenderer.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="..\CSC8503Common\ComputeGameObject.h" />
     <ClInclude Include="..\CSC8503Common\UniformsRenderObject.h" />
     <ClInclude Include="ComputeGoose.h" />
+    <ClInclude Include="CPUBoid.h" />
     <ClInclude Include="FlockingSim.h" />
     <ClInclude Include="FlockSystem.h" />
     <ClInclude Include="GameTechRenderer.h" />
