@@ -17,7 +17,7 @@ FlockSystem::FlockSystem(int noOfBoids, GameWorld* world, OGLMesh* mesh, OGLShad
 
 		boid->GetTransform().SetWorldScale(Vector3(1, 1, 1));
 
-		boid->GetTransform().SetWorldPosition(Vector3(rand() % 80, 2, rand() % 80));
+		boid->GetTransform().SetWorldPosition(Vector3(rand() % 80, rand() % 10, rand() % 80));
 
 		boid->SetRenderObject(new RenderObject(&boid->GetTransform(), boidMesh, nullptr, shader));
 		boid->SetPhysicsObject(new PhysicsObject(&boid->GetTransform(), boid->GetBoundingVolume()));
@@ -92,11 +92,23 @@ Vector3 FlockSystem::Separation(CPUBoid* b)
 	{
 		Vector3 dis = b->GetTransform().GetWorldPosition() - (*it)->GetTransform().GetWorldPosition();
 		float distance = dis.Length();
+		float strength = 1.0f;
+		if (b->GetRenderObject()->GetColour() == (*it)->GetRenderObject()->GetColour())
+		{
+			if (distance > FLOCK_SEPARATION_SAME)
+				continue;
 
-		if (distance > FLOCK_SEPARATION)
-			continue;
+			strength = 1.0f - (distance / FLOCK_SEPARATION_SAME);
+		}
+		else
+		{
+			if (distance > FLOCK_SEPARATION)
+				continue;
 
-		float strength = 1.0f - (distance / FLOCK_SEPARATION);
+			strength = 1.0f - (distance / FLOCK_SEPARATION);
+		}
+
+		
 
 		dir += (b->GetTransform().GetWorldPosition() - (*it)->GetTransform().GetWorldPosition()).Normalised() * strength;
 	}
@@ -134,6 +146,13 @@ Vector3 FlockSystem::Cohesion(CPUBoid* b)
 	for (auto it = first; it != last; it++)
 	{
 		centre += (*it)->GetPhysicsObject()->GetLinearVelocity();
+		neighbourCount++;
+	}
+
+	if (neighbourCount == 0)
+	{
+		CPUBoid* randomNeighbour = allBoids[rand() % allBoids.size()];
+		centre += randomNeighbour->GetPhysicsObject()->GetLinearVelocity();
 		neighbourCount++;
 	}
 	centre /= (neighbourCount - 1);
