@@ -49,7 +49,7 @@ void FlockSystem::UpdateFlock(float dt)
 	{
 		//allBoids[i]->GetTransform().SetWorldPosition(allBoids[i]->GetTransform().GetWorldPosition() + dir);
 		dir += Separation(allBoids[i]);
-		//dir += Alignment(allBoids[i]);
+		dir += Alignment(allBoids[i]);
 		//dir += Cohesion(allBoids[i]);
 
 		//allBoids[i]->GetTransform().SetWorldPosition(allBoids[i]->GetTransform().GetWorldPosition() + dir);
@@ -103,7 +103,21 @@ Vector3 FlockSystem::Separation(CPUBoid* b)
 
 Vector3 FlockSystem::Alignment(CPUBoid* b)
 {
-	return Vector3(0, 0, 0);
+	Vector3 avgVelocity = b->GetPhysicsObject()->GetLinearVelocity();
+	std::vector<CPUBoid*>::const_iterator first;
+	std::vector<CPUBoid*>::const_iterator last;
+	b->GetNeighourIterators(first, last);
+	int neighbourCount = 0;
+	for (auto it = first; it != last; it++)
+	{
+		avgVelocity += (*it)->GetPhysicsObject()->GetLinearVelocity();
+		neighbourCount++;
+	}
+
+	avgVelocity /= (neighbourCount - 1);
+
+
+	return ((avgVelocity - b->GetPhysicsObject()->GetLinearVelocity()) / 8).Normalised();
 }
 
 Vector3 FlockSystem::Cohesion(CPUBoid* b)
