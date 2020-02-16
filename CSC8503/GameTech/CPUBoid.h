@@ -9,6 +9,16 @@ namespace NCL {
 			CPUBoid(string name = "", bool physics = true) : GameObject(name, physics) {};
 			~CPUBoid();
 
+			void AddNeighbour(CPUBoid* n) { neighbours.push_back(n); }
+
+			void GetNeighourIterators(
+				std::vector<CPUBoid*>::const_iterator& first,
+				std::vector<CPUBoid*>::const_iterator& last) {
+
+				first = neighbours.begin();
+				last = neighbours.end();
+			}
+
 		protected:
 			std::vector<CPUBoid*> neighbours;
 

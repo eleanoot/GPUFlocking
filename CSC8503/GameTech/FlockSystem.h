@@ -17,12 +17,12 @@ namespace NCL {
 			FlockSystem(int noOfBoids, GameWorld* world, OGLMesh* mesh, OGLShader* shader);
 			~FlockSystem();
 
-			void UpdateFlock();
+			void UpdateFlock(float dt);
 			void FindNeighbours();
 
-			void Separation(CPUBoid* b) {};
-			void Alignment(CPUBoid* b) {};
-			void Cohesion(CPUBoid* b) {};
+			Vector3 Separation(CPUBoid* b);
+			Vector3 Alignment(CPUBoid* b);
+			Vector3 Cohesion(CPUBoid* b);
 
 		protected:
 			std::vector<CPUBoid*> allBoids; // cpu flock: will contain position and velocity to edit through physics objects 

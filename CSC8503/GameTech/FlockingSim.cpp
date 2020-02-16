@@ -62,7 +62,7 @@ void FlockingSim::UpdateGame(float dt)
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);
-	flock->UpdateFlock();
+	flock->UpdateFlock(dt);
 
 	Debug::FlushRenderables();
 	renderer->Render();
@@ -97,7 +97,7 @@ void FlockingSim::InitWorld() {
 	physics->Clear();
 
 	AddFloorToWorld(Vector3(0, -2, 0));
-	flock = new FlockSystem(10, world, gooseMesh, basicShader);
+	flock = new FlockSystem(50, world, gooseMesh, basicShader);
 }
 
 GameObject* FlockingSim::AddFloorToWorld(const Vector3& position) {
