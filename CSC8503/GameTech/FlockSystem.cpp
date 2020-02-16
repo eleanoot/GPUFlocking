@@ -10,7 +10,7 @@ FlockSystem::FlockSystem(int noOfBoids, GameWorld* world, OGLMesh* mesh, OGLShad
 	// Randomly create a number of boids with a position, velocity, colour, rotation(?)
 	for (int i = 0; i < noOfBoids; i++)
 	{
-		CPUBoid* boid = new CPUBoid("BOID", true);
+		CPUBoid* boid = new CPUBoid("BOID", false);
 
 		SphereVolume* volume = new SphereVolume(1.0f);
 		boid->SetBoundingVolume((CollisionVolume*)volume);
@@ -47,14 +47,15 @@ void FlockSystem::UpdateFlock(float dt)
 	Vector3 dir;
 	for (int i = 0; i < allBoids.size(); i++)
 	{
+		float originalY = allBoids[i]->GetPhysicsObject()->GetLinearVelocity().y;
 		//allBoids[i]->GetTransform().SetWorldPosition(allBoids[i]->GetTransform().GetWorldPosition() + dir);
 		dir += Separation(allBoids[i]);
 		dir += Alignment(allBoids[i]);
 		dir += Cohesion(allBoids[i]);
-
+		//dir.y = originalY;
 		//allBoids[i]->GetTransform().SetWorldPosition(allBoids[i]->GetTransform().GetWorldPosition() + dir);
 		allBoids[i]->GetPhysicsObject()->SetLinearVelocity(dir);
-		//allBoids[i]->GetTransform().SetWorldPosition((dir * dt) + allBoids[i]->GetTransform().GetWorldPosition());
+		allBoids[i]->GetTransform().SetWorldPosition((dir * dt) + allBoids[i]->GetTransform().GetWorldPosition());
 		// position += velocity * dt
 	}
 	
@@ -111,6 +112,7 @@ Vector3 FlockSystem::Separation(CPUBoid* b)
 		
 
 		dir += (b->GetTransform().GetWorldPosition() - (*it)->GetTransform().GetWorldPosition()).Normalised() * strength;
+		dir += (b->GetPhysicsObject()->GetLinearVelocity()- (*it)->GetPhysicsObject()->GetLinearVelocity()).Normalised() * strength;
 	}
 
 	return dir.Normalised();
@@ -122,10 +124,15 @@ Vector3 FlockSystem::Alignment(CPUBoid* b)
 	std::vector<CPUBoid*>::const_iterator first;
 	std::vector<CPUBoid*>::const_iterator last;
 	b->GetNeighourIterators(first, last);
-	int neighbourCount = 0;
+	int neighbourCount = 1;
 	for (auto it = first; it != last; it++)
 	{
-		avgVelocity += (*it)->GetPhysicsObject()->GetLinearVelocity();
+		if (b->GetRenderObject()->GetColour() == (*it)->GetRenderObject()->GetColour())
+		{
+			avgVelocity += (*it)->GetPhysicsObject()->GetLinearVelocity() * 1.5f;
+		}
+		else
+			avgVelocity += (*it)->GetPhysicsObject()->GetLinearVelocity();
 		neighbourCount++;
 	}
 
@@ -155,7 +162,7 @@ Vector3 FlockSystem::Cohesion(CPUBoid* b)
 		centre += randomNeighbour->GetPhysicsObject()->GetLinearVelocity();
 		neighbourCount++;
 	}
+	
 	centre /= (neighbourCount - 1);
-
 	return ((centre - b->GetTransform().GetWorldPosition()) / FLOCK_COHESION).Normalised();
 }
