@@ -4,8 +4,8 @@
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 
-#define FLOCK_SEPARATION	8.0f
-#define FLOCK_SEPARATION_SAME 4.0f
+#define FLOCK_SEPARATION	20.0f
+#define FLOCK_SEPARATION_SAME 10.0f
 #define FLOCK_ALIGNMENT		0.125f
 #define FLOCK_COHESION		0.01f
 #define NEIGHBOUR_RADIUS	8.0f

@@ -49,6 +49,7 @@ void FlockSystem::UpdateFlock(float dt)
 	Vector3 dir;
 	for (int i = 0; i < allBoids.size(); i++)
 	{
+		dir = Vector3(0, 0, 0);
 		//allBoids[i]->UpdateBoid(dt);
 		float originalY = allBoids[i]->GetPhysicsObject()->GetLinearVelocity().y;
 		//allBoids[i]->GetTransform().SetWorldPosition(allBoids[i]->GetTransform().GetWorldPosition() + dir);
@@ -57,9 +58,10 @@ void FlockSystem::UpdateFlock(float dt)
 		dir += Cohesion(allBoids[i]);
 		//dir.y = originalY;
 		//allBoids[i]->GetTransform().SetWorldPosition(allBoids[i]->GetTransform().GetWorldPosition() + dir);
-		allBoids[i]->GetPhysicsObject()->SetLinearVelocity(dir);
-		allBoids[i]->GetTransform().SetWorldPosition((dir * dt) + allBoids[i]->GetTransform().GetWorldPosition());
+		allBoids[i]->GetPhysicsObject()->SetLinearVelocity(dir + allBoids[i]->GetPhysicsObject()->GetLinearVelocity());
+		//allBoids[i]->GetTransform().SetWorldPosition((dir * dt) + allBoids[i]->GetTransform().GetWorldPosition());
 		// position += velocity * dt
+		allBoids[i]->GetTransform().SetWorldPosition(allBoids[i]->GetTransform().GetWorldPosition() + (allBoids[i]->GetPhysicsObject()->GetLinearVelocity() * dt));
 	}
 	
 }
@@ -115,7 +117,7 @@ Vector3 FlockSystem::Separation(CPUBoid* b)
 		
 
 		dir += (b->GetTransform().GetWorldPosition() - (*it)->GetTransform().GetWorldPosition()).Normalised() * strength;
-		dir += (b->GetPhysicsObject()->GetLinearVelocity()- (*it)->GetPhysicsObject()->GetLinearVelocity()).Normalised() * strength;
+		//dir += (b->GetPhysicsObject()->GetLinearVelocity()- (*it)->GetPhysicsObject()->GetLinearVelocity()).Normalised() * strength;
 	}
 
 	return dir.Normalised();
@@ -147,7 +149,35 @@ Vector3 FlockSystem::Alignment(CPUBoid* b)
 
 Vector3 FlockSystem::Cohesion(CPUBoid* b)
 {
-	Vector3 centre = b->GetPhysicsObject()->GetLinearVelocity();
+	Vector3 centre;
+
+	std::vector<CPUBoid*>::const_iterator first;
+	std::vector<CPUBoid*>::const_iterator last;
+	b->GetNeighourIterators(first, last);
+	int neighbourCount = 0;
+
+	for (auto it = first; it != last; it++)
+	{
+		if ((*it) != b)
+		{
+			centre += (*it)->GetTransform().GetWorldPosition();
+			neighbourCount++;
+		}
+	}
+
+	if (neighbourCount == 0)
+	{
+		CPUBoid* randomNeighbour = allBoids[rand() % allBoids.size()];
+		centre += randomNeighbour->GetTransform().GetWorldPosition();
+		neighbourCount++;
+	}
+
+	centre /= neighbourCount;
+
+	return (centre - b->GetTransform().GetWorldPosition()) / 100;
+
+
+	/*Vector3 centre = b->GetPhysicsObject()->GetLinearVelocity();
 
 	std::vector<CPUBoid*>::const_iterator first;
 	std::vector<CPUBoid*>::const_iterator last;
@@ -167,5 +197,6 @@ Vector3 FlockSystem::Cohesion(CPUBoid* b)
 	}
 	
 	centre /= (neighbourCount);
-	return ((centre - b->GetTransform().GetWorldPosition()) / FLOCK_COHESION).Normalised();
+	std::cout << centre << std::endl;
+	return ((centre - b->GetTransform().GetWorldPosition()) / FLOCK_COHESION).Normalised();*/
 }
