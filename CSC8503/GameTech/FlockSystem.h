@@ -1,5 +1,5 @@
 #pragma once
-#include "../GameTech/CPUBoid.h"
+
 #include "../CSC8503Common/GameWorld.h"
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
@@ -12,10 +12,11 @@
 
 namespace NCL {
 	namespace CSC8503 {
+		class CPUBoid;
 		class FlockSystem
 		{
 		public: 
-			FlockSystem(int noOfBoids, GameWorld* world, OGLMesh* mesh, OGLShader* shader);
+			FlockSystem(int noOfBoids, Vector3 pos, GameWorld* world, OGLMesh* mesh, OGLShader* shader);
 			~FlockSystem();
 
 			void UpdateFlock(float dt);
@@ -31,6 +32,8 @@ namespace NCL {
 			Vector4 colours[3] = { Vector4(1,0,0,1), Vector4(0,1,0,1), Vector4(0,0,1,1) };
 
 			OGLMesh* boidMesh = nullptr;
+
+			Vector3 worldPos;
 		};
 	}
 }

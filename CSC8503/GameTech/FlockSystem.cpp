@@ -1,16 +1,18 @@
 #include "FlockSystem.h"
+#include "../GameTech/CPUBoid.h"
 using namespace NCL;
 using namespace NCL::CSC8503;
 
-FlockSystem::FlockSystem(int noOfBoids, GameWorld* world, OGLMesh* mesh, OGLShader* shader)
+FlockSystem::FlockSystem(int noOfBoids, Vector3 pos, GameWorld* world, OGLMesh* mesh, OGLShader* shader)
 {
 	boidMesh = mesh;
+	worldPos = pos;
 
 	int colourCount = 0;
 	// Randomly create a number of boids with a position, velocity, colour, rotation(?)
 	for (int i = 0; i < noOfBoids; i++)
 	{
-		CPUBoid* boid = new CPUBoid("BOID", false);
+		CPUBoid* boid = new CPUBoid(this, "BOID", false);
 
 		SphereVolume* volume = new SphereVolume(1.0f);
 		boid->SetBoundingVolume((CollisionVolume*)volume);
@@ -47,6 +49,7 @@ void FlockSystem::UpdateFlock(float dt)
 	Vector3 dir;
 	for (int i = 0; i < allBoids.size(); i++)
 	{
+		//allBoids[i]->UpdateBoid(dt);
 		float originalY = allBoids[i]->GetPhysicsObject()->GetLinearVelocity().y;
 		//allBoids[i]->GetTransform().SetWorldPosition(allBoids[i]->GetTransform().GetWorldPosition() + dir);
 		dir += Separation(allBoids[i]);
@@ -136,7 +139,7 @@ Vector3 FlockSystem::Alignment(CPUBoid* b)
 		neighbourCount++;
 	}
 
-	avgVelocity /= (neighbourCount - 1);
+	avgVelocity /= neighbourCount;
 
 
 	return ((avgVelocity - b->GetPhysicsObject()->GetLinearVelocity()) / 8).Normalised();
@@ -163,6 +166,6 @@ Vector3 FlockSystem::Cohesion(CPUBoid* b)
 		neighbourCount++;
 	}
 	
-	centre /= (neighbourCount - 1);
+	centre /= (neighbourCount);
 	return ((centre - b->GetTransform().GetWorldPosition()) / FLOCK_COHESION).Normalised();
 }

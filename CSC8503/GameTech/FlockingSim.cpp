@@ -97,7 +97,7 @@ void FlockingSim::InitWorld() {
 	physics->Clear();
 
 	//AddFloorToWorld(Vector3(0, -2, 0));
-	flock = new FlockSystem(50, world, gooseMesh, basicShader);
+	flock = new FlockSystem(50, Vector3(0,0,0), world, gooseMesh, basicShader);
 }
 
 GameObject* FlockingSim::AddFloorToWorld(const Vector3& position) {
