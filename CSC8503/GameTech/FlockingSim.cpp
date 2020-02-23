@@ -59,10 +59,11 @@ void FlockingSim::UpdateGame(float dt)
 
 	UpdateKeys();
 
+	flock->UpdateFlock(dt);
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);
-	flock->UpdateFlock(dt);
+	
 
 	Debug::FlushRenderables();
 	renderer->Render();

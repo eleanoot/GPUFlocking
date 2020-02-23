@@ -36,40 +36,44 @@ void CPUBoid::ApplyForce(Vector3 force)
 Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 {
 	// Field of vision distance
-	float sepDis = 10;
+	float sepDis = 50;
 	Vector3 steer = Vector3(0, 0, 0);
 	int neighbourCount = 0;
 
 	for (int i = 0; i < boids.size(); i++)
 	{
-		// Calculate distance from this boid to the one we're looking at
-		float distance = (transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition()).Length();
-
-		// If this is a boid and it's too close, move away from it
-		if (distance > 0 && (distance < sepDis))
+		if (boids[i] != this)
 		{
-			Vector3 diff = Vector3(0, 0, 0);
-			diff = transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition();
-			diff.Normalise();
-			diff /= distance; // Weight by the distance
-			steer += diff;
-			neighbourCount++;
+			// Calculate distance from this boid to the one we're looking at
+			float distance = (transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition()).Length();
+
+			// If this is a boid and it's too close, move away from it
+			if (distance > 0 && (distance < sepDis))
+			{
+				Vector3 diff = Vector3(0, 0, 0);
+				diff = transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition();
+				diff.Normalise();
+				diff /= distance; // Weight by the distance
+				steer += diff;
+				neighbourCount++;
+			}
 		}
-
-		// Add the average difference of location to acceleration 
-		if (neighbourCount > 0)
-			steer /= (float)neighbourCount;
-
-		if (steer.Length() > 0)
-		{
-			// Steering = desired - velocity
-			steer.Normalise();
-			steer *= maxSpeed;
-			steer -= physicsObject->GetLinearVelocity();
-		}
-
-		return steer;
+		
 	}
+
+	// Add the average difference of location to acceleration 
+	if (neighbourCount > 0)
+		steer /= (float)neighbourCount;
+
+	if (steer.Length() > 0)
+	{
+		// Steering = desired - velocity
+		steer.Normalise();
+		steer *= maxSpeed;
+		steer -= physicsObject->GetLinearVelocity();
+	}
+
+	return steer;
 }
 
 Vector3 CPUBoid::Alignment(std::vector<CPUBoid*> boids)
@@ -81,13 +85,17 @@ Vector3 CPUBoid::Alignment(std::vector<CPUBoid*> boids)
 
 	for (int i = 0; i < boids.size(); i++)
 	{
-		float distance = (transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition()).Length();
-
-		if (distance > 0 && distance < neighDis)
+		if (boids[i] != this)
 		{
-			sum += boids[i]->GetPhysicsObject()->GetLinearVelocity();
-			neighbourCount++;
+			float distance = (transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition()).Length();
+
+			if (distance > 0 && distance < neighDis)
+			{
+				sum += boids[i]->GetPhysicsObject()->GetLinearVelocity();
+				neighbourCount++;
+			}
 		}
+		
 	}
 
 	if (neighbourCount > 0)
@@ -112,12 +120,16 @@ Vector3 CPUBoid::Cohesion(std::vector<CPUBoid*> boids)
 
 	for (int i = 0; i < boids.size(); i++)
 	{
-		float distance = (transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition()).Length();
-		if (distance > 0 && distance < neighDis)
+		if (boids[i] != this)
 		{
-			sum += boids[i]->GetTransform().GetWorldPosition();
-			neighbourCount++;
+			float distance = (transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition()).Length();
+			if (distance > 0 && distance < neighDis)
+			{
+				sum += boids[i]->GetTransform().GetWorldPosition();
+				neighbourCount++;
+			}
 		}
+		
 	}
 
 	if (neighbourCount > 0)
@@ -135,8 +147,8 @@ Vector3 CPUBoid::Seek(Vector3 v)
 	desired -= v; // vector from location to target
 	desired.Normalise();
 	desired *= maxSpeed;
-	accel = desired - physicsObject->GetLinearVelocity();
-	return accel;
+	physicsObject->AddForce(desired - physicsObject->GetLinearVelocity());
+	return physicsObject->GetForce();
 }
 
 void CPUBoid::Update(std::vector<CPUBoid*> boids)
@@ -154,6 +166,7 @@ void CPUBoid::Update(std::vector<CPUBoid*> boids)
 	ApplyForce(sep);
 	ApplyForce(align);
 	ApplyForce(cohesion);
+
 }
 
 float CPUBoid::Angle(Vector3 v)
