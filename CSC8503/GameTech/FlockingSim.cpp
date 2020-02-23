@@ -87,7 +87,7 @@ void FlockingSim::UpdateKeys() {
 
 void FlockingSim::InitCamera() {
 	world->GetMainCamera()->SetNearPlane(0.5f);
-	world->GetMainCamera()->SetFarPlane(500.0f);
+	world->GetMainCamera()->SetFarPlane(1500.0f);
 	world->GetMainCamera()->SetPitch(-15.0f);
 	world->GetMainCamera()->SetYaw(315.0f);
 	world->GetMainCamera()->SetPosition(Vector3(-60, 40, 60));
@@ -97,10 +97,10 @@ void FlockingSim::InitWorld() {
 	world->ClearAndErase();
 	physics->Clear();
 
-	//AddFloorToWorld(Vector3(0, -2, 0));
+	AddFloorToWorld(Vector3(0, -2, 0));
 	flock = new FlockSystem();
 
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < 100; i++)
 	{
 		CPUBoid* boid = new CPUBoid(0, 0, gooseMesh, basicShader);
 

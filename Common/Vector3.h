@@ -57,6 +57,16 @@ namespace NCL {
 				return sqrt((x*x) + (y*y) + (z*z));
 			}
 
+			void Limit(float max) {
+				float size = Length();
+				if (size > max)
+				{
+					x /= size;
+					y /= size;
+					z /= size;
+				}
+			}
+
 			constexpr float	LengthSquared() const {
 				return ((x*x) + (y*y) + (z*z));
 			}

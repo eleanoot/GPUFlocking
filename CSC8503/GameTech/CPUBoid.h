@@ -29,9 +29,13 @@ namespace NCL {
 
 			float Angle(Vector3 v);
 
+			Vector3 GetPos() const { return pos; }
+
+			Vector3 GetVel() const { return vel; }
+
 		protected:
-			/*Vector3 pos;
-			Vector3 vel;*/
+			Vector3 pos;
+			Vector3 vel;
 			Vector3 accel;
 
 			float maxSpeed;
