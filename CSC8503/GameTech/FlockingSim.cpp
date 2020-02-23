@@ -101,23 +101,9 @@ void FlockingSim::InitWorld() {
 
 	for (int i = 0; i < 50; i++)
 	{
-		CPUBoid* boid = new CPUBoid(0, 0);
+		CPUBoid* boid = new CPUBoid(0, 0, gooseMesh, basicShader);
 
-		SphereVolume* volume = new SphereVolume(1.0f);
-		boid->SetBoundingVolume((CollisionVolume*)volume);
-
-		boid->GetTransform().SetWorldScale(Vector3(1, 1, 1));
-
-		boid->GetTransform().SetWorldPosition(Vector3(rand() % 80, rand() % 10, rand() % 80));
-
-		boid->SetRenderObject(new RenderObject(&boid->GetTransform(), gooseMesh, nullptr, basicShader));
-		boid->SetPhysicsObject(new PhysicsObject(&boid->GetTransform(), boid->GetBoundingVolume()));
-
-		boid->GetPhysicsObject()->SetInverseMass(1);
-		boid->GetPhysicsObject()->InitSphereInertia();
-
-
-		boid->GetPhysicsObject()->SetLinearVelocity(Vector3(rand() % 20, 0, rand() % 20));
+		
 
 		flock->AddBoid(boid);
 		world->AddGameObject(boid);

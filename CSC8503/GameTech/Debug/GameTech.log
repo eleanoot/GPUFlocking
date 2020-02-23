@@ -1,14 +1,22 @@
-﻿  FlockingSim.cpp
+﻿  CPUBoid.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp : message : see previous definition of '_WINSOCKAPI_'
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(28,71): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(28,55): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(43,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(82,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(113,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(125,10): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  FlockSystem.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp : message : see previous definition of '_WINSOCKAPI_'
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(18,20): warning C4018: '<': signed/unsigned mismatch
+  FlockingSim.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp : message : see previous definition of '_WINSOCKAPI_'
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(111,82): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(111,69): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(111,56): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(120,78): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(120,62): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Main.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\Main.cpp : message : see previous definition of '_WINSOCKAPI_'
   Generating Code...
-UniformsRenderObject.obj : warning LNK4099: PDB 'vc142.pdb' was not found with 'UniformsRenderObject.obj' or at 'C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\Win32\Debug\vc142.pdb'; linking object as if no debug info
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(73): warning C4715: 'NCL::CSC8503::CPUBoid::Separation': not all control paths return a value
   GameTech.vcxproj -> C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\Win32\Debug\GameTech2.exe

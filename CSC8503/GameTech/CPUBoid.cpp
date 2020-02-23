@@ -3,13 +3,29 @@
 using namespace NCL;
 using namespace CSC8503;
 
-CPUBoid::CPUBoid(float x, float z)
+CPUBoid::CPUBoid(float x, float z, OGLMesh* mesh, OGLShader* shader) : GameObject("BOID", true)
 {
 	accel = Vector3(0, 0, 0);
-	vel = Vector3(rand() % 20 - 10, 0, rand() % 20 - 10);
-	pos = Vector3(x, 0, z);
+	/*vel = Vector3(rand() % 20 - 10, 0, rand() % 20 - 10);
+	pos = Vector3(x, 0, z);*/
 	maxSpeed = 20.5;
 	maxForce = 0.5;
+
+	SphereVolume* volume = new SphereVolume(1.0f);
+	SetBoundingVolume((CollisionVolume*)volume);
+
+	transform.SetWorldScale(Vector3(1, 1, 1));
+
+	transform.SetWorldPosition(Vector3(x, 0, z));
+
+	SetRenderObject(new RenderObject(&transform, mesh, nullptr, shader));
+	SetPhysicsObject(new PhysicsObject(&transform, GetBoundingVolume()));
+
+	GetPhysicsObject()->SetInverseMass(1);
+	GetPhysicsObject()->InitSphereInertia();
+
+
+	GetPhysicsObject()->SetLinearVelocity(Vector3(rand() % 20, 0, rand() % 20));
 }
 
 void CPUBoid::ApplyForce(Vector3 force)
@@ -20,7 +36,7 @@ void CPUBoid::ApplyForce(Vector3 force)
 Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 {
 	// Field of vision distance
-	float sepDis = 20;
+	float sepDis = 10;
 	Vector3 steer = Vector3(0, 0, 0);
 	int neighbourCount = 0;
 
@@ -58,7 +74,7 @@ Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 
 Vector3 CPUBoid::Alignment(std::vector<CPUBoid*> boids)
 {
-	float neighDis = 50;
+	float neighDis = 20;
 
 	Vector3 sum = Vector3(0, 0, 0);
 	int neighbourCount = 0;
@@ -90,7 +106,7 @@ Vector3 CPUBoid::Alignment(std::vector<CPUBoid*> boids)
 
 Vector3 CPUBoid::Cohesion(std::vector<CPUBoid*> boids)
 {
-	float neighDis = 50;
+	float neighDis = 20;
 	Vector3 sum(0, 0, 0);
 	int neighbourCount = 0;
 
@@ -138,4 +154,9 @@ void CPUBoid::Update(std::vector<CPUBoid*> boids)
 	ApplyForce(sep);
 	ApplyForce(align);
 	ApplyForce(cohesion);
+}
+
+float CPUBoid::Angle(Vector3 v)
+{
+	return (float)(atan2(v.x, -v.z) * 180 / 3.14);
 }

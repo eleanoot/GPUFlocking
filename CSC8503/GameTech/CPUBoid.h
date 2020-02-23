@@ -13,7 +13,7 @@ namespace NCL {
 				
 			};
 
-			CPUBoid(float x, float z);
+			CPUBoid(float x, float z, OGLMesh* mesh, OGLShader* shader);
 		
 			~CPUBoid() {
 				
@@ -27,9 +27,11 @@ namespace NCL {
 
 			void ApplyForce(Vector3 force);
 
+			float Angle(Vector3 v);
+
 		protected:
-			Vector3 pos;
-			Vector3 vel;
+			/*Vector3 pos;
+			Vector3 vel;*/
 			Vector3 accel;
 
 			float maxSpeed;
