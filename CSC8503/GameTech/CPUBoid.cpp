@@ -3,41 +3,139 @@
 using namespace NCL;
 using namespace CSC8503;
 
-float clamp(float n, float lower, float upper) {
-	return std::max(lower, std::min(n, upper));
+CPUBoid::CPUBoid(float x, float z)
+{
+	accel = Vector3(0, 0, 0);
+	vel = Vector3(rand() % 20 - 10, 0, rand() % 20 - 10);
+	pos = Vector3(x, 0, z);
+	maxSpeed = 20.5;
+	maxForce = 0.5;
 }
 
-Vector3 CPUBoid::GetSeperationVector(Transform target)
+void CPUBoid::ApplyForce(Vector3 force)
 {
-	Vector3 diff = transform.GetWorldPosition() - target.GetWorldPosition();
-	float distance = diff.Length();
-	float scale = clamp(1.0f - distance / 8.0f, 0, 1);
-	return diff * (scale / distance);
+	physicsObject->AddForce(force);
 }
 
-void CPUBoid::UpdateBoid(float dt)
+Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 {
-	Vector3 currentPos = transform.GetWorldPosition();
-	// current rotation 
+	// Field of vision distance
+	float sepDis = 20;
+	Vector3 steer = Vector3(0, 0, 0);
+	int neighbourCount = 0;
 
-	Vector3 seperation = Vector3(0, 0, 0);
-	Vector3 alignment = Vector3(0, 0, 1);
-	Vector3 cohesion = Vector3(0,0,0);
-
-	for each(auto boid in neighbours)
+	for (int i = 0; i < boids.size(); i++)
 	{
-		if (boid == this) continue;
+		// Calculate distance from this boid to the one we're looking at
+		float distance = (transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition()).Length();
 
-		Transform t = boid->transform;
-		seperation += GetSeperationVector(t);
-		alignment += t.GetWorldOrientation() * Vector3(0, 0, 1);
-		cohesion += t.GetWorldPosition();
+		// If this is a boid and it's too close, move away from it
+		if (distance > 0 && (distance < sepDis))
+		{
+			Vector3 diff = Vector3(0, 0, 0);
+			diff = transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition();
+			diff.Normalise();
+			diff /= distance; // Weight by the distance
+			steer += diff;
+			neighbourCount++;
+		}
+
+		// Add the average difference of location to acceleration 
+		if (neighbourCount > 0)
+			steer /= (float)neighbourCount;
+
+		if (steer.Length() > 0)
+		{
+			// Steering = desired - velocity
+			steer.Normalise();
+			steer *= maxSpeed;
+			steer -= physicsObject->GetLinearVelocity();
+		}
+
+		return steer;
+	}
+}
+
+Vector3 CPUBoid::Alignment(std::vector<CPUBoid*> boids)
+{
+	float neighDis = 50;
+
+	Vector3 sum = Vector3(0, 0, 0);
+	int neighbourCount = 0;
+
+	for (int i = 0; i < boids.size(); i++)
+	{
+		float distance = (transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition()).Length();
+
+		if (distance > 0 && distance < neighDis)
+		{
+			sum += boids[i]->GetPhysicsObject()->GetLinearVelocity();
+			neighbourCount++;
+		}
 	}
 
-	float avg = 1.0f / neighbours.size();
-	alignment *= avg;
-	cohesion *= avg;
-	cohesion = (cohesion - currentPos).Normalised();
+	if (neighbourCount > 0)
+	{
+		sum /= (float)neighbourCount;
+		sum.Normalise();
+		sum *= maxSpeed;
 
-	transform.SetWorldPosition(currentPos + (transform.GetWorldOrientation() * Vector3(0, 0, 1)) * (physicsObject->GetLinearVelocity() * dt));
+		Vector3 steer;
+		steer = sum - physicsObject->GetLinearVelocity();
+		return steer;
+	}
+	else
+		return Vector3(0, 0, 0);
+}
+
+Vector3 CPUBoid::Cohesion(std::vector<CPUBoid*> boids)
+{
+	float neighDis = 50;
+	Vector3 sum(0, 0, 0);
+	int neighbourCount = 0;
+
+	for (int i = 0; i < boids.size(); i++)
+	{
+		float distance = (transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition()).Length();
+		if (distance > 0 && distance < neighDis)
+		{
+			sum += boids[i]->GetTransform().GetWorldPosition();
+			neighbourCount++;
+		}
+	}
+
+	if (neighbourCount > 0)
+	{
+		sum /= neighbourCount;
+		return Seek(sum);
+	}
+	else
+		return Vector3(0, 0, 0);
+}
+
+Vector3 CPUBoid::Seek(Vector3 v)
+{
+	Vector3 desired;
+	desired -= v; // vector from location to target
+	desired.Normalise();
+	desired *= maxSpeed;
+	accel = desired - physicsObject->GetLinearVelocity();
+	return accel;
+}
+
+void CPUBoid::Update(std::vector<CPUBoid*> boids)
+{
+	Vector3 sep = Separation(boids);
+	Vector3 align = Alignment(boids);
+	Vector3 cohesion = Cohesion(boids);
+
+	// Random weighing right now
+	sep *= 1.5;
+	align *= 1.0;
+	cohesion *= 1.0;
+
+	// Add the force vectors to acceleration 
+	ApplyForce(sep);
+	ApplyForce(align);
+	ApplyForce(cohesion);
 }

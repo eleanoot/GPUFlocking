@@ -3,6 +3,7 @@
 #include "../CSC8503Common/PhysicsSystem.h"
 #include "../CSC8503Common/ComputeGameObject.h"
 #include "FlockSystem.h"
+#include "CPUBoid.h"
 namespace NCL {
 	namespace CSC8503 {
 		class FlockingSim

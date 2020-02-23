@@ -9,30 +9,31 @@ namespace NCL {
 			public GameObject
 		{
 		public:
-			CPUBoid(FlockSystem* sys, string name = "", bool physics = true) : GameObject(name, physics) {
-				controller = sys;
+			CPUBoid() : GameObject("BOID", true) {
+				
 			};
+
+			CPUBoid(float x, float z);
+		
 			~CPUBoid() {
-				neighbours.clear();
+				
 			};
 
-			void AddNeighbour(CPUBoid* n) { neighbours.push_back(n); }
+			Vector3 Separation(std::vector<CPUBoid*> boids);
+			Vector3 Alignment(std::vector<CPUBoid*> boids);
+			Vector3 Cohesion(std::vector<CPUBoid*> boids);
+			Vector3 Seek(Vector3 v);
+			void Update(std::vector<CPUBoid*> boids);
 
-			void GetNeighourIterators(
-				std::vector<CPUBoid*>::const_iterator& first,
-				std::vector<CPUBoid*>::const_iterator& last) {
-
-				first = neighbours.begin();
-				last = neighbours.end();
-			}
-
-			Vector3 GetSeperationVector(Transform target);
-
-			void UpdateBoid(float dt);
+			void ApplyForce(Vector3 force);
 
 		protected:
-			std::vector<CPUBoid*> neighbours;
-			FlockSystem* controller;
+			Vector3 pos;
+			Vector3 vel;
+			Vector3 accel;
+
+			float maxSpeed;
+			float maxForce;
 		};
 	}
 }
