@@ -8,13 +8,11 @@ CPUBoid::CPUBoid(float x, float z, OGLMesh* mesh, OGLShader* shader) : GameObjec
 	accel = Vector3(0, 0, 0);
 	vel = Vector3(rand() % 3, 0, rand() % 3);
 	pos = Vector3(x, 0, z);
-	maxSpeed = 3.5;
-	maxForce = 0.01;
 
 	SphereVolume* volume = new SphereVolume(1.0f);
 	SetBoundingVolume((CollisionVolume*)volume);
 
-	transform.SetWorldScale(Vector3(1, 1, 1));
+	transform.SetWorldScale(Vector3(10, 10, 10));
 
 	transform.SetWorldPosition(Vector3(x, 0, z));
 
@@ -24,6 +22,7 @@ CPUBoid::CPUBoid(float x, float z, OGLMesh* mesh, OGLShader* shader) : GameObjec
 	GetPhysicsObject()->SetInverseMass(1);
 	GetPhysicsObject()->InitSphereInertia();
 
+	GetRenderObject()->SetColour(Vector4(1, 0, 0, 1));
 
 	GetPhysicsObject()->SetLinearVelocity(Vector3(rand() % 3, 0, rand() % 3));
 }
@@ -37,7 +36,7 @@ void CPUBoid::ApplyForce(Vector3 force)
 Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 {
 	// Field of vision distance
-	float sepDis = 2;
+	float sepDis = 10;
 	Vector3 steer = Vector3(0, 0, 0);
 	int neighbourCount = 0;
 
@@ -72,10 +71,9 @@ Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 	{
 		// Steering = desired - velocity
 		steer.Normalise();
-		steer *= maxSpeed;
 		//steer -= physicsObject->GetLinearVelocity();
 		steer -= vel;
-		steer.Limit(maxForce);
+		//steer.Limit(maxForce);
 	}
 
 	return steer;
@@ -83,7 +81,7 @@ Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 
 Vector3 CPUBoid::Alignment(std::vector<CPUBoid*> boids)
 {
-	float neighDis = 10;
+	float neighDis = 8;
 
 	Vector3 sum = Vector3(0, 0, 0);
 	int neighbourCount = 0;
@@ -109,12 +107,10 @@ Vector3 CPUBoid::Alignment(std::vector<CPUBoid*> boids)
 	{
 		sum /= (float)neighbourCount;
 		sum.Normalise();
-		sum *= maxSpeed;
 
 		Vector3 steer;
 		//steer = sum - physicsObject->GetLinearVelocity();
 		steer = sum - vel;
-		steer.Limit(maxForce);
 		return steer;
 	}
 	else
@@ -123,7 +119,7 @@ Vector3 CPUBoid::Alignment(std::vector<CPUBoid*> boids)
 
 Vector3 CPUBoid::Cohesion(std::vector<CPUBoid*> boids)
 {
-	float neighDis = 10;
+	float neighDis = 8;
 	Vector3 sum(0, 0, 0);
 	int neighbourCount = 0;
 
@@ -157,11 +153,9 @@ Vector3 CPUBoid::Seek(Vector3 v)
 	Vector3 desired;
 	desired -= v; // vector from location to target
 	desired.Normalise();
-	desired *= maxSpeed;
 	//physicsObject->AddForce(desired - physicsObject->GetLinearVelocity());
 	accel = desired - vel;
 	//return physicsObject->GetForce();
-	accel.Limit(maxForce);
 	return accel;
 }
 

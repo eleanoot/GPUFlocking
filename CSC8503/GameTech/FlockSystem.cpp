@@ -21,7 +21,7 @@ void FlockSystem::UpdateFlock(float dt)
 		allBoids[i]->GetTransform().SetWorldPosition(allBoids[i]->GetTransform().GetWorldPosition() + allBoids[i]->GetPos());
 		//float theta = allBoids[i]->Angle(allBoids[i]->GetPhysicsObject()->GetLinearVelocity());
 		float theta = allBoids[i]->Angle(allBoids[i]->GetVel());
-		allBoids[i]->GetRenderObject()->GetTransform()->SetLocalOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0, 1, 0), theta));
+		//allBoids[i]->GetRenderObject()->GetTransform()->SetLocalOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0, 1, 0), theta));
 	}
 	
 }

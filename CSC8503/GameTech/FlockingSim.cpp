@@ -97,15 +97,12 @@ void FlockingSim::InitWorld() {
 	world->ClearAndErase();
 	physics->Clear();
 
-	AddFloorToWorld(Vector3(0, -2, 0));
+	AddFloorToWorld(Vector3(0, -8, 0));
 	flock = new FlockSystem();
 
 	for (int i = 0; i < 100; i++)
 	{
 		CPUBoid* boid = new CPUBoid(0, 0, gooseMesh, basicShader);
-
-		
-
 		flock->AddBoid(boid);
 		world->AddGameObject(boid);
 	}
@@ -114,7 +111,7 @@ void FlockingSim::InitWorld() {
 GameObject* FlockingSim::AddFloorToWorld(const Vector3& position) {
 	GameObject* floor = new GameObject();
 
-	Vector3 floorSize = Vector3(100, 2, 100);
+	Vector3 floorSize = Vector3(1000, 2, 1000);
 	AABBVolume* volume = new AABBVolume(floorSize);
 	floor->SetBoundingVolume((CollisionVolume*)volume);
 	floor->GetTransform().SetWorldScale(floorSize);

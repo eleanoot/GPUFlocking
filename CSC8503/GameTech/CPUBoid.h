@@ -37,9 +37,6 @@ namespace NCL {
 			Vector3 pos;
 			Vector3 vel;
 			Vector3 accel;
-
-			float maxSpeed;
-			float maxForce;
 		};
 	}
 }
