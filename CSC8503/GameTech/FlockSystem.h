@@ -26,7 +26,7 @@ namespace NCL {
 
 		protected:
 			std::vector<CPUBoid*> allBoids; // cpu flock: will contain position and velocity to edit through physics objects 
-			
+			int colourCount = 0;
 			
 		};
 	}

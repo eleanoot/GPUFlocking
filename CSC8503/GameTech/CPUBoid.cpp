@@ -183,5 +183,6 @@ void CPUBoid::Update(std::vector<CPUBoid*> boids)
 
 float CPUBoid::Angle(Vector3 v)
 {
+	// Adjusting the pitch of the boid
 	return (float)(atan2(v.x, -v.z) * 180 / 3.14);
 }
