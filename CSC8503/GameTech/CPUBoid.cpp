@@ -38,7 +38,7 @@ void CPUBoid::ApplyForce(Vector3 force)
 Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 {
 	// Field of vision distance
-	float sepDis = 20;
+	float sepDis = 60;
 	Vector3 steer = Vector3(0, 0, 0);
 	int neighbourCount = 0;
 
@@ -84,7 +84,7 @@ Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 
 Vector3 CPUBoid::Alignment(std::vector<CPUBoid*> boids)
 {
-	float neighDis = 20;
+	float neighDis = 70;
 
 	Vector3 sum = Vector3(0, 0, 0);
 	int neighbourCount = 0;
@@ -172,7 +172,7 @@ void CPUBoid::Update(std::vector<CPUBoid*> boids)
 	Vector3 cohesion = Cohesion(boids);
 
 	// Random weighing right now
-	sep *= 1.5;
+	sep *= 2.5;
 	align *= 1.0;
 	cohesion *= 1.0;
 
@@ -194,18 +194,18 @@ void CPUBoid::Update(std::vector<CPUBoid*> boids)
 float CPUBoid::Angle(Vector3 v)
 {
 	// Adjusting the pitch of the boid
-	return (float)(atan2(v.x, -v.z) * 180 / 3.14);
+	return (float)(atan2(v.x, v.z) * 180 / 3.14);
 }
 
 void CPUBoid::Boundaries()
 {
-	if (pos.x < -51)
-		pos.x += 100;
-	if (pos.z < -51)
-		pos.z += 100;
+	if (pos.x < -1010)
+		pos.x += 2000;
+	if (pos.z < -1010)
+		pos.z += 2000;
 
-	if (pos.x > 51)
-		pos.x -= 100;
-	if (pos.z > 51)
-		pos.z -= 100;
+	if (pos.x > 1010)
+		pos.x -= 2000;
+	if (pos.z > 1010)
+		pos.z -= 2000;
 }

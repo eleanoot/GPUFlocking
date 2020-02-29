@@ -44,7 +44,7 @@ void FlockingSim::InitialiseAssets() {
 
 	loadFunc("cube.msh", &cubeMesh);
 	loadFunc("sphere.msh", &sphereMesh);
-	loadFunc("RotatedGoose.msh", &gooseMesh);
+	loadFunc("goose.msh", &gooseMesh);
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
@@ -63,7 +63,7 @@ void FlockingSim::UpdateGame(float dt)
 
 	for (int i = 0; i < flock->GetSize(); i++)
 	{
-		flock->GetBoid(i)->GetTransform().SetWorldPosition(flock->GetBoid(i)->GetTransform().GetWorldPosition() + flock->GetBoid(i)->GetPos());
+		flock->GetBoid(i)->GetTransform().SetWorldPosition(/*flock->GetBoid(i)->GetTransform().GetWorldPosition() + */flock->GetBoid(i)->GetPos());
 		//float theta = allBoids[i]->Angle(allBoids[i]->GetPhysicsObject()->GetLinearVelocity());
 		float theta = flock->GetBoid(i)->Angle(flock->GetBoid(i)->GetVel());
 		/*if (i == 5)
@@ -80,7 +80,6 @@ void FlockingSim::UpdateGame(float dt)
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
 	physics->Update(dt);
-	
 
 	Debug::FlushRenderables();
 	renderer->Render();
@@ -119,7 +118,7 @@ void FlockingSim::InitWorld() {
 
 	for (int i = 0; i < 100; i++)
 	{
-		CPUBoid* boid = new CPUBoid(0, 0, gooseMesh, basicShader);
+		CPUBoid* boid = new CPUBoid(rand() % 200, rand() % 200, gooseMesh, basicShader);
 		flock->AddBoid(boid);
 		world->AddGameObject(boid);
 	}
