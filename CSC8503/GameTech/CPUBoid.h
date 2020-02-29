@@ -27,16 +27,25 @@ namespace NCL {
 
 			void ApplyForce(Vector3 force);
 
+			void Boundaries();
+
 			float Angle(Vector3 v);
 
 			Vector3 GetPos() const { return pos; }
 
 			Vector3 GetVel() const { return vel; }
 
+			Vector3 GetAcc() const { return tempAccel; }
+
 		protected:
 			Vector3 pos;
 			Vector3 vel;
 			Vector3 accel;
+
+			Vector3 tempAccel;
+
+			float maxSpeed;
+			float maxForce;
 		};
 	}
 }
