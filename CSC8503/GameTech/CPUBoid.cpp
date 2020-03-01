@@ -25,13 +25,10 @@ CPUBoid::CPUBoid(float x, float z, OGLMesh* mesh, OGLShader* shader) : GameObjec
 	GetPhysicsObject()->InitSphereInertia();
 
 	GetRenderObject()->SetColour(Vector4(1, 0, 0, 1));
-
-	//GetPhysicsObject()->SetLinearVelocity(Vector3(rand() % 3, 0, rand() % 3));
 }
 
 void CPUBoid::ApplyForce(Vector3 force)
 {
-//	physicsObject->AddForce(force);
 	accel += force;
 }
 
@@ -47,14 +44,12 @@ Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 		if (boids[i] != this)
 		{
 			// Calculate distance from this boid to the one we're looking at
-			//float distance = (transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition()).Length();
 			float distance = (pos - boids[i]->pos).Length();
 
 			// If this is a boid and it's too close, move away from it
 			if (distance > 0 && (distance < sepDis))
 			{
 				Vector3 diff = Vector3(0, 0, 0);
-				//diff = transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition();
 				diff = pos - boids[i]->pos;
 				diff.Normalise();
 				diff /= distance; // Weight by the distance
@@ -74,7 +69,6 @@ Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 		// Steering = desired - velocity
 		steer.Normalise();
 		steer *= maxSpeed;
-		//steer -= physicsObject->GetLinearVelocity();
 		steer -= vel;
 		steer.Limit(maxForce);
 	}
@@ -93,12 +87,10 @@ Vector3 CPUBoid::Alignment(std::vector<CPUBoid*> boids)
 	{
 		if (boids[i] != this)
 		{
-			//float distance = (transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition()).Length();
 			float distance = (pos - boids[i]->pos).Length();
 
 			if (distance > 0 && distance < neighDis)
 			{
-				//sum += boids[i]->GetPhysicsObject()->GetLinearVelocity();
 				sum += boids[i]->vel;
 				neighbourCount++;
 			}
@@ -112,7 +104,6 @@ Vector3 CPUBoid::Alignment(std::vector<CPUBoid*> boids)
 		sum.Normalise();
 		sum *= maxSpeed;
 		Vector3 steer;
-		//steer = sum - physicsObject->GetLinearVelocity();
 		steer = sum - vel;
 		steer.Limit(maxForce);
 		return steer;
@@ -131,11 +122,9 @@ Vector3 CPUBoid::Cohesion(std::vector<CPUBoid*> boids)
 	{
 		if (boids[i] != this)
 		{
-		//	float distance = (transform.GetWorldPosition() - boids[i]->GetTransform().GetWorldPosition()).Length();
 			float distance = (pos - boids[i]->pos).Length();
 			if (distance > 0 && distance < neighDis)
 			{
-				//sum += boids[i]->GetTransform().GetWorldPosition();
 				sum += boids[i]->pos;
 				neighbourCount++;
 			}
@@ -158,10 +147,8 @@ Vector3 CPUBoid::Seek(Vector3 v)
 	desired -= v; // vector from location to target
 	desired.Normalise();
 	desired *= maxSpeed;
-	//physicsObject->AddForce(desired - physicsObject->GetLinearVelocity());
 	accel = desired - vel;
 	accel.Limit(maxForce);
-	//return physicsObject->GetForce();
 	return accel;
 }
 
@@ -197,6 +184,7 @@ float CPUBoid::Angle(Vector3 v)
 	return (float)(atan2(v.x, v.z) * 180 / 3.14);
 }
 
+// If the boids loop off the edge of the floor, wrap them around to the other side to not go off screen.
 void CPUBoid::Boundaries()
 {
 	if (pos.x < -1010)

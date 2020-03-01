@@ -4,8 +4,6 @@
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 
-
-
 namespace NCL {
 	namespace CSC8503 {
 		class CPUBoid;
@@ -25,8 +23,7 @@ namespace NCL {
 			void AddBoid(CPUBoid* b) { allBoids.push_back(b); }
 
 		protected:
-			std::vector<CPUBoid*> allBoids; // cpu flock: will contain position and velocity to edit through physics objects 
-			int colourCount = 0;
+			std::vector<CPUBoid*> allBoids; // cpu flock
 			
 		};
 	}
