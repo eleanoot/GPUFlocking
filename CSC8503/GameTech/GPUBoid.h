@@ -9,10 +9,18 @@ namespace NCL {
 		public:
 			GPUBoid() {};
 			GPUBoid(float x, float z, OGLMesh* mesh, OGLShader* shader);
-			~GPUBoid() {};
+			~GPUBoid() {
+				delete flockShader;
+				glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+			};
 
 			virtual void OnSetup();
 			virtual void OnDraw();
+
+			struct flock_member {
+				Vector3 position;
+				Vector3 velocity;
+			};
 
 		protected:
 			OGLComputeShader* flockShader;
@@ -20,8 +28,8 @@ namespace NCL {
 			GLuint flockSSBO[2]; // will be used as the persistent buffer in this case
 								// double buffering
 
-			Vector3* flockPtrFirst;
-			Vector3* flockPtrSecond;
+			flock_member* flockPtrFirst;
+			flock_member* flockPtrSecond;
 
 			GLuint bufferIndex = 0;
 			GLuint flags;
