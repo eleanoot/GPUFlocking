@@ -9,7 +9,7 @@ namespace NCL {
 			public GameObject
 		{
 		public:
-			ComputeGameObject(string name = "");
+			ComputeGameObject(string name = "", bool inPhysics = true);
 			~ComputeGameObject();
 
 			virtual void OnSetup();

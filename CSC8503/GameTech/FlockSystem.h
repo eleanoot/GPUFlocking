@@ -3,6 +3,7 @@
 #include "../CSC8503Common/GameWorld.h"
 #include "../../Plugins/OpenGLRendering/OGLMesh.h"
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
+#include "GPUBoid.h"
 
 namespace NCL {
 	namespace CSC8503 {
@@ -22,8 +23,11 @@ namespace NCL {
 
 			void AddBoid(CPUBoid* b) { allBoids.push_back(b); }
 
+			void AddBoid(GPUBoid* b) { gpuBoids.push_back(b); }
+
 		protected:
 			std::vector<CPUBoid*> allBoids; // cpu flock
+			std::vector<GPUBoid*> gpuBoids; // gpu flock
 			
 		};
 	}

@@ -38,6 +38,7 @@ namespace NCL {
 			OGLShader* basicShader = nullptr;
 
 			FlockSystem* flock;
+			bool useGPU = false;
 		};
 	}
 }

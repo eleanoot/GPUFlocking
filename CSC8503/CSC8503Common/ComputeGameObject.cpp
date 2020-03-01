@@ -3,7 +3,7 @@
 using namespace NCL;
 using namespace NCL::CSC8503;
 
-ComputeGameObject::ComputeGameObject(string name) : GameObject(name)
+ComputeGameObject::ComputeGameObject(string name, bool inPhysics) : GameObject(name, inPhysics)
 {
 	/* MOVE THIS SOMEWHERE ELSE BECAUSE WE DONT WANT BOID COMPUTE OBJECTS TO RUN IT EITHER WAY */
 	// Persistent buffer creation

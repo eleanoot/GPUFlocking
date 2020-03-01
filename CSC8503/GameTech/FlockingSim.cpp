@@ -18,6 +18,8 @@ FlockingSim::FlockingSim()
 	useGravity = false;
 	inSelectionMode = false;
 
+	useGPU = true;
+
 	Debug::SetRenderer(renderer);
 
 	InitialiseAssets();
@@ -107,12 +109,25 @@ void FlockingSim::InitWorld() {
 	AddFloorToWorld(Vector3(0, -8, 0));
 	flock = new FlockSystem();
 
-	for (int i = 0; i < 100; i++)
+	if (!useGPU)
 	{
-		CPUBoid* boid = new CPUBoid(rand() % 200, rand() % 200, gooseMesh, basicShader);
-		flock->AddBoid(boid);
-		world->AddGameObject(boid);
+		for (int i = 0; i < 100; i++)
+		{
+			CPUBoid* boid = new CPUBoid(rand() % 200, rand() % 200, gooseMesh, basicShader);
+			flock->AddBoid(boid);
+			world->AddGameObject(boid);
+		}
 	}
+	else
+	{
+		for (int i = 0; i < 100; i++)
+		{
+			GPUBoid* boid = new GPUBoid(rand() % 200, rand() % 200, gooseMesh, basicShader);
+			flock->AddBoid(boid);
+			world->AddGameObject(boid);
+		}
+	}
+	
 }
 
 GameObject* FlockingSim::AddFloorToWorld(const Vector3& position) {
