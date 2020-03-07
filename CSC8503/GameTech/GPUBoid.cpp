@@ -27,7 +27,7 @@ GPUBoid::GPUBoid(float x, float z, OGLMesh* mesh, OGLShader* shader) : ComputeGa
 	GetPhysicsObject()->InitSphereInertia();
 
 	// Persistent buffers creation
-	flockShader = new OGLComputeShader("FlockingCompute.glsl");
+	//flockShader = new OGLComputeShader("FlockingCompute.glsl");
 	flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
 
 	glGenBuffers(2, flockSSBO);

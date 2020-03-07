@@ -37,6 +37,8 @@ namespace NCL {
 			OGLTexture* basicTex = nullptr;
 			OGLShader* basicShader = nullptr;
 
+			OGLComputeShader* flockShader = nullptr;
+
 			FlockSystem* flock;
 			bool useGPU = false;
 		};
