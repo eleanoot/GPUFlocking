@@ -30,6 +30,8 @@ void FlockSystem::InitGPU()
 	std::cout << fm->position << "," << fm->velocity << std::endl;*/
 
 	//glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+	std::cout << "Start: " << gpuData[0].position << "," << gpuData[0].velocity << std::endl;
 }
 
 void FlockSystem::AddBoid(GPUBoid* b)
@@ -51,10 +53,18 @@ void FlockSystem::UpdateFlock(float dt)
 
 void FlockSystem::UpdateGPUFlock(float dt)
 {
+
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, flockSSBO);
 
 	flockShader->Bind();
-	flockShader->Execute(128, 1, 1);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepDis"), 60);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignDis"), 70);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohDis"), 25);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepWeight"), 2.5);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignWeight"), 1);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohWeight"), 1);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 3.5);
+	flockShader->Execute(gpuData.size(), 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glFinish();
 	flockShader->Unbind();
@@ -65,11 +75,12 @@ void FlockSystem::UpdateGPUFlock(float dt)
 	for (int i = 0; i < gpuBoids.size(); i++)
 	{
 		gpuData[i] = fm[i];
+		///gpuBoids[i]->GetTransform().SetWorldPosition(gpuData[i].position);
 	}
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
-	std::cout << gpuData[0].position << "," << gpuData[0].velocity << std::endl;
+	std::cout << gpuData[0].position /*<< "," << gpuData[0].velocity */<< std::endl;
 }
 
 
