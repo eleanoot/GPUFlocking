@@ -28,17 +28,17 @@ GPUBoid::GPUBoid(float x, float z, OGLMesh* mesh, OGLShader* shader) : ComputeGa
 
 	// Persistent buffers creation
 	//flockShader = new OGLComputeShader("FlockingCompute.glsl");
-	flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
+	//flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
 
-	glGenBuffers(2, flockSSBO);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[0]);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member), NULL, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	//glGenBuffers(2, flockSSBO);
+	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[0]);
+	//glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member), NULL, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
-	//flockPtrFirst = (flock_member)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member), flags);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[1]);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member), NULL, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	////flockPtrFirst = (flock_member)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member), flags);
+	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[1]);
+	//glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member), NULL, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
-	bufferIndex = 0;
+	//bufferIndex = 0;
 
 }
 
@@ -49,7 +49,7 @@ void GPUBoid::OnSetup()
 
 void GPUBoid::OnDraw()
 {
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, flockSSBO[bufferIndex]);
+	/*glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, flockSSBO[bufferIndex]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, flockSSBO[bufferIndex ^ 1]);
 
 	flockShader->Bind();
@@ -58,5 +58,5 @@ void GPUBoid::OnDraw()
 	glFinish();
 	flockShader->Unbind();
 
-	bufferIndex ^= 1;
+	bufferIndex ^= 1;*/
 }

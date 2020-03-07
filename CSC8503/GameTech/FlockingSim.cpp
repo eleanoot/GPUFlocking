@@ -50,7 +50,7 @@ void FlockingSim::InitialiseAssets() {
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
-	flockShader = new OGLComputeShader("GPUBoid.glsl");
+	//flockShader = new OGLComputeShader("GPUBoid.glsl");
 
 	InitCamera();
 	InitWorld();
@@ -127,6 +127,8 @@ void FlockingSim::InitWorld() {
 			flock->AddBoid(boid);
 			world->AddGameObject(boid);
 		}
+
+		flock->InitGPU();
 	}
 	
 }
