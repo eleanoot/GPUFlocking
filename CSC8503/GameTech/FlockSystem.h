@@ -16,6 +16,7 @@ namespace NCL {
 			~FlockSystem();
 
 			void UpdateFlock(float dt);
+			void UpdateGPUFlock(float dt);
 
 			int GetSize() { return allBoids.size(); };
 			CPUBoid* GetBoid(int i) {

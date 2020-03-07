@@ -186,6 +186,7 @@ void main()
 
 	vec3 newPos = Update(thisMember.pos, thisMember.vel);
 
-	flock[gid].pos = newPos;
+	//flock[gid].pos = newPos;
+	flock[gid].pos = thisMember.pos += 10;
 
 }

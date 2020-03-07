@@ -62,14 +62,22 @@ void FlockingSim::UpdateGame(float dt)
 
 	UpdateKeys();
 
-	flock->UpdateFlock(dt);
-
-	for (int i = 0; i < flock->GetSize(); i++)
+	if (!useGPU)
 	{
-		flock->GetBoid(i)->GetTransform().SetWorldPosition(flock->GetBoid(i)->GetPos());
-		float theta = flock->GetBoid(i)->Angle(flock->GetBoid(i)->GetVel());
-		flock->GetBoid(i)->GetRenderObject()->GetTransform()->SetLocalOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0, 1, 0), theta));
+		flock->UpdateFlock(dt);
+
+		for (int i = 0; i < flock->GetSize(); i++)
+		{
+			flock->GetBoid(i)->GetTransform().SetWorldPosition(flock->GetBoid(i)->GetPos());
+			float theta = flock->GetBoid(i)->Angle(flock->GetBoid(i)->GetVel());
+			flock->GetBoid(i)->GetRenderObject()->GetTransform()->SetLocalOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0, 1, 0), theta));
+		}
 	}
+	else
+	{
+		flock->UpdateGPUFlock(dt);
+	}
+	
 
 	world->UpdateWorld(dt);
 	renderer->Update(dt);
