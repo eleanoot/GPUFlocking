@@ -31,8 +31,11 @@ namespace NCL {
 
 			struct flock_member {
 				Vector3 position;
+				float s1;
 				Vector3 velocity;
+				float s2;
 				Vector3 accel;
+				float s3;
 			};
 
 		protected:
