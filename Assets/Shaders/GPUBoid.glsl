@@ -9,11 +9,13 @@ uniform float alignWeight;
 uniform float cohWeight;
 
 uniform float maxSpeed;
+uniform float maxForce;
 
 struct flock_member
 {
 	vec3 pos;
 	vec3 vel;
+	vec3 accel;
 };
 
 layout(std140, binding = 0) buffer Flock
@@ -21,7 +23,7 @@ layout(std140, binding = 0) buffer Flock
 	flock_member flock[];
 };
 
-layout( local_size_x = 100, local_size_y = 1, local_size_z = 1 ) in;
+layout( local_size_x = 256, local_size_y = 1, local_size_z = 1 ) in;
 
 vec3 Limit(vec3 v, float m)
 {
@@ -40,13 +42,16 @@ vec3 Seek(vec3 pos, vec3 vel, vec3 target)
 {
 	vec3 desired = target;
 	desired -= pos; 
-	desired = normalize(desired); // this is dividing by zero
+	desired = normalize(desired); 
 	desired *= maxSpeed;
-	
-	vec3 steer = desired;
-	desired -= vel;
-	desired = Limit(steer, maxSpeed);
-	return steer;
+	uint gid = gl_GlobalInvocationID.x;
+	flock[gid].accel = desired - vel;
+	Limit(flock[gid].accel, maxForce);
+	return flock[gid].accel;
+	//vec3 steer = desired;
+	//desired -= vel;
+	//desired = Limit(steer, maxSpeed);
+	//return steer;
 }
 
 vec3 Separation(vec3 pos, vec3 vel)
@@ -59,14 +64,14 @@ vec3 Separation(vec3 pos, vec3 vel)
 	for (uint i = 0; i < gl_NumWorkGroups.x; i++)
 	{
 		vec3 otherPos = flock[i * gl_WorkGroupSize.x + localID].pos;
-		float d = abs(distance(pos, otherPos));
+		float d = distance(pos, otherPos);
 		
 		if(d < sepDis && d > 0.0)
 		{
-			vec3 diff = pos;
-			diff -= otherPos;
+			vec3 diff = vec3(0,0,0);
+			diff = pos - otherPos;
 			diff = normalize(diff);
-			diff *= d;
+			diff /= d;
 			steering += diff;
 			count += 1.0;
 		}
@@ -83,9 +88,8 @@ vec3 Separation(vec3 pos, vec3 vel)
 		steering = normalize(steering);
 		steering *= maxSpeed;
 		steering -= vel;
-		steering = Limit(steering, 1.0);
+		steering = Limit(steering, maxForce);
 	}
-
 	return steering;
 }
 
@@ -115,7 +119,7 @@ vec3 Alignment(vec3 pos, vec3 vel)
 		sum *= maxSpeed;
 
 		vec3 steering = sum - vel;
-		steering = Limit(steering, maxSpeed);
+		steering = Limit(steering, maxForce);
 		return steering;
 	}
 	else
@@ -135,7 +139,7 @@ vec3 Cohesion(vec3 pos, vec3 vel)
 		vec3 otherPos = flock[i * gl_WorkGroupSize.x + localID].pos;
 		float d = abs(distance(pos, otherPos));
 
-		if (d < cohDis)
+		if (d < cohDis && d > 0.0)
 		{
 			steering += otherPos;
 			count += 1.0;
@@ -153,15 +157,14 @@ vec3 Cohesion(vec3 pos, vec3 vel)
 	}
 }
 
-vec3 ApplyForce(vec3 vel, vec3 force)
+vec3 ApplyForce(vec3 accel, vec3 force)
 {
-	return vel + force;
+	return accel + force;
 }
 
-vec3 Update(vec3 pos, vec3 vel)
+vec3 Update(vec3 pos, vec3 vel, vec3 accel)
 {
 	vec3 sep = Separation(pos, vel);
-	return sep;
 	vec3 align = Alignment(pos, vel);
 	vec3 cohesion = Cohesion(pos, vel);
 
@@ -169,12 +172,17 @@ vec3 Update(vec3 pos, vec3 vel)
 	align *= alignWeight;
 	cohesion *= cohWeight;
 
-	vel = ApplyForce(vel, sep);
-	vel = ApplyForce(vel, align);
-	vel = ApplyForce(vel, cohesion);
+	accel = ApplyForce(accel, sep);
+	accel = ApplyForce(accel, align);
+	accel = ApplyForce(accel, cohesion);
 
-	vel = Limit(vel, maxSpeed);
+	accel *= 0.4;
+	vel += accel;
+	Limit(vel, maxSpeed);
 	pos += vel;
+
+	/*vel = Limit(vel, maxSpeed);
+	pos += vel;*/
 
 	return pos;
 }
@@ -186,7 +194,8 @@ void main()
 	uint lid = gl_LocalInvocationID.x;
 	flock_member thisMember = flock[gid];
 
-	vec3 newPos = Update(thisMember.pos, thisMember.vel);
+	vec3 newPos = Update(thisMember.pos, thisMember.vel, thisMember.accel);
+	flock[gid].accel = vec3(0,0,0);
 
 	flock[gid].pos = newPos;
 

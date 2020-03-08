@@ -7,9 +7,9 @@ using namespace NCL::CSC8503;
 GPUBoid::GPUBoid(float x, float z, OGLMesh* mesh, OGLShader* shader) : ComputeGameObject("GPU BOID", false)
 {
 	// Goose Mesh Creation
-	flock_member fm;
+	/*flock_member fm;
 	fm.position = Vector3(x, 0, z);
-	fm.velocity = Vector3(rand() % 3, 0, rand() % 3);
+	fm.velocity = Vector3(rand() % 3, 0, rand() % 3);*/
 
 	SphereVolume* volume = new SphereVolume(1.0f);
 	SetBoundingVolume((CollisionVolume*)volume);
@@ -25,7 +25,7 @@ GPUBoid::GPUBoid(float x, float z, OGLMesh* mesh, OGLShader* shader) : ComputeGa
 
 	GetPhysicsObject()->SetInverseMass(1);
 	GetPhysicsObject()->InitSphereInertia();
-	GetPhysicsObject()->SetLinearVelocity(fm.velocity);
+	GetPhysicsObject()->SetLinearVelocity(Vector3(rand() % 3, 0, rand() % 3));
 
 	// Persistent buffers creation
 	//flockShader = new OGLComputeShader("FlockingCompute.glsl");

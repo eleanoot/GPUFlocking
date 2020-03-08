@@ -40,6 +40,7 @@ void FlockSystem::AddBoid(GPUBoid* b)
 	flock_member fm;
 	fm.position = b->GetTransform().GetWorldPosition();
 	fm.velocity = b->GetPhysicsObject()->GetLinearVelocity();
+	fm.accel = Vector3(0, 0, 0);
 	gpuData.push_back(fm);
 }
 
@@ -64,7 +65,8 @@ void FlockSystem::UpdateGPUFlock(float dt)
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignWeight"), 1);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohWeight"), 1);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 3.5);
-	flockShader->Execute(gpuData.size(), 1, 1);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 0.5);
+	flockShader->Execute(256, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glFinish();
 	flockShader->Unbind();
@@ -75,7 +77,7 @@ void FlockSystem::UpdateGPUFlock(float dt)
 	for (int i = 0; i < gpuBoids.size(); i++)
 	{
 		gpuData[i] = fm[i];
-		///gpuBoids[i]->GetTransform().SetWorldPosition(gpuData[i].position);
+		gpuBoids[i]->GetTransform().SetWorldPosition(gpuData[i].position);
 	}
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);

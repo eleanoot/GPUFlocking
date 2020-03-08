@@ -8,6 +8,7 @@ CPUBoid::CPUBoid(float x, float z, OGLMesh* mesh, OGLShader* shader) : GameObjec
 	accel = Vector3(0, 0, 0);
 	vel = Vector3(rand() % 3, 0, rand() % 3);
 	pos = Vector3(x, 0, z);
+	std::cout << pos << std::endl;
 	maxSpeed = 3.5;
 	maxForce = 0.5;
 

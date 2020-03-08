@@ -17,10 +17,10 @@ namespace NCL {
 			virtual void OnSetup();
 			virtual void OnDraw();
 
-			struct flock_member {
+		/*	struct flock_member {
 				Vector3 position;
 				Vector3 velocity;
-			};
+			};*/
 
 		protected:
 			OGLComputeShader* flockShader;
@@ -28,8 +28,8 @@ namespace NCL {
 			GLuint flockSSBO[2]; // will be used as the persistent buffer in this case
 								// double buffering
 
-			flock_member* flockPtrFirst;
-			flock_member* flockPtrSecond;
+			/*flock_member* flockPtrFirst;
+			flock_member* flockPtrSecond;*/
 
 			GLuint bufferIndex = 0;
 			GLuint flags;

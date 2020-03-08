@@ -6,28 +6,24 @@ uniform float align_weight = 1.0;
 uniform float coh_weight = 1.0;
 uniform vec3 goal = vec3(0.0);
 
-layout(std430, binding = 0) buffer ColourBuffer
-{
-	vec4[] colourData;
-} colourBuffer;
-
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 
 struct flock_member
 {
 	vec3 position;
 	vec3 velocity;
+	vec3 accel;
 };
 
-layout (std430, binding = 0) buffer members_in
+layout(std430, binding = 0) buffer members_in
 {
 	flock_member member[];
-] input_data;
+} input_data;
 
-layout (std430, binding = 1) buffer members_out
-{
-	flock_member member[];
-} output_data;
+//layout (std430, binding = 1) buffer members_out
+//{
+//	flock_member member[];
+//} output_data;
 
 shared flock_member shared_member[gl_WorkGroupSize.x];
 
