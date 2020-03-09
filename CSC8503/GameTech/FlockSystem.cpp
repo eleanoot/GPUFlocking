@@ -53,7 +53,7 @@ void FlockSystem::AddBoid(GPUBoid* b)
 	gpuBoids.push_back(b);
 	flock_member fm;
 	fm.position = b->GetTransform().GetWorldPosition();
-	fm.velocity = b->GetPhysicsObject()->GetLinearVelocity();
+	fm.velocity = b->GetPhysicsObject()->GetLinearVelocity(); 
 	fm.accel = Vector3(0, 0, 0);
 	gpuData.push_back(fm);
 }
@@ -75,11 +75,12 @@ void FlockSystem::UpdateGPUFlock(float dt)
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepDis"), 60);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignDis"), 70);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohDis"), 25);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepWeight"), 2.5);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignWeight"), 1);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohWeight"), 1);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 3.5);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 0.5);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepWeight"), 300);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignWeight"), 200);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohWeight"), 20);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 30.5);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 5);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "dt"), dt);
 	flockShader->Execute(256, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glFinish();
@@ -90,9 +91,9 @@ void FlockSystem::UpdateGPUFlock(float dt)
 	for (int i = 0; i < gpuBoids.size(); i++)
 	{
 		if (bufferIndex == 0)
-			gpuBoids[i]->GetTransform().SetWorldPosition(fmPtrOne[i].position);
-		else
 			gpuBoids[i]->GetTransform().SetWorldPosition(fmPtrTwo[i].position);
+		else
+			gpuBoids[i]->GetTransform().SetWorldPosition(fmPtrOne[i].position);
 	}
 
 	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, flockSSBO);

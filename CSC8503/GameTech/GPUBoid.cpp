@@ -25,7 +25,7 @@ GPUBoid::GPUBoid(float x, float z, OGLMesh* mesh, OGLShader* shader) : ComputeGa
 
 	GetPhysicsObject()->SetInverseMass(1);
 	GetPhysicsObject()->InitSphereInertia();
-	GetPhysicsObject()->SetLinearVelocity(Vector3(rand() % 3, 0, rand() % 3));
+	GetPhysicsObject()->SetLinearVelocity(Vector3(rand() % 3 + 0.01 * 10, 0, rand() % 3 + 0.01 * 10));
 
 	// Persistent buffers creation
 	//flockShader = new OGLComputeShader("FlockingCompute.glsl");

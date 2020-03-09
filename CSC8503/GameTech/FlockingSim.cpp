@@ -129,7 +129,7 @@ void FlockingSim::InitWorld() {
 	}
 	else
 	{
-		for (int i = 0; i < 300; i++)
+		for (int i = 0; i < 256; i++)
 		{
 			GPUBoid* boid = new GPUBoid(rand() % 200, rand() % 200, gooseMesh, basicShader);
 			flock->AddBoid(boid);
