@@ -87,7 +87,13 @@ void FlockSystem::UpdateGPUFlock(float dt)
 
 	bufferIndex ^= 1;
 
-
+	for (int i = 0; i < gpuBoids.size(); i++)
+	{
+		if (bufferIndex == 0)
+			gpuBoids[i]->GetTransform().SetWorldPosition(fmPtrOne[i].position);
+		else
+			gpuBoids[i]->GetTransform().SetWorldPosition(fmPtrTwo[i].position);
+	}
 
 	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, flockSSBO);
 
