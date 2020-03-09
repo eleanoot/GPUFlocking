@@ -41,12 +41,15 @@ namespace NCL {
 		protected:
 			std::vector<CPUBoid*> allBoids; // cpu flock
 			std::vector<GPUBoid*> gpuBoids; // gpu flock
-			std::vector<flock_member> gpuData;
+			std::vector<flock_member> gpuData; 
 
 			OGLComputeShader* flockShader = nullptr;
-			GLuint flockSSBO;
+			//GLuint flockSSBO;
+			GLuint flockSSBO[2];
 			GLuint flags;
-			
+			flock_member* fmPtrOne;
+			flock_member* fmPtrTwo;
+			GLuint bufferIndex;
 		};
 	}
 }

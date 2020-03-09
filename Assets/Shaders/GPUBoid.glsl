@@ -21,9 +21,14 @@ struct flock_member
 	float scrap3;
 };
 
-layout(std140, binding = 0) buffer Flock
+layout(std140, binding = 0) buffer Flock_In
 {
-	flock_member flock[];
+	flock_member input_flock[];
+};
+
+layout(std140, binding = 1) buffer Flock_Out
+{
+	flock_member output_flock[];
 };
 
 layout( local_size_x = 256, local_size_y = 1, local_size_z = 1 ) in;
@@ -48,9 +53,9 @@ vec3 Seek(vec3 pos, vec3 vel, vec3 target)
 	desired = normalize(desired); 
 	desired *= maxSpeed;
 	uint gid = gl_GlobalInvocationID.x;
-	flock[gid].accel = desired - vel;
-	Limit(flock[gid].accel, maxForce);
-	return flock[gid].accel;
+	input_flock[gid].accel = desired - vel;
+	Limit(input_flock[gid].accel, maxForce);
+	return input_flock[gid].accel;
 	//vec3 steer = desired;
 	//desired -= vel;
 	//desired = Limit(steer, maxSpeed);
@@ -66,7 +71,7 @@ vec3 Separation(vec3 pos, vec3 vel)
 
 	for (uint i = 0; i < gl_NumWorkGroups.x; i++)
 	{
-		vec3 otherPos = flock[i * gl_WorkGroupSize.x + localID].pos;
+		vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + localID].pos;
 		float d = distance(pos, otherPos);
 		
 		if(d < sepDis && d > 0.0)
@@ -105,12 +110,12 @@ vec3 Alignment(vec3 pos, vec3 vel)
 
 	for (uint i = 0; i < gl_NumWorkGroups.x; i++)
 	{
-		vec3 otherPos = flock[i * gl_WorkGroupSize.x + localID].pos;
+		vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + localID].pos;
 		float d = abs(distance(pos, otherPos));
 
 		if (d < alignDis && d > 0.0)
 		{
-			sum += flock[i * gl_WorkGroupSize.x + localID].vel;
+			sum += input_flock[i * gl_WorkGroupSize.x + localID].vel;
 			count += 1.0;
 		}
 	}
@@ -139,7 +144,7 @@ vec3 Cohesion(vec3 pos, vec3 vel)
 	float count = 0.0;
 	for (uint i = 0; i < gl_NumWorkGroups.x; i++)
 	{
-		vec3 otherPos = flock[i * gl_WorkGroupSize.x + localID].pos;
+		vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + localID].pos;
 		float d = abs(distance(pos, otherPos));
 
 		if (d < cohDis && d > 0.0)
@@ -195,11 +200,12 @@ void main()
 {
 	uint gid = gl_GlobalInvocationID.x;
 	uint lid = gl_LocalInvocationID.x;
-	flock_member thisMember = flock[gid];
+	flock_member thisMember = input_flock[gid];
 
 	vec3 newPos = Update(thisMember.pos, thisMember.vel, thisMember.accel);
-	flock[gid].accel = vec3(0,0,0);
+	input_flock[gid].accel = vec3(0,0,0);
+	output_flock[gid].accel = vec3(0,0,0);
 
-	flock[gid].pos = newPos;
+	output_flock[gid].pos = newPos;
 
 }
