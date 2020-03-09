@@ -26,7 +26,7 @@ layout(std140, binding = 0) buffer Flock
 	flock_member flock[];
 };
 
-layout( local_size_x = 10, local_size_y = 1, local_size_z = 1 ) in;
+layout( local_size_x = 256, local_size_y = 1, local_size_z = 1 ) in;
 
 vec3 Limit(vec3 v, float m)
 {
