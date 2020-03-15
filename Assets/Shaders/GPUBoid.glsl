@@ -16,7 +16,7 @@ uniform float dt;
 struct flock_member
 {
 	vec3 pos;
-	float scrap1;
+	float angle;
 	vec3 vel;
 	float scrap2;
 	vec3 accel;
@@ -58,10 +58,6 @@ vec3 Seek(vec3 pos, vec3 vel, vec3 target)
 	output_flock[gid].accel = desired - vel;
 	Limit(output_flock[gid].accel, maxForce);
 	return output_flock[gid].accel;
-	//vec3 steer = desired;
-	//desired -= vel;
-	//desired = Limit(steer, maxSpeed);
-	//return steer;
 }
 
 vec3 Separation(vec3 pos, vec3 vel)
@@ -75,7 +71,6 @@ vec3 Separation(vec3 pos, vec3 vel)
 	{
 		if (i == gl_GlobalInvocationID.x)
 			continue;
-		//vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + localID].pos;
 		vec3 otherPos = input_flock[i].pos;
 		float d = abs(distance(pos, otherPos));
 		
@@ -104,7 +99,6 @@ vec3 Separation(vec3 pos, vec3 vel)
 		steering = Limit(steering, maxForce);
 	}
 
-	//steering.y = count;
 	return steering;
 }
 
@@ -138,7 +132,6 @@ vec3 Alignment(vec3 pos, vec3 vel)
 		vec3 steering = sum - vel;
 		steering = Limit(steering, maxForce);
 
-		//steering = vec3(0, count, 0);
 		return steering;
 	}
 	else
@@ -183,6 +176,11 @@ vec3 ApplyForce(vec3 accel, vec3 force)
 	return accel + force;
 } 
 
+float Angle(vec3 vel)
+{
+	return atan(vel.x, vel.z) * 180 / 3.14;
+}
+
 vec3 Update(vec3 pos, vec3 vel, vec3 accel)
 {
 	vec3 sep = Separation(pos, vel);
@@ -200,22 +198,6 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel)
 	accel *= 0.4;
 	vel += accel * dt;
 	Limit(vel, maxSpeed);
-	//pos += vel * dt;
-
-	////pos.y = align.y;
-
-	///*vel = Limit(vel, maxSpeed);
-	//pos += vel;*/
-
-	//if (pos.x < -1010)
-	//	pos.x += 2000;
-	//if (pos.z < -1010)
-	//	pos.z += 2000;
-
-	//if (pos.x > 1010)
-	//	pos.x -= 2000;
-	//if (pos.z > 1010)
-	//	pos.z -= 2000;
 
 	return vel;
 }
@@ -227,7 +209,6 @@ void main()
 	uint lid = gl_LocalInvocationID.x;
 	flock_member thisMember = input_flock[gid];
 
-	//vec3 newPos = Update(thisMember.pos, thisMember.vel, thisMember.accel);
 	vec3 newVel = Update(thisMember.pos, thisMember.vel, thisMember.accel);
 	input_flock[gid].accel = vec3(0,0,0);
 	output_flock[gid].accel = vec3(0,0,0);
@@ -247,8 +228,6 @@ void main()
 
 	output_flock[gid].vel = newVel * 0.999;
 	output_flock[gid].pos = pos;
-	/*output_flock[gid].accel = input_flock[gid].accel + vec3(0.00002, 0, 0);
-	output_flock[gid].vel = input_flock[gid].vel + output_flock[gid].accel;
-	output_flock[gid].pos = input_flock[gid].pos + output_flock[gid].vel;*/
 
+	//output_flock[gid].angle = Angle(newVel);
 }
