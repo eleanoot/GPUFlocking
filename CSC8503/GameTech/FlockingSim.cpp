@@ -8,6 +8,7 @@
 using namespace NCL;
 using namespace CSC8503;
 
+
 FlockingSim::FlockingSim()
 {
 	world = new GameWorld();
@@ -51,6 +52,7 @@ void FlockingSim::InitialiseAssets() {
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
 	//flockShader = new OGLComputeShader("GPUBoid.glsl");
+
 
 	InitCamera();
 	InitWorld();

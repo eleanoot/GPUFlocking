@@ -3,6 +3,8 @@
 using namespace NCL;
 using namespace NCL::CSC8503;
 
+#define FLOCK_SIZE 256
+
 FlockSystem::FlockSystem()
 {
 	
@@ -23,12 +25,12 @@ void FlockSystem::InitGPU()
 
 	glGenBuffers(2, flockSSBO);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[0]);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * gpuBoids.size(), &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-	fmPtrOne = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * gpuData.size(), flags);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * FLOCK_SIZE, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	fmPtrOne = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[1]);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * gpuBoids.size(), &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-	fmPtrTwo = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * gpuData.size(), flags);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * FLOCK_SIZE, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	fmPtrTwo = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
 
 	bufferIndex = 0;
 }
@@ -99,6 +101,46 @@ void FlockSystem::UpdateGPUFlock(float dt)
 	}
 
 	
+}
+
+void FlockSystem::InitInstanceFlock(OGLMesh* m)
+{
+	boidMesh = m;
+	flock_member fm;
+	// set up the flock member data
+	for (int i = 0; i < FLOCK_SIZE; i++)
+	{
+		fm.position = Vector3(rand() % 200, 0, rand() % 200);
+		fm.velocity = Vector3(rand() % 3 + 0.01 * 10, 0, rand() % 3 + 0.01 * 10);
+		fm.accel = Vector3(0, 0, 0);
+		gpuData[i] = fm;
+	}
+
+	InitGPU();
+}
+
+void FlockSystem::UpdateInstanceFlock(float dt)
+{
+	// Execute the compute shader to get the positions
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, flockSSBO[bufferIndex]);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, flockSSBO[bufferIndex ^ 1]);
+
+	flockShader->Bind();
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepDis"), 60);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignDis"), 70);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohDis"), 25);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepWeight"), 300);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignWeight"), 200);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohWeight"), 25);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 30.5);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 5);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "dt"), dt);
+	flockShader->Execute(256, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	glFinish();
+	flockShader->Unbind();
+
+	bufferIndex ^= 1;
 }
 
 

@@ -32,6 +32,8 @@ namespace NCL {
 			void RenderShadowMap();
 			void RenderCamera(); 
 
+			void RenderInstances();
+
 			void SetupDebugMatrix(OGLShader*s) override;
 
 			vector<const RenderObject*> activeObjects;

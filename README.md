@@ -8,7 +8,8 @@
 * Use a persistently mapped buffer to hold and update the changed position [Complete]
 * Double buffer to help synchronisation issues [Complete]
 * CPU Boids as a base reference for a behaviour [Complete]
-* Basic Flocking class derived as a compute object
+* Basic Flocking class derived as a compute object [Complete]
+* Instance the boids instead of using GameObjects
 
 ## References
 * [Introduction to Compute Shaders - Mike Bailey, Oregon State University](http://web.engr.oregonstate.edu/~mjb/cs575/Handouts/compute.shader.2pp.pdf)
@@ -19,3 +20,4 @@
 * [Boids Pseudocode by Conrad Parker](http://www.kfish.org/boids/pseudocode.html)
 * [C++ Boids](http://www.behaviorworks.com/people/ckline/cornellwww/boid/boids.html)
 * [AI for Game Developers](https://www.oreilly.com/library/view/ai-for-game/0596005555/ch04.html)
+* [Learn OpenGL: Instancing](https://learnopengl.com/Advanced-OpenGL/Instancing)

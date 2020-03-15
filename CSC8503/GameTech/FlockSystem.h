@@ -29,6 +29,9 @@ namespace NCL {
 
 			void InitGPU();
 
+			void InitInstanceFlock(OGLMesh* m);
+			void UpdateInstanceFlock(float dt);
+
 			struct flock_member {
 				Vector3 position;
 				float angle;
@@ -50,6 +53,8 @@ namespace NCL {
 			flock_member* fmPtrOne;
 			flock_member* fmPtrTwo;
 			GLuint bufferIndex;
+
+			OGLMesh* boidMesh;
 		};
 	}
 }

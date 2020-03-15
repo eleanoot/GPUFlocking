@@ -149,6 +149,7 @@
     <ClCompile Include="FlockSystem.cpp" />
     <ClCompile Include="GameTechRenderer.cpp" />
     <ClCompile Include="GPUBoid.cpp" />
+    <ClCompile Include="InstanceBoid.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NetworkedGame.cpp" />
     <ClCompile Include="NetworkPlayer.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="FlockSystem.h" />
     <ClInclude Include="GameTechRenderer.h" />
     <ClInclude Include="GPUBoid.h" />
+    <ClInclude Include="InstanceBoid.h" />
     <ClInclude Include="NetworkedGame.h" />
     <ClInclude Include="NetworkPlayer.h" />
     <ClInclude Include="TutorialGame.h" />
