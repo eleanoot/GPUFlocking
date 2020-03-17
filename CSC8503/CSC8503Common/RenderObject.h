@@ -48,12 +48,17 @@ namespace NCL {
 
 			virtual void SendUniforms() {};
 
+			void SetInstances(int i) { numInstances = i; }
+			int GetNoOfInstances() const { return numInstances; }
+
 		protected:
 			MeshGeometry*	mesh;
 			TextureBase*	texture;
 			ShaderBase*		shader;
 			Transform*		transform;
 			Vector4			colour;
+
+			int numInstances;
 		};
 	}
 }

@@ -231,7 +231,7 @@ void GameTechRenderer::RenderCamera() {
 		if (c > 3) c = 0;
 
 		BindMesh((*i).GetMesh());
-		DrawBoundMesh();
+		DrawBoundMesh(0, (*i).GetNoOfInstances());
 	}
 
 	c = 0;

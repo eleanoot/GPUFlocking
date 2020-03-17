@@ -1,13 +1,14 @@
 ﻿  CollisionDetection.cpp
-  Debug.cpp
+  GameObject.cpp
   GameServer.cpp
   GameWorld.cpp
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\CSC8503Common\GameWorld.cpp(43,7): warning C4834: discarding return value of function with 'nodiscard' attribute
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\CSC8503Common\GameWorld.cpp(130,7): warning C4834: discarding return value of function with 'nodiscard' attribute
+  NetworkObject.cpp
   PhysicsObject.cpp
   PhysicsSystem.cpp
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\CSC8503Common\PhysicsSystem.cpp(249,5): warning C4102: 'std': unreferenced label
   PositionConstraint.cpp
-  QuadTree.cpp
+  RenderObject.cpp
   Generating Code...
   CSC8503Common.vcxproj -> C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\Win32\Debug\CSC8503Common.lib
