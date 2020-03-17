@@ -100,7 +100,6 @@ void FlockSystem::UpdateGPUFlock(float dt)
 			
 	}
 
-	
 }
 
 void FlockSystem::InitInstanceFlock(OGLMesh* m)

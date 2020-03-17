@@ -3,7 +3,6 @@
 #include "../../Common/TextureBase.h"
 #include "../../Common/ShaderBase.h"
 #include "../../Common/Vector4.h"
-
 namespace NCL {
 	using namespace NCL::Rendering;
 
@@ -51,6 +50,9 @@ namespace NCL {
 			void SetInstances(int i) { numInstances = i; }
 			int GetNoOfInstances() const { return numInstances; }
 
+			void SetSSBO(int s) { ssbo = s; }
+			int GetSSBO() const { return ssbo; }
+
 		protected:
 			MeshGeometry*	mesh;
 			TextureBase*	texture;
@@ -59,6 +61,7 @@ namespace NCL {
 			Vector4			colour;
 
 			int numInstances;
+			int ssbo = 0;
 		};
 	}
 }

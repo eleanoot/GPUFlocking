@@ -1,5 +1,4 @@
-﻿  CollisionDetection.cpp
-  GameObject.cpp
+﻿  GameObject.cpp
   GameServer.cpp
   GameWorld.cpp
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\CSC8503Common\GameWorld.cpp(43,7): warning C4834: discarding return value of function with 'nodiscard' attribute
