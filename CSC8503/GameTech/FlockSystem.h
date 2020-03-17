@@ -55,6 +55,7 @@ namespace NCL {
 			GLuint bufferIndex;
 
 			OGLMesh* boidMesh;
+
 		};
 	}
 }

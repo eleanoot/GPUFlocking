@@ -20,6 +20,7 @@ FlockingSim::FlockingSim()
 	inSelectionMode = false;
 
 	useGPU = true;
+	useInstancing = true;
 
 	Debug::SetRenderer(renderer);
 
@@ -51,7 +52,7 @@ void FlockingSim::InitialiseAssets() {
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
-	basicShader = new OGLShader("InstanceVert.glsl", "GameTechFrag.glsl");
+	instanceShader = new OGLShader("InstanceVert.glsl", "GameTechFrag.glsl");
 
 
 	InitCamera();
@@ -77,7 +78,10 @@ void FlockingSim::UpdateGame(float dt)
 	}
 	else
 	{
-		flock->UpdateGPUFlock(dt);
+		if (useInstancing)
+			flock->UpdateInstanceFlock(dt);
+		else
+			flock->UpdateGPUFlock(dt);
 	}
 	
 
@@ -131,14 +135,23 @@ void FlockingSim::InitWorld() {
 	}
 	else
 	{
-		for (int i = 0; i < 256; i++)
+		if (!useInstancing)
 		{
-			GPUBoid* boid = new GPUBoid(rand() % 200, rand() % 200, gooseMesh, basicShader);
-			flock->AddBoid(boid);
-			world->AddGameObject(boid);
-		}
+			for (int i = 0; i < 256; i++)
+			{
+				GPUBoid* boid = new GPUBoid(rand() % 200, rand() % 200, gooseMesh, basicShader);
+				flock->AddBoid(boid);
+				world->AddGameObject(boid);
+			}
 
-		flock->InitGPU();
+			flock->InitGPU();
+		}
+		else
+		{
+			instanceGoose = AddGooseToWorld(Vector3(0, 0, 0));
+			flock->InitInstanceFlock(gooseMesh);
+		}
+		
 	}
 	
 }
@@ -161,4 +174,29 @@ GameObject* FlockingSim::AddFloorToWorld(const Vector3& position) {
 	world->AddGameObject(floor);
 
 	return floor;
+}
+
+GameObject* FlockingSim::AddGooseToWorld(const Vector3& position)
+{
+	float size = 1.0f;
+	float inverseMass = 1.0f;
+
+	GameObject* goose = new GameObject();
+
+
+	SphereVolume* volume = new SphereVolume(size);
+	goose->SetBoundingVolume((CollisionVolume*)volume);
+
+	goose->GetTransform().SetWorldScale(Vector3(size, size, size));
+	goose->GetTransform().SetWorldPosition(position);
+
+	goose->SetRenderObject(new RenderObject(&goose->GetTransform(), gooseMesh, nullptr, instanceShader));
+	goose->SetPhysicsObject(new PhysicsObject(&goose->GetTransform(), goose->GetBoundingVolume()));
+
+	goose->GetPhysicsObject()->SetInverseMass(inverseMass);
+	goose->GetPhysicsObject()->InitSphereInertia();
+
+	world->AddGameObject(goose);
+
+	return goose;
 }

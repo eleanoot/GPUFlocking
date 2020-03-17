@@ -21,6 +21,7 @@ namespace NCL {
 			void InitWorld();
 
 			GameObject* AddFloorToWorld(const Vector3& position);
+			GameObject* AddGooseToWorld(const Vector3& position);
 
 			GameTechRenderer* renderer;
 			PhysicsSystem* physics;
@@ -42,6 +43,9 @@ namespace NCL {
 
 			FlockSystem* flock;
 			bool useGPU = false;
+			bool useInstancing = false;
+
+			GameObject* instanceGoose;
 		};
 	}
 }
