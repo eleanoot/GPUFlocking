@@ -51,7 +51,7 @@ void FlockingSim::InitialiseAssets() {
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
-	//flockShader = new OGLComputeShader("GPUBoid.glsl");
+	basicShader = new OGLShader("InstanceVert.glsl", "GameTechFrag.glsl");
 
 
 	InitCamera();

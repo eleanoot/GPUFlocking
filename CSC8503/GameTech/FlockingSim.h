@@ -36,6 +36,7 @@ namespace NCL {
 			OGLMesh* gooseMesh = nullptr;
 			OGLTexture* basicTex = nullptr;
 			OGLShader* basicShader = nullptr;
+			OGLShader* instanceShader = nullptr;
 
 			//OGLComputeShader* flockShader = nullptr;
 

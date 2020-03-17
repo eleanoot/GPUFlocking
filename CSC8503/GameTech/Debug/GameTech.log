@@ -1,4 +1,17 @@
-﻿  FlockSystem.cpp
+﻿  CPUBoid.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp : message : see previous definition of '_WINSOCKAPI_'
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(9,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(9,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(25,65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(25,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(25,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(44,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(104,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(139,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(164,10): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\CPUBoid.cpp(198,14): warning C4305: 'argument': truncation from 'double' to 'float'
+  FlockSystem.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp : message : see previous definition of '_WINSOCKAPI_'
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(50,20): warning C4018: '<': signed/unsigned mismatch
@@ -7,4 +20,37 @@ C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(113,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(114,63): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(114,36): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  FlockingSim.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp : message : see previous definition of '_WINSOCKAPI_'
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(127,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(127,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(136,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(136,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  GPUBoid.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\GPUBoid.cpp : message : see previous definition of '_WINSOCKAPI_'
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\GPUBoid.cpp(24,65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\GPUBoid.cpp(24,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\GPUBoid.cpp(24,41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\GPUBoid.cpp(28,86): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\GPUBoid.cpp(28,59): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  GameTechRenderer.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\GameTechRenderer.cpp : message : see previous definition of '_WINSOCKAPI_'
+  Main.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\Main.cpp : message : see previous definition of '_WINSOCKAPI_'
+  NetworkPlayer.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\NetworkPlayer.cpp : message : see previous definition of '_WINSOCKAPI_'
+  NetworkedGame.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\NetworkedGame.cpp : message : see previous definition of '_WINSOCKAPI_'
+  TutorialGame.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\TutorialGame.cpp : message : see previous definition of '_WINSOCKAPI_'
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\TutorialGame.cpp(581,60): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\TutorialGame.cpp(617,60): warning C4305: 'argument': truncation from 'double' to 'float'
+  Generating Code...
   GameTech.vcxproj -> C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\Win32\Debug\GameTech2.exe
