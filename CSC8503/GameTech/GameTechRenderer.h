@@ -53,7 +53,7 @@ namespace NCL {
 			OGLComputeShader* colourShader = nullptr;
 			const int noOfColours = 4;
 			int c = 0;
-
+			int bufferIndex = 0;
 			
 		};
 	}

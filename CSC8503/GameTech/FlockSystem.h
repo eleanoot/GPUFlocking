@@ -29,7 +29,7 @@ namespace NCL {
 
 			void InitGPU();
 
-			void InitInstanceFlock(OGLMesh* m);
+			void InitInstanceFlock(OGLMesh* m, RenderObject* r);
 			void UpdateInstanceFlock(float dt);
 
 			struct flock_member {

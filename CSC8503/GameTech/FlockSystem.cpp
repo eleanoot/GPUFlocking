@@ -102,7 +102,7 @@ void FlockSystem::UpdateGPUFlock(float dt)
 
 }
 
-void FlockSystem::InitInstanceFlock(OGLMesh* m)
+void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
 {
 	boidMesh = m;
 	flock_member fm;
@@ -116,6 +116,7 @@ void FlockSystem::InitInstanceFlock(OGLMesh* m)
 	}
 
 	InitGPU();
+	r->SetSSBO(flockSSBO[0], flockSSBO[1]);
 }
 
 void FlockSystem::UpdateInstanceFlock(float dt)
@@ -140,6 +141,8 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 	flockShader->Unbind();
 
 	bufferIndex ^= 1;
+
+	std::cout << gpuData[15].position << std::endl;
 }
 
 

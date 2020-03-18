@@ -149,7 +149,7 @@ void FlockingSim::InitWorld() {
 		else
 		{
 			instanceGoose = AddGooseToWorld(Vector3(0, 0, 0));
-			flock->InitInstanceFlock(gooseMesh);
+			flock->InitInstanceFlock(gooseMesh, instanceGoose->GetRenderObject());
 		}
 		
 	}
@@ -178,10 +178,10 @@ GameObject* FlockingSim::AddFloorToWorld(const Vector3& position) {
 
 GameObject* FlockingSim::AddGooseToWorld(const Vector3& position)
 {
-	float size = 1.0f;
+	float size = 10.0f;
 	float inverseMass = 1.0f;
 
-	GameObject* goose = new GameObject();
+	GameObject* goose = new GameObject("Instance Goose", false);
 
 
 	SphereVolume* volume = new SphereVolume(size);
@@ -192,6 +192,7 @@ GameObject* FlockingSim::AddGooseToWorld(const Vector3& position)
 
 	goose->SetRenderObject(new RenderObject(&goose->GetTransform(), gooseMesh, nullptr, instanceShader));
 	goose->GetRenderObject()->SetInstances(256);
+	goose->GetRenderObject()->SetColour(Vector4(rand() % 2, rand() % 2, rand() % 2, 1));
 	goose->SetPhysicsObject(new PhysicsObject(&goose->GetTransform(), goose->GetBoundingVolume()));
 
 	goose->GetPhysicsObject()->SetInverseMass(inverseMass);

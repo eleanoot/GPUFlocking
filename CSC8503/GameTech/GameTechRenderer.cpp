@@ -182,8 +182,8 @@ void GameTechRenderer::RenderCamera() {
 
 		BindTextureToShader((OGLTexture*)(*i).GetDefaultTexture(), "mainTex", 0);
 
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, (GLuint)(*i).GetSSBO()); // it's set to 0 when he buffer indexes are actually totally different!! give the instance goose renderobj to the instance methods
-
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, (GLuint)(*i).GetSSBO(bufferIndex)); // it's set to 0 when he buffer indexes are actually totally different!! give the instance goose renderobj to the instance methods
+		// and remember to swap the buffer numbers too 
 		if (activeShader != shader) {
 			projLocation	= glGetUniformLocation(shader->GetProgramID(), "projMatrix");
 			viewLocation	= glGetUniformLocation(shader->GetProgramID(), "viewMatrix");
@@ -237,6 +237,7 @@ void GameTechRenderer::RenderCamera() {
 	}
 
 	c = 0;
+	bufferIndex ^= 1;
 }
 
 void GameTechRenderer::RenderInstances()

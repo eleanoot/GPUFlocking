@@ -50,8 +50,11 @@ namespace NCL {
 			void SetInstances(int i) { numInstances = i; }
 			int GetNoOfInstances() const { return numInstances; }
 
-			void SetSSBO(int s) { ssbo = s; }
-			int GetSSBO() const { return ssbo; }
+			void SetSSBO(int s, int s2) { ssbo[0] = s; ssbo[1] = s2; }
+			int GetSSBO(int bufferIndex) const { 
+				int s = ssbo[bufferIndex];
+				return ssbo[bufferIndex]; 
+			}
 
 		protected:
 			MeshGeometry*	mesh;
@@ -61,7 +64,7 @@ namespace NCL {
 			Vector4			colour;
 
 			int numInstances;
-			int ssbo = 0;
+			int ssbo[2];
 		};
 	}
 }
