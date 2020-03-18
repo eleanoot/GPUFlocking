@@ -127,9 +127,9 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 
 	flockShader->Bind();
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepDis"), 60);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignDis"), 70);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohDis"), 25);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepWeight"), 300);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignDis"), 30);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohDis"), 10);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepWeight"), 200);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignWeight"), 200);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohWeight"), 25);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 30.5);
@@ -142,7 +142,7 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 
 	bufferIndex ^= 1;
 
-	std::cout << gpuData[15].position << std::endl;
+	//std::cout << fmPtrOne[15].velocity << std::endl;
 }
 
 
