@@ -216,15 +216,15 @@ void main()
 	vec3 pos = thisMember.pos;
 	pos += newVel * dt;
 
-	if (pos.x < -1010)
-		pos.x += 2000;
-	if (pos.z < -1010)
-		pos.z += 2000;
+	if (pos.x < -101)
+		pos.x += 200;
+	if (pos.z < -101)
+		pos.z += 200;
 
-	if (pos.x > 1010)
-		pos.x -= 2000;
-	if (pos.z > 1010)
-		pos.z -= 2000;
+	if (pos.x > 101)
+		pos.x -= 200;
+	if (pos.z > 101)
+		pos.z -= 200;
 
 	output_flock[gid].vel = newVel * 0.999;
 	output_flock[gid].pos = pos;

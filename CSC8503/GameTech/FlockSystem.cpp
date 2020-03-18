@@ -94,6 +94,7 @@ void FlockSystem::UpdateGPUFlock(float dt)
 		else
 		{
 			gpuBoids[i]->GetTransform().SetWorldPosition(fmPtrOne[i].position);
+			gpuBoids[i]->GetTransform().SetLocalPosition(fmPtrOne[i].position);
 			float theta = Angle(fmPtrOne[i].velocity);
 			gpuBoids[i]->GetRenderObject()->GetTransform()->SetLocalOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0, 1, 0), theta));
 		}
@@ -110,12 +111,25 @@ void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
 	for (int i = 0; i < FLOCK_SIZE; i++)
 	{
 		fm.position = Vector3(rand() % 200, 0, rand() % 200);
-		fm.velocity = Vector3(rand() % 3 + 0.01 * 10, 0, rand() % 3 + 0.01 * 10);
+		fm.velocity = Vector3(rand() % 6 + (-3) + 0.01 * 10, 0, rand() % 6 + (-3) + 0.01 * 10);
 		fm.accel = Vector3(0, 0, 0);
 		gpuData.emplace_back(fm);
 	}
 
-	InitGPU();
+	flockShader = new OGLComputeShader("InstanceBoid.glsl");
+	flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
+
+	glGenBuffers(2, flockSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[0]);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * FLOCK_SIZE, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	fmPtrOne = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[1]);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * FLOCK_SIZE, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	fmPtrTwo = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
+
+	bufferIndex = 0;
+
 	r->SetSSBO(flockSSBO[0], flockSSBO[1]);
 }
 
