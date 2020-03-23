@@ -33,7 +33,7 @@ layout(std140, binding = 1) buffer Flock_Out
 	flock_member output_flock[];
 };
 
-layout( local_size_x = 512, local_size_y = 1, local_size_z = 1 ) in;
+layout( local_size_x = 256, local_size_y = 1, local_size_z = 1 ) in;
 
 vec3 Limit(vec3 v, float m)
 {
@@ -229,5 +229,5 @@ void main()
 	output_flock[gid].vel = newVel * 0.999;
 	output_flock[gid].pos = pos;
 
-	//output_flock[gid].angle = Angle(newVel);
+	output_flock[gid].angle = Angle(newVel);
 }
