@@ -107,14 +107,19 @@ void FlockingSim::UpdateKeys() {
 		physics->UseGravity(useGravity);
 	}
 	
+	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::C)) {
+		std::cout << "Pos: " << world->GetMainCamera()->GetPosition() << std::endl;
+		std::cout << "Pitch: " << world->GetMainCamera()->GetPitch() << std::endl;
+		std::cout << "Yaw: " << world->GetMainCamera()->GetYaw() << std::endl;
+	}
 }
 
 void FlockingSim::InitCamera() {
 	world->GetMainCamera()->SetNearPlane(0.5f);
 	world->GetMainCamera()->SetFarPlane(1500.0f);
-	world->GetMainCamera()->SetPitch(-15.0f);
+	world->GetMainCamera()->SetPitch(-30.0f);
 	world->GetMainCamera()->SetYaw(315.0f);
-	world->GetMainCamera()->SetPosition(Vector3(-60, 40, 60));
+	world->GetMainCamera()->SetPosition(Vector3(-300, 304, 331));
 }
 
 void FlockingSim::InitWorld() {

@@ -3,7 +3,7 @@
 using namespace NCL;
 using namespace NCL::CSC8503;
 
-#define FLOCK_SIZE 256
+#define FLOCK_SIZE 512
 
 FlockSystem::FlockSystem()
 {
@@ -129,7 +129,6 @@ void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
 	fmPtrTwo = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
 
 	bufferIndex = 0;
-
 	r->SetSSBO(flockSSBO[0], flockSSBO[1]);
 }
 
@@ -149,7 +148,7 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 30.5);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 5);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "dt"), dt);
-	flockShader->Execute(256, 1, 1);
+	flockShader->Execute(FLOCK_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glFinish();
 	flockShader->Unbind();
