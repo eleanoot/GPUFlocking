@@ -232,5 +232,5 @@ void main()
 	output_flock[gid].vel = newVel * 0.999;
 	output_flock[gid].pos = pos;
 
-	//output_flock[gid].angle = Angle(newVel);
+	output_flock[gid].angle = Angle(newVel);
 }

@@ -42,6 +42,7 @@ void FlockSystem::AddBoid(GPUBoid* b)
 	fm.position = b->GetTransform().GetWorldPosition();
 	fm.velocity = b->GetPhysicsObject()->GetLinearVelocity(); 
 	fm.accel = Vector3(0, 0, 0);
+	fm.angle = 0;
 	gpuData.push_back(fm);
 }
 
@@ -51,12 +52,6 @@ void FlockSystem::UpdateFlock(float dt)
 	{
 		allBoids[i]->Update(allBoids);
 	}
-}
-
-float Angle(Vector3 v)
-{
-	// Adjusting the pitch of the boid
-	return (float)(atan2(v.x, v.z) * 180 / 3.14);
 }
 
 
@@ -87,15 +82,14 @@ void FlockSystem::UpdateGPUFlock(float dt)
 		if (bufferIndex == 0)
 		{
 			gpuBoids[i]->GetTransform().SetWorldPosition(fmPtrTwo[i].position);
-			float theta = Angle(fmPtrTwo[i].velocity);
+			float theta = fmPtrTwo[i].angle;
 			gpuBoids[i]->GetRenderObject()->GetTransform()->SetLocalOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0,1,0), theta));
 		}
 			
 		else
 		{
 			gpuBoids[i]->GetTransform().SetWorldPosition(fmPtrOne[i].position);
-			gpuBoids[i]->GetTransform().SetLocalPosition(fmPtrOne[i].position);
-			float theta = Angle(fmPtrOne[i].velocity);
+			float theta = fmPtrOne[i].angle;
 			gpuBoids[i]->GetRenderObject()->GetTransform()->SetLocalOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0, 1, 0), theta));
 		}
 			

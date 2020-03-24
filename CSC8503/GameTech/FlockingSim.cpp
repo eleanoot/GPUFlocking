@@ -20,7 +20,7 @@ FlockingSim::FlockingSim()
 	inSelectionMode = false;
 
 	useGPU = true;
-	useInstancing = true;
+	useInstancing = false;
 
 	Debug::SetRenderer(renderer);
 
@@ -49,6 +49,7 @@ void FlockingSim::InitialiseAssets() {
 	loadFunc("cube.msh", &cubeMesh);
 	loadFunc("sphere.msh", &sphereMesh);
 	loadFunc("rotatedGoose.msh", &gooseMesh);
+	//loadFunc("goose.msh", &gooseMesh);
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
