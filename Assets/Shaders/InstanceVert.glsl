@@ -58,7 +58,7 @@ void main(void)
 	vec4 objCoord = angleMat * vec4(position, 1.0);
 
 	mat4 mvp 		  = (projMatrix * viewMatrix * modelMatrix);
-	gl_Position = mvp * (objCoord + vec4(position + offset, 1.0));
+	gl_Position = mvp * (objCoord + vec4(offset, 1.0));
 	mat3 normalMatrix = transpose ( inverse ( mat3 ( modelMatrix )));
 
 	OUT.shadowProj 	=  shadowMatrix * vec4 ( position,1);

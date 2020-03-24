@@ -75,7 +75,7 @@ void FlockSystem::UpdateGPUFlock(float dt)
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 30.5);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 5);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "dt"), dt);
-	flockShader->Execute(256, 1, 1);
+	flockShader->Execute(FLOCK_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glFinish();
 	flockShader->Unbind();

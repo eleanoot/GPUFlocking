@@ -48,7 +48,7 @@ void FlockingSim::InitialiseAssets() {
 
 	loadFunc("cube.msh", &cubeMesh);
 	loadFunc("sphere.msh", &sphereMesh);
-	loadFunc("goose.msh", &gooseMesh);
+	loadFunc("rotatedGoose.msh", &gooseMesh);
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
