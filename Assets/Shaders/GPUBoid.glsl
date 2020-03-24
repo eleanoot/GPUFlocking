@@ -179,7 +179,7 @@ vec3 ApplyForce(vec3 accel, vec3 force)
 float Angle(vec3 vel)
 {
 	vec3 tempVel = normalize(vel);
-	return atan(tempVel.x, -tempVel.z);
+	return atan(-tempVel.x, -tempVel.z) * 180 / 3.14;
 	//return atan(tempVel.z, tempVel.x);
 	//return atan(vel.x, vel.z) * 180 / 3.14;
 }
