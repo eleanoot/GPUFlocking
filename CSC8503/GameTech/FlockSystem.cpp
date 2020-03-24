@@ -156,6 +156,7 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 	bufferIndex ^= 1;
 
 	//std::cout << fmPtrOne[15].velocity << std::endl;
+
 }
 
 

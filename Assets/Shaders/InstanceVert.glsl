@@ -55,7 +55,10 @@ void main(void)
 	vec3 offset = input_flock[gl_InstanceID].pos;
 	mat4 angleMat = rotationMatrix(vec3(0, 1, 0), input_flock[gl_InstanceID].angle);
 
-	mat4 mvp 		  = (projMatrix * viewMatrix * modelMatrix * angleMat);
+	vec4 objCoord = angleMat * vec4(position, 1.0);
+
+	mat4 mvp 		  = (projMatrix * viewMatrix * modelMatrix);
+	gl_Position = mvp * (objCoord + vec4(position + offset, 1.0));
 	mat3 normalMatrix = transpose ( inverse ( mat3 ( modelMatrix )));
 
 	OUT.shadowProj 	=  shadowMatrix * vec4 ( position,1);
@@ -68,5 +71,5 @@ void main(void)
 	if(hasVertexColours) {
 		OUT.colour		= objectColour * colour;
 	}
-	gl_Position		= mvp * vec4(position + offset, 1.0);
+	
 }
