@@ -208,9 +208,8 @@ void CPUBoid::Update(std::vector<CPUBoid*> boids)
 float CPUBoid::Angle(Vector3 v)
 {
 	v.Normalise();
-	return (float)(atan2(v.x, -v.z));
 	// Adjusting the pitch of the boid
-	//return (float)(atan2(v.x, v.z) * 180 / 3.14);
+	return (float)(atan2(-v.x, -v.z) * 180 / 3.14);
 }
 
 // If the boids loop off the edge of the floor, wrap them around to the other side to not go off screen.
