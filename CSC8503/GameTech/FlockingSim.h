@@ -4,6 +4,8 @@
 #include "../CSC8503Common/ComputeGameObject.h"
 #include "FlockSystem.h"
 #include "CPUBoid.h"
+#include "../../Plugins/OpenGLRendering/OBJMesh.h"
+#include "../../Common/Assets.h"
 namespace NCL {
 	namespace CSC8503 {
 		class FlockingSim
@@ -19,9 +21,11 @@ namespace NCL {
 			void InitCamera();
 			void UpdateKeys();
 			void InitWorld();
+			void InitObstacles();
 
 			GameObject* AddFloorToWorld(const Vector3& position);
 			GameObject* AddGooseToWorld(const Vector3& position);
+			GameObject* AddCylinderToWorld(const Vector3& position);
 
 			GameTechRenderer* renderer;
 			PhysicsSystem* physics;
@@ -35,6 +39,7 @@ namespace NCL {
 			OGLMesh* cubeMesh = nullptr;
 			OGLMesh* sphereMesh = nullptr;
 			OGLMesh* gooseMesh = nullptr;
+			OBJMesh* cylMesh = nullptr;
 			OGLTexture* basicTex = nullptr;
 			OGLShader* basicShader = nullptr;
 			OGLShader* instanceShader = nullptr;

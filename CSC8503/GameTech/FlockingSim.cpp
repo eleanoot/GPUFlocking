@@ -19,7 +19,7 @@ FlockingSim::FlockingSim()
 	useGravity = false;
 	inSelectionMode = false;
 
-	useGPU = true;
+	useGPU = false;
 	useInstancing = false;
 
 	Debug::SetRenderer(renderer);
@@ -49,7 +49,8 @@ void FlockingSim::InitialiseAssets() {
 	loadFunc("cube.msh", &cubeMesh);
 	loadFunc("sphere.msh", &sphereMesh);
 	loadFunc("rotatedGoose.msh", &gooseMesh);
-	//loadFunc("goose.msh", &gooseMesh);
+
+	cylMesh = new OBJMesh(Assets::MESHDIR + "cylinder.obj");
 
 	basicTex = (OGLTexture*)TextureLoader::LoadAPITexture("checkerboard.png");
 	basicShader = new OGLShader("GameTechVert.glsl", "GameTechFrag.glsl");
@@ -138,6 +139,8 @@ void FlockingSim::InitWorld() {
 			flock->AddBoid(boid);
 			world->AddGameObject(boid);
 		}
+
+		InitObstacles();
 	}
 	else
 	{
@@ -160,6 +163,11 @@ void FlockingSim::InitWorld() {
 		
 	}
 	
+}
+
+void FlockingSim::InitObstacles()
+{
+	AddCylinderToWorld(Vector3(200, 0, 200));
 }
 
 GameObject* FlockingSim::AddFloorToWorld(const Vector3& position) {
@@ -207,4 +215,26 @@ GameObject* FlockingSim::AddGooseToWorld(const Vector3& position)
 	world->AddGameObject(goose);
 
 	return goose;
+}
+
+GameObject* FlockingSim::AddCylinderToWorld(const Vector3& position)
+{
+	GameObject* cyl = new GameObject();
+
+	AABBVolume* volume = new AABBVolume(Vector3(50, 100, 50));
+	cyl->SetBoundingVolume((CollisionVolume*)volume);
+
+	cyl->GetTransform().SetWorldScale(Vector3(50, 100, 50));
+	cyl->GetTransform().SetWorldPosition(position);
+
+	cyl->SetRenderObject(new RenderObject(&cyl->GetTransform(), cylMesh, nullptr, basicShader));
+
+	cyl->SetPhysicsObject(new PhysicsObject(&cyl->GetTransform(), cyl->GetBoundingVolume()));
+
+	cyl->GetPhysicsObject()->SetInverseMass(0);
+	cyl->GetPhysicsObject()->InitCubeInertia();
+
+	world->AddGameObject(cyl);
+
+	return cyl;
 }
