@@ -33,6 +33,11 @@ void FlockSystem::InitGPU()
 	fmPtrTwo = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
 
 	bufferIndex = 0;
+
+	glGenBuffers(1, &obstacleSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, obstacleSSBO);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(obstacle) * obstacleData.size(), &obstacleData[0], GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+
 }
 
 void FlockSystem::AddBoid(GPUBoid* b)
@@ -124,6 +129,11 @@ void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
 
 	bufferIndex = 0;
 	r->SetSSBO(flockSSBO[0], flockSSBO[1]);
+
+	glGenBuffers(1, &obstacleSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, obstacleSSBO);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(obstacle) * obstacleData.size(), &obstacleData[0], GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+
 }
 
 void FlockSystem::UpdateInstanceFlock(float dt)

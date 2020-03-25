@@ -27,7 +27,10 @@ namespace NCL {
 
 			void AddBoid(GPUBoid* b);
 
-			void AddObstacle(GameObject* o) { obstacles.push_back(o); }
+			void AddObstacle(GameObject* o) { 
+				obstacles.push_back(o); 
+				obstacleData.push_back(obstacle{ o->GetTransform().GetWorldPosition(), o->GetTransform().GetLocalScale().x });
+			}
 
 			void InitGPU();
 
@@ -43,13 +46,20 @@ namespace NCL {
 				float s3;
 			};
 
+			struct obstacle {
+				Vector3 centre;
+				float radius;
+			};
+
 		protected:
 			std::vector<CPUBoid*> allBoids; // cpu flock
 			std::vector<GPUBoid*> gpuBoids; // gpu flock
 			std::vector<flock_member> gpuData; 
+			std::vector<obstacle> obstacleData;
 
 			OGLComputeShader* flockShader = nullptr;
 			GLuint flockSSBO[2];
+			GLuint obstacleSSBO;
 			GLuint flags;
 			flock_member* fmPtrOne;
 			flock_member* fmPtrTwo;

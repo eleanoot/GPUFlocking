@@ -19,8 +19,8 @@ FlockingSim::FlockingSim()
 	useGravity = false;
 	inSelectionMode = false;
 
-	useGPU = false;
-	useInstancing = false;
+	useGPU = true;
+	useInstancing = true;
 
 	Debug::SetRenderer(renderer);
 
@@ -152,12 +152,15 @@ void FlockingSim::InitWorld() {
 				flock->AddBoid(boid);
 				world->AddGameObject(boid);
 			}
+			
+			InitObstacles();
 
 			flock->InitGPU();
 		}
 		else
 		{
 			instanceGoose = AddGooseToWorld(Vector3(0, 0, 0));
+			InitObstacles();
 			flock->InitInstanceFlock(gooseMesh, instanceGoose->GetRenderObject());
 		}
 		
