@@ -186,9 +186,10 @@ Vector3 CPUBoid::Avoidance(std::vector<GameObject*> obstacles)
 	// ahead = position + normalize(velocity) * MAX_SEE_AHEAD
 	// calculate the ahead vector
 	Vector3 tempVel = vel.Normalised();
-	Vector3 ahead = pos + tempVel * MAX_SEE_AHEAD;
+	float dynamicLength = vel.Length() / maxSpeed;
+	Vector3 ahead = pos + tempVel * MAX_SEE_AHEAD * dynamicLength;
 	// calculate the ahead2 vector 
-	Vector3 ahead2 = pos + tempVel * MAX_SEE_AHEAD * 0.5;
+	Vector3 ahead2 = pos + tempVel * MAX_SEE_AHEAD * 0.5 * dynamicLength;
 
 	// find the most threatening obstacle
 	GameObject* mostThreateningObstacle = nullptr;
@@ -234,7 +235,7 @@ void CPUBoid::Update(std::vector<CPUBoid*> boids, std::vector<GameObject*> obsta
 	sep *= 2.5;
 	align *= 1.0;
 	cohesion *= 1.0;
-	avoidance *= 1.0;
+	avoidance *= 2.5;
 
 	// Add the force vectors to acceleration 
 	ApplyForce(sep);
