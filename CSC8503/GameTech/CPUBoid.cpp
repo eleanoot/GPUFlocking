@@ -221,7 +221,10 @@ bool CPUBoid::LineCircleIntersect(Vector3 ahead, Vector3 ahead2, GameObject* obs
 {
 	Vector3 dis = obstacle->GetTransform().GetWorldPosition() - ahead;
 	Vector3 dis2 = obstacle->GetTransform().GetWorldPosition() - ahead2;
-	return dis.Length() <= obstacle->GetTransform().GetLocalScale().x || dis2.Length() <= obstacle->GetTransform().GetLocalScale().x;
+	Vector3 posDis = obstacle->GetTransform().GetWorldPosition() - pos;
+	return dis.Length() <= obstacle->GetTransform().GetLocalScale().x
+		|| dis2.Length() <= obstacle->GetTransform().GetLocalScale().x
+		|| posDis.Length() <= obstacle->GetTransform().GetLocalScale().x;
 }
 
 void CPUBoid::Update(std::vector<CPUBoid*> boids, std::vector<GameObject*> obstacles)
