@@ -141,6 +141,7 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 	// Execute the compute shader to get the positions
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, flockSSBO[bufferIndex]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, flockSSBO[bufferIndex ^ 1]);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, obstacleSSBO);
 
 	flockShader->Bind();
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepDis"), 60);
@@ -152,6 +153,7 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 30.5);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 5);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "dt"), dt);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSeeAhead"), 70);
 	flockShader->Execute(FLOCK_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glFinish();

@@ -13,6 +13,8 @@ uniform float maxForce;
 
 uniform float dt;
 
+uniform float maxSeeAhead;
+
 struct flock_member
 {
 	vec3 pos;
@@ -23,6 +25,12 @@ struct flock_member
 	float scrap3;
 };
 
+struct obstacle
+{
+	vec3 centre;
+	float radius;
+};
+
 layout(std140, binding = 0) buffer Flock_In
 {
 	flock_member input_flock[];
@@ -31,6 +39,11 @@ layout(std140, binding = 0) buffer Flock_In
 layout(std140, binding = 1) buffer Flock_Out
 {
 	flock_member output_flock[];
+};
+
+layout(std140, binding = 2) buffer Obstacles
+{
+	obstacle obstacles[];
 };
 
 layout( local_size_x = 256, local_size_y = 1, local_size_z = 1 ) in;
