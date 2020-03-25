@@ -21,3 +21,4 @@
 * [C++ Boids](http://www.behaviorworks.com/people/ckline/cornellwww/boid/boids.html)
 * [AI for Game Developers](https://www.oreilly.com/library/view/ai-for-game/0596005555/ch04.html)
 * [Learn OpenGL: Instancing](https://learnopengl.com/Advanced-OpenGL/Instancing)
+* [Understanding Steering Behaviours: Collision Avoidance] (https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-collision-avoidance--gamedev-7777)

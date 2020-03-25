@@ -167,7 +167,8 @@ void FlockingSim::InitWorld() {
 
 void FlockingSim::InitObstacles()
 {
-	AddCylinderToWorld(Vector3(200, 0, 200));
+	flock->AddObstacle(AddCylinderToWorld(Vector3(200, 0, 200)));
+	flock->AddObstacle(AddCylinderToWorld(Vector3(-200, 0, -200)));
 }
 
 GameObject* FlockingSim::AddFloorToWorld(const Vector3& position) {
@@ -219,12 +220,13 @@ GameObject* FlockingSim::AddGooseToWorld(const Vector3& position)
 
 GameObject* FlockingSim::AddCylinderToWorld(const Vector3& position)
 {
+	Vector3 size = Vector3(50, 100, 50);
 	GameObject* cyl = new GameObject();
 
-	AABBVolume* volume = new AABBVolume(Vector3(50, 100, 50));
+	AABBVolume* volume = new AABBVolume(size);
 	cyl->SetBoundingVolume((CollisionVolume*)volume);
 
-	cyl->GetTransform().SetWorldScale(Vector3(50, 100, 50));
+	cyl->GetTransform().SetWorldScale(size);
 	cyl->GetTransform().SetWorldPosition(position);
 
 	cyl->SetRenderObject(new RenderObject(&cyl->GetTransform(), cylMesh, nullptr, basicShader));

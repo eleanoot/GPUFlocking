@@ -179,21 +179,68 @@ Vector3 CPUBoid::Seek(Vector3 v)
 	return accel;
 }
 
-void CPUBoid::Update(std::vector<CPUBoid*> boids)
+Vector3 CPUBoid::Avoidance(std::vector<GameObject*> obstacles)
+{
+	Vector3 sum(0, 0, 0);
+
+	// ahead = position + normalize(velocity) * MAX_SEE_AHEAD
+	// calculate the ahead vector
+	Vector3 tempVel = vel.Normalised();
+	Vector3 ahead = pos + tempVel * MAX_SEE_AHEAD;
+	// calculate the ahead2 vector 
+	Vector3 ahead2 = pos + tempVel * MAX_SEE_AHEAD * 0.5;
+
+	// find the most threatening obstacle
+	GameObject* mostThreateningObstacle = nullptr;
+	for (int i = 0; i < obstacles.size(); i++)
+	{
+		GameObject* nextOb = obstacles[i]; 
+		bool collision = LineCircleIntersect(ahead, ahead2, nextOb);
+		Vector3 obDis = pos - nextOb->GetTransform().GetWorldPosition();
+		Vector3 threatDis = Vector3(0,0,0);
+		if (mostThreateningObstacle != nullptr)
+			threatDis = pos - mostThreateningObstacle->GetTransform().GetWorldPosition();
+		if (collision && (mostThreateningObstacle == nullptr || obDis.Length() < threatDis.Length()))
+			mostThreateningObstacle = nextOb;
+	}
+
+	// calculate the avoidance force
+	if (mostThreateningObstacle != nullptr)
+	{
+		sum = ahead - mostThreateningObstacle->GetTransform().GetWorldPosition();
+
+		sum.Normalise();
+		sum.Limit(maxForce);
+	}
+
+	return sum;
+}
+
+bool CPUBoid::LineCircleIntersect(Vector3 ahead, Vector3 ahead2, GameObject* obstacle)
+{
+	Vector3 dis = obstacle->GetTransform().GetWorldPosition() - ahead;
+	Vector3 dis2 = obstacle->GetTransform().GetWorldPosition() - ahead2;
+	return dis.Length() <= obstacle->GetTransform().GetLocalScale().x || dis2.Length() <= obstacle->GetTransform().GetLocalScale().x;
+}
+
+void CPUBoid::Update(std::vector<CPUBoid*> boids, std::vector<GameObject*> obstacles)
 {
 	Vector3 sep = Separation(boids);
 	Vector3 align = Alignment(boids);
 	Vector3 cohesion = Cohesion(boids);
+	Vector3 avoidance = Avoidance(obstacles);
 
 	// Random weighing right now
 	sep *= 2.5;
 	align *= 1.0;
 	cohesion *= 1.0;
+	avoidance *= 1.0;
 
 	// Add the force vectors to acceleration 
 	ApplyForce(sep);
 	ApplyForce(align);
 	ApplyForce(cohesion);
+	ApplyForce(avoidance);
 
 	accel *= 0.4;
 	tempAccel = accel;

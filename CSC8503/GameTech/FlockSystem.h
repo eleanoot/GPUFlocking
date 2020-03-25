@@ -27,6 +27,8 @@ namespace NCL {
 
 			void AddBoid(GPUBoid* b);
 
+			void AddObstacle(GameObject* o) { obstacles.push_back(o); }
+
 			void InitGPU();
 
 			void InitInstanceFlock(OGLMesh* m, RenderObject* r);
@@ -47,7 +49,6 @@ namespace NCL {
 			std::vector<flock_member> gpuData; 
 
 			OGLComputeShader* flockShader = nullptr;
-			//GLuint flockSSBO;
 			GLuint flockSSBO[2];
 			GLuint flags;
 			flock_member* fmPtrOne;
@@ -55,6 +56,8 @@ namespace NCL {
 			GLuint bufferIndex;
 
 			OGLMesh* boidMesh;
+
+			std::vector<GameObject*> obstacles;
 
 		};
 	}

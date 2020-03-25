@@ -23,7 +23,8 @@ namespace NCL {
 			Vector3 Alignment(std::vector<CPUBoid*> boids);
 			Vector3 Cohesion(std::vector<CPUBoid*> boids);
 			Vector3 Seek(Vector3 v);
-			void Update(std::vector<CPUBoid*> boids);
+			Vector3 Avoidance(std::vector<GameObject*> obstacles);
+			void Update(std::vector<CPUBoid*> boids, std::vector<GameObject*> obstacles);
 
 			void ApplyForce(Vector3 force);
 
@@ -46,6 +47,10 @@ namespace NCL {
 
 			float maxSpeed;
 			float maxForce;
+
+			const float MAX_SEE_AHEAD = 40;
+
+			bool LineCircleIntersect(Vector3 ahead, Vector3 ahead2, GameObject* obstacle);
 		};
 	}
 }

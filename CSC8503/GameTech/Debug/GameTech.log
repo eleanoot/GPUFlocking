@@ -5,7 +5,7 @@ C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(138,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(151,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(151,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(209,77): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(209,65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(209,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(210,77): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(210,65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(210,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   GameTech.vcxproj -> C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\Win32\Debug\GameTech2.exe

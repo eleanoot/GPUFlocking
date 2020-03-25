@@ -50,7 +50,7 @@ void FlockSystem::UpdateFlock(float dt)
 {
 	for (int i = 0; i < allBoids.size(); i++)
 	{
-		allBoids[i]->Update(allBoids);
+		allBoids[i]->Update(allBoids, obstacles);
 	}
 }
 
