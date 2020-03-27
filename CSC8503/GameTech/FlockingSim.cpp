@@ -159,7 +159,7 @@ void FlockingSim::InitWorld() {
 		}
 		else
 		{
-			instanceGoose = AddGooseToWorld(Vector3(0, 0, 0));
+			instanceGoose = AddGooseToWorld(Vector3(0, 10, 0));
 			InitObstacles();
 			flock->InitInstanceFlock(gooseMesh, instanceGoose->GetRenderObject());
 		}

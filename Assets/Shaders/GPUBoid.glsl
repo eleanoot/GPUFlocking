@@ -7,11 +7,15 @@ uniform float cohDis;
 uniform float sepWeight;
 uniform float alignWeight;
 uniform float cohWeight;
+uniform float avoidWeight;
 
 uniform float maxSpeed;
 uniform float maxForce;
 
 uniform float dt;
+
+uniform float maxSeeAhead;
+uniform int noOfObstacles;
 
 struct flock_member
 {
@@ -23,6 +27,12 @@ struct flock_member
 	float scrap3;
 };
 
+struct obstacle
+{
+	vec3 centre;
+	float radius;
+};
+
 layout(std140, binding = 0) buffer Flock_In
 {
 	flock_member input_flock[];
@@ -31,6 +41,11 @@ layout(std140, binding = 0) buffer Flock_In
 layout(std140, binding = 1) buffer Flock_Out
 {
 	flock_member output_flock[];
+};
+
+layout(std140, binding = 2) buffer Obstacles
+{
+	obstacle obstacles[];
 };
 
 layout( local_size_x = 256, local_size_y = 1, local_size_z = 1 ) in;
@@ -184,19 +199,70 @@ float Angle(vec3 vel)
 	//return atan(vel.x, vel.z) * 180 / 3.14;
 }
 
+bool LineCircleIntersect(vec3 ahead, vec3 ahead2, obstacle nextOb, vec3 pos)
+{
+	vec3 dis = nextOb.centre - ahead;
+	vec3 dis2 = nextOb.centre - ahead2;
+	vec3 posDis = nextOb.centre - pos;
+
+	return length(dis) <= nextOb.radius
+		|| length(dis2) <= nextOb.radius
+		|| length(posDis) <= nextOb.radius;
+}
+
+vec3 Avoidance(vec3 pos, vec3 vel)
+{
+	vec3 steering = vec3(0.0, 0.0, 0.0);
+
+	// ahead = position + normalize(velocity) * MAX_SEE_AHEAD
+	// calculate the ahead vector
+	vec3 tempVel = normalize(vel);
+	float dynamicLength = length(tempVel) / maxSpeed;
+	vec3 ahead = pos + tempVel * maxSeeAhead * dynamicLength;
+	// calculate the ahead2 vector
+	vec3 ahead2 = pos + tempVel * maxSeeAhead * dynamicLength * 0.5;
+
+	// find the most threatening obstacle - working on index checks
+	int mostThreateningObstacle = -1;
+	for (int i = 0; i < noOfObstacles; i++)
+	{
+		obstacle nextOb = obstacles[i];
+		bool collision = LineCircleIntersect(ahead, ahead2, nextOb, pos);
+		float obDis = abs(distance(pos, nextOb.centre));
+		float threatDis = 0;
+		if (mostThreateningObstacle > -1)
+			threatDis = abs(distance(pos, obstacles[mostThreateningObstacle].centre));
+
+		if (collision && (mostThreateningObstacle == -1 || obDis < threatDis))
+			mostThreateningObstacle = i;
+	}
+
+	if (mostThreateningObstacle > -1)
+	{
+		steering = ahead - obstacles[mostThreateningObstacle].centre;
+		steering = normalize(steering);
+		steering = Limit(steering, maxForce);
+	}
+
+	return steering;
+}
+
 vec3 Update(vec3 pos, vec3 vel, vec3 accel)
 {
 	vec3 sep = Separation(pos, vel);
 	vec3 align = Alignment(pos, vel);
 	vec3 cohesion = Cohesion(pos, vel);
+	vec3 avoidance = Avoidance(pos, vel);
 
 	sep *= sepWeight;
 	align *= alignWeight;
 	cohesion *= cohWeight;
+	avoidance *= avoidWeight;
 
 	accel = ApplyForce(accel, sep);
 	accel = ApplyForce(accel, align);
 	accel = ApplyForce(accel, cohesion);
+	accel = ApplyForce(accel, avoidance);
 
 	accel *= 0.4;
 	vel += accel * dt;
