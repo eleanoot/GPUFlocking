@@ -57,12 +57,15 @@ void main(void)
 
 	vec4 objCoord = angleMat * vec4(position, 1.0);
 
-	mat4 mvp 		  = (projMatrix * viewMatrix * modelMatrix);
-	gl_Position = mvp * (objCoord + vec4(offset, 1.0));
+	mat4 tempModel = modelMatrix;
+	tempModel[3] = vec4(offset.x, offset.y, offset.z, 1);
+
+	mat4 mvp 		  = (projMatrix * viewMatrix * tempModel);
+	gl_Position = mvp * (objCoord);
 	mat3 normalMatrix = transpose ( inverse ( mat3 ( modelMatrix )));
 
 	OUT.shadowProj 	=  shadowMatrix * vec4 ( position,1);
-	OUT.worldPos 	= ( modelMatrix * vec4 ( position ,1)). xyz ;
+	OUT.worldPos 	= ( tempModel * vec4 ( position ,1)). xyz ;
 	OUT.normal 		= normalize ( normalMatrix * normalize ( normal ));
 	
 	OUT.texCoord	= texCoord;

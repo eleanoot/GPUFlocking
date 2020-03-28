@@ -114,7 +114,7 @@ void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
 	// set up the flock member data
 	for (int i = 0; i < FLOCK_SIZE; i++)
 	{
-		fm.position = Vector3(rand() % 200, 0, rand() % 200);
+		fm.position = Vector3(rand() % 1000, 0, rand() % 1000);
 		fm.velocity = Vector3(rand() % 6 + (-3) + 0.01 * 10, 0, rand() % 6 + (-3) + 0.01 * 10);
 		fm.accel = Vector3(0, 0, 0);
 		gpuData.emplace_back(fm);
@@ -150,16 +150,16 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 
 	flockShader->Bind();
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepDis"), 60);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignDis"), 30);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohDis"), 10);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignDis"), 70);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohDis"), 25);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepWeight"), 200);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignWeight"), 200);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohWeight"), 25);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "avoidWeight"), 25);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 30.5);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 5);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "avoidWeight"), 200);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 200);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 70);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "dt"), dt);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSeeAhead"), 70);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSeeAhead"), 100);
 	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "noOfObstacles"), obstacleData.size());
 	flockShader->Execute(FLOCK_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
