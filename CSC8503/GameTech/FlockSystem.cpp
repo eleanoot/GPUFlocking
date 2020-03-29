@@ -149,17 +149,17 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, obstacleSSBO);
 
 	flockShader->Bind();
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepDis"), 60);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignDis"), 70);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohDis"), 25);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepWeight"), 200);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignWeight"), 200);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepDis"), 20);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignDis"), 40);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohDis"), 15);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepWeight"), 150);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignWeight"), 100);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohWeight"), 25);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "avoidWeight"), 200);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 200);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 70);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "dt"), dt);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSeeAhead"), 100);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSeeAhead"), 200);
 	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "noOfObstacles"), obstacleData.size());
 	flockShader->Execute(FLOCK_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
