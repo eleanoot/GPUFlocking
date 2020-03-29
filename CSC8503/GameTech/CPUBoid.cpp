@@ -186,10 +186,9 @@ Vector3 CPUBoid::Avoidance(std::vector<GameObject*> obstacles)
 	// ahead = position + normalize(velocity) * MAX_SEE_AHEAD
 	// calculate the ahead vector
 	Vector3 tempVel = vel.Normalised();
-	float dynamicLength = vel.Length() / maxSpeed;
-	Vector3 ahead = pos + tempVel * MAX_SEE_AHEAD * dynamicLength;
+	Vector3 ahead = pos + tempVel * MAX_SEE_AHEAD;
 	// calculate the ahead2 vector 
-	Vector3 ahead2 = pos + tempVel * MAX_SEE_AHEAD * 0.5 * dynamicLength;
+	Vector3 ahead2 = pos + tempVel * MAX_SEE_AHEAD * 0.5;
 
 	// find the most threatening obstacle
 	GameObject* mostThreateningObstacle = nullptr;

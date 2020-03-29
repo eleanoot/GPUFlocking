@@ -205,10 +205,9 @@ vec3 Avoidance(vec3 pos, vec3 vel)
 	// ahead = position + normalize(velocity) * MAX_SEE_AHEAD
 	// calculate the ahead vector
 	vec3 tempVel = normalize(vel);
-	float dynamicLength = length(tempVel) / maxSpeed;
-	vec3 ahead = pos + tempVel * maxSeeAhead/* * dynamicLength*/;
+	vec3 ahead = pos + tempVel * maxSeeAhead;
 	// calculate the ahead2 vector
-	vec3 ahead2 = pos + tempVel * maxSeeAhead /** dynamicLength */* 0.5;
+	vec3 ahead2 = pos + tempVel * maxSeeAhead * 0.5;
 
 	// find the most threatening obstacle - working on index checks
 	int mostThreateningObstacle = -1;
