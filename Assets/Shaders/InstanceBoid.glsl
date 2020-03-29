@@ -227,7 +227,6 @@ vec3 Avoidance(vec3 pos, vec3 vel)
 	if (mostThreateningObstacle > -1)
 	{
 		steering = ahead - obstacles[mostThreateningObstacle].centre;
-		//steering = normalize(steering);
 		steering = Limit(steering, maxForce);
 	}
 

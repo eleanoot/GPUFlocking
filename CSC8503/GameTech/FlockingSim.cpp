@@ -20,7 +20,7 @@ FlockingSim::FlockingSim()
 	inSelectionMode = false;
 
 	useGPU = true;
-	useInstancing = true;
+	useInstancing = false;
 
 	Debug::SetRenderer(renderer);
 
