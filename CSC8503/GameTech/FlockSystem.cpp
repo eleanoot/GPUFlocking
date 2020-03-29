@@ -153,9 +153,9 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignDis"), 40);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohDis"), 15);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepWeight"), 150);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignWeight"), 100);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignWeight"), 50);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohWeight"), 25);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "avoidWeight"), 200);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "avoidWeight"), 150);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 200);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 70);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "dt"), dt);

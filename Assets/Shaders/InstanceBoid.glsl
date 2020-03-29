@@ -199,29 +199,6 @@ bool LineCircleIntersect(vec3 ahead, vec3 ahead2, obstacle nextOb, vec3 pos)
 
 vec3 Avoidance(vec3 pos, vec3 vel)
 {
-	//vec3 steering = vec3(0, 0, 0);
-
-	//vec3 a = vec3(0, 0, 0);
-	//vec3 p = vec3(0, 0, 0);
-	//vec3 b = vec3(0, 0, 0);
-
-	//for (int i = 0; i < noOfObstacles; i++)
-	//{
-	//	vec3 tempVel = normalize(vel);
-	//	vec3 feeler = tempVel * maxSeeAhead;
-
-	//	a = obstacles[i].centre - pos;
-	//	p = (a * tempVel) * tempVel;
-	//	b = p - a;
-
-	//	if (length(b) < obstacles[i].radius && length(p) < length(feeler))
-	//	{
-	//		// impending collision!
-	//		steering += maxSeeAhead / length(a);
-	//	}
-	//}
-	//steering.y = 0;
-	//return steering;
 
 	vec3 steering = vec3(0.0, 0.0, 0.0);
 
@@ -229,9 +206,9 @@ vec3 Avoidance(vec3 pos, vec3 vel)
 	// calculate the ahead vector
 	vec3 tempVel = normalize(vel);
 	float dynamicLength = length(tempVel) / maxSpeed;
-	vec3 ahead = pos + tempVel * maxSeeAhead * dynamicLength;
+	vec3 ahead = pos + tempVel * maxSeeAhead/* * dynamicLength*/;
 	// calculate the ahead2 vector
-	vec3 ahead2 = pos + tempVel * maxSeeAhead * dynamicLength * 0.5;
+	vec3 ahead2 = pos + tempVel * maxSeeAhead /** dynamicLength */* 0.5;
 
 	// find the most threatening obstacle - working on index checks
 	int mostThreateningObstacle = -1;
@@ -251,7 +228,7 @@ vec3 Avoidance(vec3 pos, vec3 vel)
 	if (mostThreateningObstacle > -1)
 	{
 		steering = ahead - obstacles[mostThreateningObstacle].centre;
-		steering = normalize(steering);
+		//steering = normalize(steering);
 		steering = Limit(steering, maxForce);
 	}
 
