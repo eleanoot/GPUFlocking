@@ -138,14 +138,14 @@ void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
 
 	glGenBuffers(1, &obstacleSSBO);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, obstacleSSBO);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(obstacle) * obstacleData.size(), &obstacleData[0], GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(obstacle) * obstacleData.size(), &obstacleData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	obPtr = (obstacle*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(obstacle) * obstacles.size(), flags);
 }
 
 void FlockSystem::UpdateInstanceFlock(float dt)
 {
 	obstacles[0]->UpdateObstacle(dt);
-	obstacleData[0].centre = obstacles[0]->GetTransform().GetWorldPosition();
+	obPtr[0].centre = obstacles[0]->GetTransform().GetWorldPosition();
 	// Execute the compute shader to get the positions
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, flockSSBO[bufferIndex]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, flockSSBO[bufferIndex ^ 1]);

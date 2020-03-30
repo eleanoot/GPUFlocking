@@ -68,6 +68,7 @@ namespace NCL {
 			OGLMesh* boidMesh;
 
 			std::vector<Obstacle*> obstacles;
+			obstacle* obPtr;
 
 		};
 	}
