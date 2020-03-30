@@ -54,6 +54,9 @@
     <ClCompile Include="InstanceBoid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Obstacle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameTechRenderer.h">
@@ -90,6 +93,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InstanceBoid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Obstacle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

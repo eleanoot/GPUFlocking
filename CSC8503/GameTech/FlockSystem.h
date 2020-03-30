@@ -5,7 +5,7 @@
 #include "../../Plugins/OpenGLRendering/OGLShader.h"
 #include "../../Plugins/OpenGLRendering/OGLComputeShader.h"
 #include "GPUBoid.h"
-
+#include "Obstacle.h"
 namespace NCL {
 	namespace CSC8503 {
 		class CPUBoid;
@@ -27,7 +27,7 @@ namespace NCL {
 
 			void AddBoid(GPUBoid* b);
 
-			void AddObstacle(GameObject* o) { 
+			void AddObstacle(Obstacle* o) { 
 				obstacles.push_back(o); 
 				obstacleData.push_back(obstacle{ o->GetTransform().GetWorldPosition(), o->GetTransform().GetLocalScale().x });
 			}
@@ -67,7 +67,7 @@ namespace NCL {
 
 			OGLMesh* boidMesh;
 
-			std::vector<GameObject*> obstacles;
+			std::vector<Obstacle*> obstacles;
 
 		};
 	}

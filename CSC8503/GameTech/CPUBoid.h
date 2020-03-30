@@ -2,6 +2,7 @@
 #pragma once
 #include "../CSC8503Common/GameObject.h"
 #include "FlockSystem.h"
+#include "Obstacle.h"
 #include <algorithm>
 namespace NCL {
 	namespace CSC8503 {
@@ -23,8 +24,8 @@ namespace NCL {
 			Vector3 Alignment(std::vector<CPUBoid*> boids);
 			Vector3 Cohesion(std::vector<CPUBoid*> boids);
 			Vector3 Seek(Vector3 v);
-			Vector3 Avoidance(std::vector<GameObject*> obstacles);
-			void Update(std::vector<CPUBoid*> boids, std::vector<GameObject*> obstacles);
+			Vector3 Avoidance(std::vector<Obstacle*> obstacles);
+			void Update(std::vector<CPUBoid*> boids, std::vector<Obstacle*> obstacles);
 
 			void ApplyForce(Vector3 force);
 

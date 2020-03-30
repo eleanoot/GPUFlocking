@@ -53,6 +53,7 @@ void FlockSystem::AddBoid(GPUBoid* b)
 
 void FlockSystem::UpdateFlock(float dt)
 {
+	obstacles[0]->UpdateObstacle(dt);
 	for (int i = 0; i < allBoids.size(); i++)
 	{
 		allBoids[i]->Update(allBoids, obstacles);

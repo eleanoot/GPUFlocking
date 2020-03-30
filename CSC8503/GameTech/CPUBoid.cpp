@@ -179,7 +179,7 @@ Vector3 CPUBoid::Seek(Vector3 v)
 	return accel;
 }
 
-Vector3 CPUBoid::Avoidance(std::vector<GameObject*> obstacles)
+Vector3 CPUBoid::Avoidance(std::vector<Obstacle*> obstacles)
 {
 	Vector3 sum(0, 0, 0);
 
@@ -226,7 +226,7 @@ bool CPUBoid::LineCircleIntersect(Vector3 ahead, Vector3 ahead2, GameObject* obs
 		|| posDis.Length() <= obstacle->GetTransform().GetLocalScale().x;
 }
 
-void CPUBoid::Update(std::vector<CPUBoid*> boids, std::vector<GameObject*> obstacles)
+void CPUBoid::Update(std::vector<CPUBoid*> boids, std::vector<Obstacle*> obstacles)
 {
 	Vector3 sep = Separation(boids);
 	Vector3 align = Alignment(boids);

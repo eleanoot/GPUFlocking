@@ -6,6 +6,7 @@
 #include "CPUBoid.h"
 #include "../../Plugins/OpenGLRendering/OBJMesh.h"
 #include "../../Common/Assets.h"
+#include "Obstacle.h"
 namespace NCL {
 	namespace CSC8503 {
 		class FlockingSim
@@ -25,7 +26,7 @@ namespace NCL {
 
 			GameObject* AddFloorToWorld(const Vector3& position);
 			GameObject* AddGooseToWorld(const Vector3& position);
-			GameObject* AddCylinderToWorld(const Vector3& position);
+			Obstacle* AddCylinderToWorld(const Vector3& position);
 
 			GameTechRenderer* renderer;
 			PhysicsSystem* physics;

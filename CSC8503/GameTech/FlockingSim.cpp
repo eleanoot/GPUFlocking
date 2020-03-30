@@ -19,8 +19,8 @@ FlockingSim::FlockingSim()
 	useGravity = false;
 	inSelectionMode = false;
 
-	useGPU = true;
-	useInstancing = false;
+	useGPU = false;
+	useInstancing = true;
 
 	Debug::SetRenderer(renderer);
 
@@ -221,10 +221,11 @@ GameObject* FlockingSim::AddGooseToWorld(const Vector3& position)
 	return goose;
 }
 
-GameObject* FlockingSim::AddCylinderToWorld(const Vector3& position)
+Obstacle* FlockingSim::AddCylinderToWorld(const Vector3& position)
 {
 	Vector3 size = Vector3(50, 100, 50);
-	GameObject* cyl = new GameObject();
+	Obstacle* cyl = new Obstacle();
+	cyl->SetStartPos(position);
 
 	AABBVolume* volume = new AABBVolume(size);
 	cyl->SetBoundingVolume((CollisionVolume*)volume);
