@@ -7,7 +7,7 @@ namespace NCL {
 		{
 		public:
 			Obstacle() : GameObject() {};
-			~Obstacle();
+			~Obstacle() {};
 			void UpdateObstacle(float dt);
 
 			void SetStartPos(Vector3 pos) { startPos = pos; }

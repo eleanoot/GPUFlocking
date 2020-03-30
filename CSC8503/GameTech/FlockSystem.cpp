@@ -144,6 +144,8 @@ void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
 
 void FlockSystem::UpdateInstanceFlock(float dt)
 {
+	obstacles[0]->UpdateObstacle(dt);
+	obstacleData[0].centre = obstacles[0]->GetTransform().GetWorldPosition();
 	// Execute the compute shader to get the positions
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, flockSSBO[bufferIndex]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, flockSSBO[bufferIndex ^ 1]);
@@ -168,8 +170,6 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 	flockShader->Unbind();
 
 	bufferIndex ^= 1;
-
-	//std::cout << fmPtrOne[15].velocity << std::endl;
 
 }
 
