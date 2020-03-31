@@ -22,7 +22,7 @@ struct flock_member
 	vec3 pos;
 	float angle;
 	vec3 vel;
-	float scrap2;
+	float groupNo;
 	vec3 accel;
 	float scrap3;
 };
@@ -75,7 +75,7 @@ vec3 Seek(vec3 pos, vec3 vel, vec3 target)
 	return output_flock[gid].accel;
 }
 
-vec3 Separation(vec3 pos, vec3 vel)
+vec3 Separation(vec3 pos, vec3 vel, float groupNo)
 {
 	uint localID = gl_LocalInvocationID.x;
 
@@ -88,8 +88,10 @@ vec3 Separation(vec3 pos, vec3 vel)
 			continue;
 		vec3 otherPos = input_flock[i].pos;
 		float d = abs(distance(pos, otherPos));
+
+		float dis = groupNo == input_flock[i].groupNo ? sepDis : sepDis + 30;
 		
-		if(d < sepDis && d > 0.0)
+		if(d < dis && d > 0.0)
 		{
 			vec3 diff = vec3(0,0,0);
 			diff = pos - otherPos;
@@ -248,9 +250,9 @@ float Angle(vec3 vel)
 	//return atan(vel.x, vel.z) * 180 / 3.14;
 }
 
-vec3 Update(vec3 pos, vec3 vel, vec3 accel)
+vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 {
-	vec3 sep = Separation(pos, vel);
+	vec3 sep = Separation(pos, vel, groupNo);
 	vec3 align = Alignment(pos, vel);
 	vec3 cohesion = Cohesion(pos, vel);
 	vec3 avoidance = Avoidance(pos, vel);
@@ -279,7 +281,7 @@ void main()
 	uint lid = gl_LocalInvocationID.x;
 	flock_member thisMember = input_flock[gid];
 
-	vec3 newVel = Update(thisMember.pos, thisMember.vel, thisMember.accel);
+	vec3 newVel = Update(thisMember.pos, thisMember.vel, thisMember.accel, thisMember.groupNo);
 	input_flock[gid].accel = vec3(0,0,0);
 	output_flock[gid].accel = vec3(0,0,0);
 

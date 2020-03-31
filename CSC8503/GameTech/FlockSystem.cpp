@@ -131,6 +131,8 @@ void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
 		fm.position = Vector3(rand() % 1000, 0, rand() % 1000);
 		fm.velocity = Vector3(rand() % 6 + (-3) + 0.01 * 10, 0, rand() % 6 + (-3) + 0.01 * 10);
 		fm.accel = Vector3(0, 0, 0);
+		int groupNo = rand() % 3 + 1;
+		fm.groupNo = groupNo;
 		gpuData.emplace_back(fm);
 	}
 
