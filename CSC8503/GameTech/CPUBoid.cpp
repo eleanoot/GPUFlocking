@@ -145,11 +145,12 @@ Vector3 CPUBoid::Cohesion(std::vector<CPUBoid*> boids)
 		{
 			float distance = (pos - boids[i]->pos).Length();
 
-			// Boids are more attracted to boids of the same colour
-
 			if (distance > 0 && distance < neighDis)
 			{
 				sum += boids[i]->pos;
+
+				if (groupNo == boids[i]->groupNo)
+					sum *= 3.5;
 				
 				neighbourCount++;
 			}
