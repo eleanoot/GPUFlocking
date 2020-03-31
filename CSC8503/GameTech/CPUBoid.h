@@ -39,6 +39,8 @@ namespace NCL {
 
 			Vector3 GetAcc() const { return tempAccel; }
 
+			int GetGroupNo() const { return groupNo; }
+
 		protected:
 			Vector3 pos;
 			Vector3 vel;

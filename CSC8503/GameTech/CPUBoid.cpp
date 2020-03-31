@@ -53,6 +53,7 @@ Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 {
 	// Field of vision distance
 	float sepDis = 60;
+	float diffGroupDis = 90;
 	Vector3 steer = Vector3(0, 0, 0);
 	int neighbourCount = 0;
 
@@ -62,9 +63,11 @@ Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 		{
 			// Calculate distance from this boid to the one we're looking at
 			float distance = (pos - boids[i]->pos).Length();
+			// Boids will want to move further away from boids not in their group
+			float dis = groupNo == boids[i]->groupNo ? sepDis : diffGroupDis;
 
 			// If this is a boid and it's too close, move away from it
-			if (distance > 0 && (distance < sepDis))
+			if (distance > 0 && (distance < dis))
 			{
 				Vector3 diff = Vector3(0, 0, 0);
 				diff = pos - boids[i]->pos;
