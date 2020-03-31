@@ -22,10 +22,26 @@ CPUBoid::CPUBoid(float x, float z, OGLMesh* mesh, OGLShader* shader) : GameObjec
 	SetRenderObject(new RenderObject(&transform, mesh, nullptr, shader));
 	SetPhysicsObject(new PhysicsObject(&transform, GetBoundingVolume()));
 
-	renderObject->SetColour(Vector4(rand() % 2, rand() % 2, rand() % 2, 1));
-
 	GetPhysicsObject()->SetInverseMass(1);
 	GetPhysicsObject()->InitSphereInertia();
+
+	groupNo = rand() % 3 + 1;
+	Vector4 colour = Vector4(1,1,1,1);
+	switch (groupNo)
+	{
+	case 1:
+		colour = Vector4(1, 0, 0, 1);
+		break;
+	case 2:
+		colour = Vector4(0, 1, 0, 1);
+		break;
+	case 3:
+		colour = Vector4(0, 0, 1, 1);
+		break;
+	default:
+		break;
+	}
+	renderObject->SetColour(colour);
 }
 
 void CPUBoid::ApplyForce(Vector3 force)

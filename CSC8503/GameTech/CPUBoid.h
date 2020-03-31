@@ -49,6 +49,8 @@ namespace NCL {
 			float maxSpeed;
 			float maxForce;
 
+			int groupNo;
+
 			const float MAX_SEE_AHEAD = 200;
 
 			bool LineCircleIntersect(Vector3 ahead, Vector3 ahead2, GameObject* obstacle);
