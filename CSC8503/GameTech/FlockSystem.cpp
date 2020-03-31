@@ -48,7 +48,20 @@ void FlockSystem::AddBoid(GPUBoid* b)
 	fm.velocity = b->GetPhysicsObject()->GetLinearVelocity(); 
 	fm.accel = Vector3(0, 0, 0);
 	fm.angle = 0;
+	int groupNo = rand() % 3 + 1;
+	fm.groupNo = groupNo;
 	gpuData.push_back(fm);
+
+	Vector4 colour = Vector4(1, 1, 1, 1);
+	switch (groupNo)
+	{
+	case 1: colour = Vector4(1, 0, 0, 1); break;
+	case 2: colour = Vector4(0, 1, 0, 1); break;
+	case 3: colour = Vector4(0, 0, 1, 1); break;
+	default: break;
+	}
+
+	b->GetRenderObject()->SetColour(colour);
 }
 
 void FlockSystem::UpdateFlock(float dt)

@@ -22,7 +22,7 @@ struct flock_member
 	vec3 pos;
 	float angle;
 	vec3 vel;
-	float scrap2;
+	float groupNo;
 	vec3 accel;
 	float scrap3;
 };

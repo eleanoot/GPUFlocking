@@ -41,7 +41,7 @@ namespace NCL {
 				Vector3 position;
 				float angle;
 				Vector3 velocity;
-				float s2;
+				float groupNo;
 				Vector3 accel;
 				float s3;
 			};
