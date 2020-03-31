@@ -15,7 +15,7 @@ struct flock_member
 	vec3 pos;
 	float angle;
 	vec3 vel;
-	float scrap2;
+	float groupNo;
 	vec3 accel;
 	float scrap3;
 };
@@ -71,8 +71,17 @@ void main(void)
 	OUT.texCoord	= texCoord;
 	OUT.colour		= objectColour;
 
-	if(hasVertexColours) {
+	/*if(hasVertexColours) {
 		OUT.colour		= objectColour * colour;
+	}*/
+
+	int group = int(input_flock[gl_InstanceID].groupNo);
+	switch (group)
+	{
+		case 1: OUT.colour = vec4(1, 0, 0, 1); break;
+		case 2: OUT.colour = vec4(0, 1, 0, 1); break;
+		case 3: OUT.colour = vec4(0, 0, 1, 1); break;
+		default: OUT.colour = vec4(1, 1, 1, 1); break;
 	}
 	
 }
