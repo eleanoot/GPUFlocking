@@ -37,7 +37,6 @@ Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 {
 	// Field of vision distance
 	float sepDis = 60;
-	float colourSepDis = 40;
 	Vector3 steer = Vector3(0, 0, 0);
 	int neighbourCount = 0;
 
@@ -48,32 +47,17 @@ Vector3 CPUBoid::Separation(std::vector<CPUBoid*> boids)
 			// Calculate distance from this boid to the one we're looking at
 			float distance = (pos - boids[i]->pos).Length();
 
-			// Allow boids to get closer to boids of the same colour 
-			if (renderObject->GetColour() == boids[i]->GetRenderObject()->GetColour())
+			// If this is a boid and it's too close, move away from it
+			if (distance > 0 && (distance < sepDis))
 			{
-				if (distance > 0 && (distance < colourSepDis))
-				{
-					Vector3 diff = Vector3(0, 0, 0);
-					diff = pos - boids[i]->pos;
-					diff.Normalise();
-					diff /= distance; // Weight by the distance
-					steer += diff;
-					neighbourCount++;
-				}
+				Vector3 diff = Vector3(0, 0, 0);
+				diff = pos - boids[i]->pos;
+				diff.Normalise();
+				diff /= distance; // Weight by the distance
+				steer += diff;
+				neighbourCount++;
 			}
-			else
-			{
-				// If this is a boid and it's too close, move away from it
-				if (distance > 0 && (distance < sepDis))
-				{
-					Vector3 diff = Vector3(0, 0, 0);
-					diff = pos - boids[i]->pos;
-					diff.Normalise();
-					diff /= distance; // Weight by the distance
-					steer += diff;
-					neighbourCount++;
-				}
-			}
+		
 		}
 		
 	}
@@ -146,12 +130,7 @@ Vector3 CPUBoid::Cohesion(std::vector<CPUBoid*> boids)
 
 			if (distance > 0 && distance < neighDis)
 			{
-				if (renderObject->GetColour() == boids[i]->GetRenderObject()->GetColour())
-				{
-					sum += boids[i]->pos * 3.5f;
-				}
-				else
-					sum += boids[i]->pos;
+				sum += boids[i]->pos;
 				
 				neighbourCount++;
 			}
