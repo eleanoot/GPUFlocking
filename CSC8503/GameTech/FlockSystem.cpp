@@ -36,8 +36,45 @@ void FlockSystem::InitGPU()
 
 	glGenBuffers(1, &obstacleSSBO);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, obstacleSSBO);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(obstacle) * obstacleData.size(), &obstacleData[0], GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(obstacle) * obstacleData.size(), &obstacleData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	obPtr = (obstacle*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(obstacle) * obstacles.size(), flags);
 
+}
+
+void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
+{
+	boidMesh = m;
+	flock_member fm;
+	// set up the flock member data
+	for (int i = 0; i < FLOCK_SIZE; i++)
+	{
+		fm.position = Vector3(rand() % 1000, 0, rand() % 1000);
+		fm.velocity = Vector3(rand() % 6 + (-3) + 0.01 * 10, 0, rand() % 6 + (-3) + 0.01 * 10);
+		fm.accel = Vector3(0, 0, 0);
+		int groupNo = rand() % 3 + 1;
+		fm.groupNo = groupNo;
+		gpuData.emplace_back(fm);
+	}
+
+	flockShader = new OGLComputeShader("InstanceBoid.glsl");
+	flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
+
+	glGenBuffers(2, flockSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[0]);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * FLOCK_SIZE, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	fmPtrOne = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[1]);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * FLOCK_SIZE, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	fmPtrTwo = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
+
+	bufferIndex = 0;
+	r->SetSSBO(flockSSBO[0], flockSSBO[1]);
+
+	glGenBuffers(1, &obstacleSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, obstacleSSBO);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(obstacle) * obstacleData.size(), &obstacleData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	obPtr = (obstacle*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(obstacle) * obstacles.size(), flags);
 }
 
 void FlockSystem::AddBoid(GPUBoid* b)
@@ -76,6 +113,9 @@ void FlockSystem::UpdateFlock(float dt)
 
 void FlockSystem::UpdateGPUFlock(float dt)
 {
+	obstacles[0]->UpdateObstacle(dt);
+	obPtr[0].centre = obstacles[0]->GetTransform().GetWorldPosition();
+
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, flockSSBO[bufferIndex]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, flockSSBO[bufferIndex ^ 1]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, obstacleSSBO);
@@ -121,41 +161,7 @@ void FlockSystem::UpdateGPUFlock(float dt)
 
 }
 
-void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
-{
-	boidMesh = m;
-	flock_member fm;
-	// set up the flock member data
-	for (int i = 0; i < FLOCK_SIZE; i++)
-	{
-		fm.position = Vector3(rand() % 1000, 0, rand() % 1000);
-		fm.velocity = Vector3(rand() % 6 + (-3) + 0.01 * 10, 0, rand() % 6 + (-3) + 0.01 * 10);
-		fm.accel = Vector3(0, 0, 0);
-		int groupNo = rand() % 3 + 1;
-		fm.groupNo = groupNo;
-		gpuData.emplace_back(fm);
-	}
 
-	flockShader = new OGLComputeShader("InstanceBoid.glsl");
-	flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
-
-	glGenBuffers(2, flockSSBO);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[0]);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * FLOCK_SIZE, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-	fmPtrOne = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
-
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[1]);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * FLOCK_SIZE, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-	fmPtrTwo = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
-
-	bufferIndex = 0;
-	r->SetSSBO(flockSSBO[0], flockSSBO[1]);
-
-	glGenBuffers(1, &obstacleSSBO);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, obstacleSSBO);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(obstacle) * obstacleData.size(), &obstacleData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-	obPtr = (obstacle*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(obstacle) * obstacles.size(), flags);
-}
 
 void FlockSystem::UpdateInstanceFlock(float dt)
 {
