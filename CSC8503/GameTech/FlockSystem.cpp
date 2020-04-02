@@ -3,7 +3,7 @@
 using namespace NCL;
 using namespace NCL::CSC8503;
 
-#define FLOCK_SIZE 256
+#define FLOCK_SIZE 128
 
 FlockSystem::FlockSystem()
 {
@@ -75,6 +75,8 @@ void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, obstacleSSBO);
 	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(obstacle) * obstacleData.size(), &obstacleData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 	obPtr = (obstacle*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(obstacle) * obstacles.size(), flags);
+
+	r->SetInstances(FLOCK_SIZE);
 }
 
 void FlockSystem::AddBoid(GPUBoid* b)

@@ -209,7 +209,7 @@ GameObject* FlockingSim::AddGooseToWorld(const Vector3& position)
 	goose->GetTransform().SetWorldPosition(position);
 
 	goose->SetRenderObject(new RenderObject(&goose->GetTransform(), gooseMesh, nullptr, instanceShader));
-	goose->GetRenderObject()->SetInstances(256);
+
 	goose->GetRenderObject()->SetColour(Vector4(rand() % 2, rand() % 2, rand() % 2, 1));
 	goose->SetPhysicsObject(new PhysicsObject(&goose->GetTransform(), goose->GetBoundingVolume()));
 

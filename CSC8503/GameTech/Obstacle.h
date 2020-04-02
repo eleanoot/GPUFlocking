@@ -1,5 +1,5 @@
 #pragma once
-#include "C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\CSC8503Common\GameObject.h"
+#include "..\CSC8503Common\GameObject.h"
 namespace NCL {
 	namespace CSC8503 {
 		class Obstacle :
