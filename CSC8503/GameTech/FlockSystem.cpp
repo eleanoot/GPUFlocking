@@ -3,7 +3,7 @@
 using namespace NCL;
 using namespace NCL::CSC8503;
 
-#define FLOCK_SIZE 128
+#define FLOCK_SIZE 256
 
 FlockSystem::FlockSystem()
 {
