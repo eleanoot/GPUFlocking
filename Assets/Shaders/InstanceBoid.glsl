@@ -84,22 +84,28 @@ vec3 Separation(vec3 pos, vec3 vel, float groupNo)
 
 	for (uint i = 0; i < gl_NumWorkGroups.x; i++)
 	{
-		if (i == gl_GlobalInvocationID.x)
-			continue;
-		vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + localID].pos;
-		float d = abs(distance(pos, otherPos));
-
-		float dis = groupNo == input_flock[i * gl_WorkGroupSize.x + localID].groupNo ? sepDis : sepDis + 30;
-		
-		if(d < dis && d > 0.0)
+		for (int j = 0; j < gl_WorkGroupSize.x; j++)
 		{
-			vec3 diff = vec3(0,0,0);
-			diff = pos - otherPos;
-			diff = normalize(diff);
-			diff /= d;
-			steering += diff;
-			count += 1.0;
+			vec3 otherPos = input_flock[j].pos;
+			if (i * gl_WorkGroupSize.x + j != gl_GlobalInvocationID.x)
+			{
+				float d = abs(distance(pos, otherPos));
+
+				float dis = groupNo == input_flock[j].groupNo ? sepDis : sepDis + 30;
+
+				if (d < dis && d > 0.0)
+				{
+					vec3 diff = vec3(0, 0, 0);
+					diff = pos - otherPos;
+					diff = normalize(diff);
+					diff /= d;
+					steering += diff;
+					count += 1.0;
+				}
+			}
+			
 		}
+		
 	}	
 
 
@@ -128,15 +134,19 @@ vec3 Alignment(vec3 pos, vec3 vel)
 
 	for (uint i = 0; i < gl_NumWorkGroups.x; i++)
 	{
-		if (i == gl_GlobalInvocationID.x)
-			continue;
-		vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + localID].pos;
-		float d = abs(distance(pos, otherPos));
-
-		if (d < alignDis && d > 0.0)
+		for (int j = 0; j < gl_WorkGroupSize.x; j++)
 		{
-			sum += input_flock[i].vel;
-			count += 1.0;
+			vec3 otherPos = input_flock[j].pos;
+			if (i * gl_WorkGroupSize.x + j != gl_GlobalInvocationID.x)
+			{
+				float d = abs(distance(pos, otherPos));
+
+				if (d < alignDis && d > 0.0)
+				{
+					sum += input_flock[j].vel;
+					count += 1.0;
+				}
+			}
 		}
 	}
 
@@ -165,15 +175,19 @@ vec3 Cohesion(vec3 pos, vec3 vel)
 	float count = 0.0;
 	for (uint i = 0; i < gl_NumWorkGroups.x; i++)
 	{
-		if (i == gl_GlobalInvocationID.x)
-			continue;
-		vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + localID].pos;
-		float d = abs(distance(pos, otherPos));
-
-		if (d < cohDis && d > 0.0)
+		for (int j = 0; j < gl_WorkGroupSize.x; j++)
 		{
-			steering += otherPos;
-			count += 1.0;
+			vec3 otherPos = input_flock[j].pos;
+			if (i * gl_WorkGroupSize.x + j != gl_GlobalInvocationID.x)
+			{
+				float d = abs(distance(pos, otherPos));
+
+				if (d < cohDis && d > 0.0)
+				{
+					steering += otherPos;
+					count += 1.0;
+				}
+			}
 		}
 	}
 
@@ -263,9 +277,9 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 	avoidance *= avoidWeight;
 
 	accel = ApplyForce(accel, sep);
-	//accel = ApplyForce(accel, align);
-	//accel = ApplyForce(accel, cohesion);
-	//accel = ApplyForce(accel, avoidance);
+	accel = ApplyForce(accel, align);
+	accel = ApplyForce(accel, cohesion);
+	accel = ApplyForce(accel, avoidance);
 
 	accel *= 0.4;
 	vel += accel * dt;
