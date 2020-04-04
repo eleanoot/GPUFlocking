@@ -187,7 +187,7 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "dt"), dt);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSeeAhead"), 200);
 	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "noOfObstacles"), obstacleData.size());
-	flockShader->Execute(FLOCK_SIZE, 1, 1);
+	flockShader->Execute(FLOCK_SIZE / 128, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glFinish();
 	flockShader->Unbind();

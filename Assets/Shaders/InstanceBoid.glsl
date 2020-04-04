@@ -86,10 +86,10 @@ vec3 Separation(vec3 pos, vec3 vel, float groupNo)
 	{
 		if (i == gl_GlobalInvocationID.x)
 			continue;
-		vec3 otherPos = input_flock[i].pos;
+		vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + localID].pos;
 		float d = abs(distance(pos, otherPos));
 
-		float dis = groupNo == input_flock[i].groupNo ? sepDis : sepDis + 30;
+		float dis = groupNo == input_flock[i * gl_WorkGroupSize.x + localID].groupNo ? sepDis : sepDis + 30;
 		
 		if(d < dis && d > 0.0)
 		{
@@ -130,7 +130,7 @@ vec3 Alignment(vec3 pos, vec3 vel)
 	{
 		if (i == gl_GlobalInvocationID.x)
 			continue;
-		vec3 otherPos = input_flock[i].pos;
+		vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + localID].pos;
 		float d = abs(distance(pos, otherPos));
 
 		if (d < alignDis && d > 0.0)
@@ -167,7 +167,7 @@ vec3 Cohesion(vec3 pos, vec3 vel)
 	{
 		if (i == gl_GlobalInvocationID.x)
 			continue;
-		vec3 otherPos = input_flock[i].pos;
+		vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + localID].pos;
 		float d = abs(distance(pos, otherPos));
 
 		if (d < cohDis && d > 0.0)
@@ -263,9 +263,9 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 	avoidance *= avoidWeight;
 
 	accel = ApplyForce(accel, sep);
-	accel = ApplyForce(accel, align);
-	accel = ApplyForce(accel, cohesion);
-	accel = ApplyForce(accel, avoidance);
+	//accel = ApplyForce(accel, align);
+	//accel = ApplyForce(accel, cohesion);
+	//accel = ApplyForce(accel, avoidance);
 
 	accel *= 0.4;
 	vel += accel * dt;
