@@ -33,6 +33,8 @@ struct obstacle
 	float radius;
 };
 
+layout(local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
+
 layout(std140, binding = 0) buffer Flock_In
 {
 	flock_member input_flock[];
@@ -48,7 +50,7 @@ layout(std140, binding = 2) buffer Obstacles
 	obstacle obstacles[];
 };
 
-layout( local_size_x = 128, local_size_y = 1, local_size_z = 1 ) in;
+shared flock_member shared_member[gl_WorkGroupSize.x];
 
 vec3 Limit(vec3 v, float m)
 {
@@ -86,10 +88,10 @@ vec3 Separation(vec3 pos, vec3 vel, float groupNo)
 	{
 		if (i == gl_GlobalInvocationID.x)
 			continue;
-		vec3 otherPos = input_flock[i].pos;
+		vec3 otherPos = shared_member[i].pos;
 		float d = abs(distance(pos, otherPos));
 
-		float dis = groupNo == input_flock[i].groupNo ? sepDis : sepDis + 30;
+		float dis = groupNo == shared_member[i].groupNo ? sepDis : sepDis + 30;
 		
 		if(d < dis && d > 0.0)
 		{
@@ -263,9 +265,9 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 	avoidance *= avoidWeight;
 
 	accel = ApplyForce(accel, sep);
-	accel = ApplyForce(accel, align);
-	accel = ApplyForce(accel, cohesion);
-	accel = ApplyForce(accel, avoidance);
+	//accel = ApplyForce(accel, align);
+	//accel = ApplyForce(accel, cohesion);
+	//accel = ApplyForce(accel, avoidance);
 
 	accel *= 0.4;
 	vel += accel * dt;
@@ -280,8 +282,23 @@ void main()
 	uint gid = gl_GlobalInvocationID.x;
 	uint lid = gl_LocalInvocationID.x;
 	flock_member thisMember = input_flock[gid];
+	vec3 newVel = vec3(0, 0, 0);
+	for (int i = 0; i < gl_NumWorkGroups.x; i++)
+	{
+		flock_member them = input_flock[i * gl_WorkGroupSize.x + lid];
+		shared_member[lid] = them;
+		memoryBarrierShared();
+		barrier(); // wait until all shader invocations have copied flock members into this
+	
+		for (int j = 0; j < gl_WorkGroupSize.x; j++)
+		{
+			newVel = Update(thisMember.pos, thisMember.vel, thisMember.accel, thisMember.groupNo);
+			barrier();
+		}
+	
+	}
 
-	vec3 newVel = Update(thisMember.pos, thisMember.vel, thisMember.accel, thisMember.groupNo);
+
 	input_flock[gid].accel = vec3(0,0,0);
 	output_flock[gid].accel = vec3(0,0,0);
 
