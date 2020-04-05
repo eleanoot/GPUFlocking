@@ -183,7 +183,7 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohWeight"), 25);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "avoidWeight"), 100);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 200);
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 70);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 150);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "dt"), dt);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSeeAhead"), 200);
 	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "noOfObstacles"), obstacleData.size());

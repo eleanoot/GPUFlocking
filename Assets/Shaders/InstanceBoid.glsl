@@ -312,7 +312,7 @@ void main()
 	if (pos.z > 1010)
 		pos.z -= 2000;
 
-	output_flock[gid].vel = newVel * 0.999;
+	output_flock[gid].vel = newVel;
 	output_flock[gid].pos = pos;
 
 	output_flock[gid].angle = Angle(newVel);
