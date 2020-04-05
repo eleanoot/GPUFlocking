@@ -3,7 +3,8 @@
 using namespace NCL;
 using namespace NCL::CSC8503;
 
-#define FLOCK_SIZE 2048
+#define FLOCK_SIZE 256
+#define WORK_GROUP_SIZE 128
 
 FlockSystem::FlockSystem()
 {
@@ -136,7 +137,7 @@ void FlockSystem::UpdateGPUFlock(float dt)
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSeeAhead"), 200);
 	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "noOfObstacles"), obstacleData.size());
 
-	flockShader->Execute(FLOCK_SIZE / 128, 1, 1);
+	flockShader->Execute(FLOCK_SIZE / WORK_GROUP_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glFinish();
 	flockShader->Unbind();
@@ -187,7 +188,7 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "dt"), dt);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSeeAhead"), 200);
 	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "noOfObstacles"), obstacleData.size());
-	flockShader->Execute(FLOCK_SIZE / 128, 1, 1);
+	flockShader->Execute(FLOCK_SIZE / WORK_GROUP_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glFinish();
 	flockShader->Unbind();
