@@ -86,12 +86,12 @@ vec3 Separation(vec3 pos, vec3 vel, float groupNo)
 	{
 		for (int j = 0; j < gl_WorkGroupSize.x; j++)
 		{
-			vec3 otherPos = input_flock[j].pos;
+			vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + j].pos;
 			if (i * gl_WorkGroupSize.x + j != gl_GlobalInvocationID.x)
 			{
 				float d = abs(distance(pos, otherPos));
 
-				float dis = groupNo == input_flock[j].groupNo ? sepDis : sepDis + 30;
+				float dis = groupNo == input_flock[i * gl_WorkGroupSize.x + j].groupNo ? sepDis : sepDis + 30;
 
 				if (d < dis && d > 0.0)
 				{
@@ -136,14 +136,14 @@ vec3 Alignment(vec3 pos, vec3 vel)
 	{
 		for (int j = 0; j < gl_WorkGroupSize.x; j++)
 		{
-			vec3 otherPos = input_flock[j].pos;
+			vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + j].pos;
 			if (i * gl_WorkGroupSize.x + j != gl_GlobalInvocationID.x)
 			{
 				float d = abs(distance(pos, otherPos));
 
 				if (d < alignDis && d > 0.0)
 				{
-					sum += input_flock[j].vel;
+					sum += input_flock[i * gl_WorkGroupSize.x + j].vel;
 					count += 1.0;
 				}
 			}
@@ -177,7 +177,7 @@ vec3 Cohesion(vec3 pos, vec3 vel)
 	{
 		for (int j = 0; j < gl_WorkGroupSize.x; j++)
 		{
-			vec3 otherPos = input_flock[j].pos;
+			vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + j].pos;
 			if (i * gl_WorkGroupSize.x + j != gl_GlobalInvocationID.x)
 			{
 				float d = abs(distance(pos, otherPos));
