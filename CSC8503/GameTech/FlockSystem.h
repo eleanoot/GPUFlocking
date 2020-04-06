@@ -37,6 +37,8 @@ namespace NCL {
 			void InitInstanceFlock(OGLMesh* m, RenderObject* r);
 			void UpdateInstanceFlock(float dt);
 
+			void SetFlockSize(int size) { flockSize = size; }
+
 			struct flock_member {
 				Vector3 position;
 				float angle;
@@ -69,6 +71,8 @@ namespace NCL {
 
 			std::vector<Obstacle*> obstacles;
 			obstacle* obPtr;
+
+			int flockSize;
 
 		};
 	}

@@ -3,7 +3,6 @@
 using namespace NCL;
 using namespace NCL::CSC8503;
 
-#define FLOCK_SIZE 256
 #define WORK_GROUP_SIZE 128
 
 FlockSystem::FlockSystem()
@@ -26,12 +25,12 @@ void FlockSystem::InitGPU()
 
 	glGenBuffers(2, flockSSBO);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[0]);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * FLOCK_SIZE, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-	fmPtrOne = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * flockSize, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	fmPtrOne = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * flockSize, flags);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[1]);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * FLOCK_SIZE, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-	fmPtrTwo = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * flockSize, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	fmPtrTwo = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * flockSize, flags);
 
 	bufferIndex = 0;
 
@@ -47,7 +46,7 @@ void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
 	boidMesh = m;
 	flock_member fm;
 	// set up the flock member data
-	for (int i = 0; i < FLOCK_SIZE; i++)
+	for (int i = 0; i < flockSize; i++)
 	{
 		fm.position = Vector3(rand() % 1000, 0, rand() % 1000);
 		fm.velocity = Vector3(rand() % 6 + (-3) + 0.01 * 10, 0, rand() % 6 + (-3) + 0.01 * 10);
@@ -62,12 +61,12 @@ void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
 
 	glGenBuffers(2, flockSSBO);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[0]);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * FLOCK_SIZE, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-	fmPtrOne = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * flockSize, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	fmPtrOne = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * flockSize, flags);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[1]);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * FLOCK_SIZE, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-	fmPtrTwo = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * FLOCK_SIZE, flags);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * flockSize, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	fmPtrTwo = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * flockSize, flags);
 
 	bufferIndex = 0;
 	r->SetSSBO(flockSSBO[0], flockSSBO[1]);
@@ -77,7 +76,7 @@ void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
 	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(obstacle) * obstacleData.size(), &obstacleData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 	obPtr = (obstacle*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(obstacle) * obstacles.size(), flags);
 
-	r->SetInstances(FLOCK_SIZE);
+	r->SetInstances(flockSize);
 }
 
 void FlockSystem::AddBoid(GPUBoid* b)
@@ -137,7 +136,7 @@ void FlockSystem::UpdateGPUFlock(float dt)
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSeeAhead"), 200);
 	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "noOfObstacles"), obstacleData.size());
 
-	flockShader->Execute(FLOCK_SIZE / WORK_GROUP_SIZE, 1, 1);
+	flockShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glFinish();
 	flockShader->Unbind();
@@ -188,7 +187,7 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "dt"), dt);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSeeAhead"), 200);
 	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "noOfObstacles"), obstacleData.size());
-	flockShader->Execute(FLOCK_SIZE / WORK_GROUP_SIZE, 1, 1);
+	flockShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glFinish();
 	flockShader->Unbind();

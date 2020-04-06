@@ -20,7 +20,9 @@ FlockingSim::FlockingSim()
 	inSelectionMode = false;
 
 	useGPU = true;
-	useInstancing = false;
+	useInstancing = true;
+
+	flockSize = 128;
 
 	Debug::SetRenderer(renderer);
 
@@ -85,6 +87,8 @@ void FlockingSim::UpdateGame(float dt)
 		else
 			flock->UpdateGPUFlock(dt);
 	}
+
+	Debug::Print("Boids: " + std::to_string(flockSize), Vector2(10, 40));
 	
 
 	world->UpdateWorld(dt);
@@ -97,6 +101,8 @@ void FlockingSim::UpdateGame(float dt)
 
 void FlockingSim::UpdateKeys() {
 	if (Window::GetKeyboard()->KeyPressed(KeyboardKeys::F1)) {
+		flockSize += 128;
+		flock->SetFlockSize(flockSize);
 		InitWorld(); //We can reset the simulation at any time with F1
 	}
 
@@ -130,10 +136,11 @@ void FlockingSim::InitWorld() {
 
 	AddFloorToWorld(Vector3(0, -8, 0));
 	flock = new FlockSystem();
+	flock->SetFlockSize(flockSize);
 
 	if (!useGPU)
 	{
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < flockSize; i++)
 		{
 			CPUBoid* boid = new CPUBoid(rand() % 200, rand() % 200, gooseMesh, basicShader);
 			flock->AddBoid(boid);
@@ -146,7 +153,7 @@ void FlockingSim::InitWorld() {
 	{
 		if (!useInstancing)
 		{
-			for (int i = 0; i < 256; i++)
+			for (int i = 0; i < flockSize; i++)
 			{
 				GPUBoid* boid = new GPUBoid(rand() % 200, rand() % 200, gooseMesh, basicShader);
 				flock->AddBoid(boid);

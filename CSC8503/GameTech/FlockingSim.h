@@ -52,6 +52,8 @@ namespace NCL {
 			bool useInstancing = false;
 
 			GameObject* instanceGoose;
+
+			int flockSize;
 		};
 	}
 }
