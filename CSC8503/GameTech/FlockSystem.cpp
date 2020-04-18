@@ -1,5 +1,6 @@
 #include "FlockSystem.h"
 #include "../GameTech/CPUBoid.h"
+#include <algorithm>
 using namespace NCL;
 using namespace NCL::CSC8503;
 
@@ -77,6 +78,64 @@ void FlockSystem::InitInstanceFlock(OGLMesh* m, RenderObject* r)
 	obPtr = (obstacle*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(obstacle) * obstacles.size(), flags);
 
 	r->SetInstances(flockSize);
+}
+
+void FlockSystem::InitPartitionFlock()
+{
+	// init boid distances, cell size, ratio 
+	sepDis = 20;
+	alignDis = 40;
+	cohDis = 15;
+
+	cellSize = max(max(sepDis, alignDis), cohDis);
+	cellRatio = 1.0f / cellSize;
+
+	Vector2 worldBounds = Vector2(1000, 1000);
+	cellCounts = Vector2(ceil(worldBounds.x / cellSize), ceil(worldBounds.y / cellSize));
+	cellCount = cellCounts.x * cellCounts.y;
+
+	// shader setup
+	flockShader = new OGLComputeShader("PartitionBoid.glsl");
+	cellCountShader = new OGLComputeShader("CellCounts.glsl");
+	indexShader = new OGLComputeShader("Indexer.glsl");
+
+	// bind counts, offsets, ranges, indexes to shader buffers 
+	glGenBuffers(1, &countsBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, countsBuffer);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCount, NULL, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	
+	glGenBuffers(1, &offsetsBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, offsetsBuffer);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCount, NULL, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+
+	glGenBuffers(1, &rangesBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, rangesBuffer);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(range) * cellCount, NULL, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+
+	glGenBuffers(1, &indexBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, indexBuffer);
+
+	// create the boid objects - done in FlockingSim still 
+	flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
+
+	glGenBuffers(2, flockSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[0]);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * flockSize, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	fmPtrOne = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * flockSize, flags);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[1]);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(flock_member) * flockSize, &gpuData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	fmPtrTwo = (flock_member*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(flock_member) * flockSize, flags);
+
+	bufferIndex = 0;
+
+	glGenBuffers(1, &obstacleSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, obstacleSSBO);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(obstacle) * obstacleData.size(), &obstacleData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	obPtr = (obstacle*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(obstacle) * obstacles.size(), flags);
+
+
+	// allocate cell buffers
 }
 
 void FlockSystem::AddBoid(GPUBoid* b)

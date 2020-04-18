@@ -37,6 +37,8 @@ namespace NCL {
 			void InitInstanceFlock(OGLMesh* m, RenderObject* r);
 			void UpdateInstanceFlock(float dt);
 
+			void InitPartitionFlock();
+
 			void SetFlockSize(int size) { flockSize = size; }
 
 			struct flock_member {
@@ -51,6 +53,11 @@ namespace NCL {
 			struct obstacle {
 				Vector3 centre;
 				float radius;
+			};
+
+			struct range {
+				GLuint offset;
+				GLuint count;
 			};
 
 		protected:
@@ -73,6 +80,23 @@ namespace NCL {
 			obstacle* obPtr;
 
 			int flockSize;
+
+			float sepDis;
+			float alignDis;
+			float cohDis;
+
+			// For partitioning 
+			float cellSize;
+			float cellRatio;
+			Vector2 cellCounts;
+			GLuint cellCount;
+
+			OGLComputeShader* cellCountShader = nullptr;
+			OGLComputeShader* indexShader = nullptr;
+			GLuint countsBuffer;
+			GLuint offsetsBuffer;
+			GLuint rangesBuffer;
+			GLuint indexBuffer;
 
 		};
 	}

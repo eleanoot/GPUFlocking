@@ -20,7 +20,8 @@ FlockingSim::FlockingSim()
 	inSelectionMode = false;
 
 	useGPU = true;
-	useInstancing = true;
+	useInstancing = false;
+	usePartitioning = true;
 
 	flockSize = 128;
 
@@ -85,7 +86,8 @@ void FlockingSim::UpdateGame(float dt)
 		if (useInstancing)
 			flock->UpdateInstanceFlock(dt);
 		else
-			flock->UpdateGPUFlock(dt);
+			if (!usePartitioning)
+				flock->UpdateGPUFlock(dt);
 	}
 
 	Debug::Print("Boids: " + std::to_string(flockSize), Vector2(10, 40));
@@ -153,16 +155,32 @@ void FlockingSim::InitWorld() {
 	{
 		if (!useInstancing)
 		{
-			for (int i = 0; i < flockSize; i++)
+			if (!usePartitioning)
 			{
-				GPUBoid* boid = new GPUBoid(rand() % 200, rand() % 200, gooseMesh, basicShader);
-				flock->AddBoid(boid);
-				world->AddGameObject(boid);
+				for (int i = 0; i < flockSize; i++)
+				{
+					GPUBoid* boid = new GPUBoid(rand() % 200, rand() % 200, gooseMesh, basicShader);
+					flock->AddBoid(boid);
+					world->AddGameObject(boid);
+				}
+
+				InitObstacles();
+
+				flock->InitGPU();
+			}
+			else
+			{
+				for (int i = 0; i < flockSize; i++)
+				{
+					GPUBoid* boid = new GPUBoid(rand() % 200, rand() % 200, gooseMesh, basicShader);
+					flock->AddBoid(boid);
+					world->AddGameObject(boid);
+				}
+
+				InitObstacles();
+				flock->InitPartitionFlock();
 			}
 			
-			InitObstacles();
-
-			flock->InitGPU();
 		}
 		else
 		{

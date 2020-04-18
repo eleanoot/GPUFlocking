@@ -50,6 +50,7 @@ namespace NCL {
 			FlockSystem* flock;
 			bool useGPU = false;
 			bool useInstancing = false;
+			bool usePartitioning = false;
 
 			GameObject* instanceGoose;
 

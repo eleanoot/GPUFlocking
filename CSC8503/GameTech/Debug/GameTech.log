@@ -1,11 +1,13 @@
-﻿  FlockingSim.cpp
+﻿  FlockSystem.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\winsock2.h(17,1): warning C4005: '_WINSOCKAPI_': macro redefinition
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp : message : see previous definition of '_WINSOCKAPI_'
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(145,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(145,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(158,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(158,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(220,77): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(220,65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockingSim.cpp(220,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp : message : see previous definition of '_WINSOCKAPI_'
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(52,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(52,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(53,77): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(53,43): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(56,16): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(95,27): warning C4244: '=': conversion from 'float' to 'GLuint', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(150,15): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(168,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\CSC8503\GameTech\FlockSystem.cpp(205,20): warning C4018: '<': signed/unsigned mismatch
   GameTech.vcxproj -> C:\Users\Eleanor\Documents\Computer Science\Stage 4\Dissertation\GPUFlocking\Win32\Debug\GameTech2.exe
