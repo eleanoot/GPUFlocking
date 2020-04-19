@@ -313,6 +313,11 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 
 	// dispatch index shader
 	indexShader->Bind();
+	glUniform1f(glGetUniformLocation(cellCountShader->GetProgramID(), "ratio"), cellRatio);
+	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "numBoids"), flockSize);
+	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCount"), cellCount);
+	glUniform2ui(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
+
 	indexShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	indexShader->Unbind();
