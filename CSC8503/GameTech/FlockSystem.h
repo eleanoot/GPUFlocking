@@ -99,6 +99,10 @@ namespace NCL {
 			GLuint rangesBuffer;
 			GLuint indexBuffer;
 
+			GLuint* offsets;
+			GLuint* oPtr;
+			range* ranges;
+
 		};
 	}
 }

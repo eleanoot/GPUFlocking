@@ -99,6 +99,8 @@ void FlockSystem::InitPartitionFlock()
 	cellCountShader = new OGLComputeShader("CellCounts.glsl");
 	indexShader = new OGLComputeShader("Indexer.glsl");
 
+	flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
+
 	// bind counts, offsets, ranges, indexes to shader buffers 
 	glGenBuffers(1, &countsBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, countsBuffer);
@@ -107,6 +109,8 @@ void FlockSystem::InitPartitionFlock()
 	glGenBuffers(1, &offsetsBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, offsetsBuffer);
 	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCount, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	oPtr = (GLuint*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLuint) * cellCount, flags);
+
 
 	glGenBuffers(1, &rangesBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, rangesBuffer);
@@ -116,7 +120,7 @@ void FlockSystem::InitPartitionFlock()
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, indexBuffer);
 
 	// create the boid objects - done in FlockingSim still 
-	flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
+
 
 	glGenBuffers(2, flockSSBO);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, flockSSBO[0]);
@@ -140,6 +144,12 @@ void FlockSystem::InitPartitionFlock()
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, offsetsBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, rangesBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 8, indexBuffer);
+
+	if (offsets) delete[] offsets;
+	offsets = new GLuint[cellCount];
+
+	if (ranges) delete[] ranges;
+	ranges = new range[cellCount];
 }
 
 void FlockSystem::AddBoid(GPUBoid* b)
@@ -281,14 +291,30 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	cellCountShader->Unbind();
 
 	// get counts based on ranges 
+	GLuint* counts = (GLuint*)ranges;
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, countsBuffer);
+	glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLuint) * cellCount, counts);
 
 	// form offset buffer from the counts
+	GLuint rollingOffset = 0;
+	for (int i = 0; i < cellCount; ++i)
+	{
+		offsets[i] = rollingOffset;
+		rollingOffset += counts[i];
+	}
+
+	/*glBindBuffer(GL_SHADER_STORAGE_BUFFER, offsetsBuffer);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLuint) * cellCount, &offsets);*/
+	for (int i = 0; i < cellCount; i++)
+	{
+		oPtr[i] = offsets[i];
+	}
 
 	// dispatch index shader
 
 	// memory barrier
 
-	// dispatch movemnt shader
+	// dispatch boid rules shader
 }
 
 
