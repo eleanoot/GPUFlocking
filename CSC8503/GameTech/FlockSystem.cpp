@@ -135,7 +135,11 @@ void FlockSystem::InitPartitionFlock()
 	obPtr = (obstacle*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(obstacle) * obstacles.size(), flags);
 
 
-	// allocate cell buffers
+	// need to bind them
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, countsBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, offsetsBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, rangesBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 8, indexBuffer);
 }
 
 void FlockSystem::AddBoid(GPUBoid* b)
@@ -255,6 +259,35 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 
 }
 
+void FlockSystem::UpdatePartitionFlock(float dt)
+{
+	// bind buffers for position in and out 
+	obstacles[0]->UpdateObstacle(dt);
+	obPtr[0].centre = obstacles[0]->GetTransform().GetWorldPosition();
+	// Execute the compute shader to get the positions
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, flockSSBO[bufferIndex]);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, flockSSBO[bufferIndex ^ 1]);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, obstacleSSBO);
 
+	// dispatch cell count shader
+	cellCountShader->Bind();
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "ratio"), cellRatio);
+	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "numBoids"), flockSize);
+	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "cellCount"), cellCount);
+	glUniform2f(glGetUniformLocation(flockShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
+	cellCountShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	cellCountShader->Unbind();
+
+	// get counts based on ranges 
+
+	// form offset buffer from the counts
+
+	// dispatch index shader
+
+	// memory barrier
+
+	// dispatch movemnt shader
+}
 
 

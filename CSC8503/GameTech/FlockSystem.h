@@ -38,6 +38,7 @@ namespace NCL {
 			void UpdateInstanceFlock(float dt);
 
 			void InitPartitionFlock();
+			void UpdatePartitionFlock(float dt);
 
 			void SetFlockSize(int size) { flockSize = size; }
 
@@ -89,7 +90,7 @@ namespace NCL {
 			float cellSize;
 			float cellRatio;
 			Vector2 cellCounts;
-			GLuint cellCount;
+			int cellCount;
 
 			OGLComputeShader* cellCountShader = nullptr;
 			OGLComputeShader* indexShader = nullptr;
