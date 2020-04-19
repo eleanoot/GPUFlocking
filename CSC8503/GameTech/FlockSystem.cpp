@@ -118,6 +118,7 @@ void FlockSystem::InitPartitionFlock()
 
 	glGenBuffers(1, &indexBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, indexBuffer);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * flockSize, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
 	// create the boid objects - done in FlockingSim still 
 
@@ -311,10 +312,55 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	}
 
 	// dispatch index shader
+	indexShader->Bind();
+	indexShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	indexShader->Unbind();
 
-	// memory barrier
+	// write offsets again in case of mutation
+	for (int i = 0; i < cellCount; i++)
+	{
+		oPtr[i] = offsets[i];
+	}
 
 	// dispatch boid rules shader
+	flockShader->Bind();
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepDis"), 20);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignDis"), 40);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohDis"), 15);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepWeight"), 150);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignWeight"), 50);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "avoidWeight"), 100);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "cohWeight"), 25);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSpeed"), 200);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxForce"), 70);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "dt"), dt);
+	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "maxSeeAhead"), 200);
+	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "noOfObstacles"), obstacleData.size());
+
+	flockShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	flockShader->Unbind();
+
+	bufferIndex ^= 1;
+
+	for (int i = 0; i < gpuBoids.size(); i++)
+	{
+		if (bufferIndex == 0)
+		{
+			gpuBoids[i]->GetTransform().SetWorldPosition(fmPtrTwo[i].position);
+			float theta = fmPtrTwo[i].angle;
+			gpuBoids[i]->GetRenderObject()->GetTransform()->SetLocalOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0, 1, 0), theta));
+		}
+
+		else
+		{
+			gpuBoids[i]->GetTransform().SetWorldPosition(fmPtrOne[i].position);
+			float theta = fmPtrOne[i].angle;
+			gpuBoids[i]->GetRenderObject()->GetTransform()->SetLocalOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0, 1, 0), theta));
+		}
+
+	}
 }
 
 
