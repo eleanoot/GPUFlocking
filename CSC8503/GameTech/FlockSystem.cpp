@@ -102,15 +102,15 @@ void FlockSystem::InitPartitionFlock()
 	// bind counts, offsets, ranges, indexes to shader buffers 
 	glGenBuffers(1, &countsBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, countsBuffer);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCount, NULL, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCount, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 	
 	glGenBuffers(1, &offsetsBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, offsetsBuffer);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCount, NULL, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCount, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
 	glGenBuffers(1, &rangesBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, rangesBuffer);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(range) * cellCount, NULL, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(range) * cellCount, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
 	glGenBuffers(1, &indexBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, indexBuffer);
@@ -269,12 +269,13 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, flockSSBO[bufferIndex ^ 1]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, obstacleSSBO);
 
+
 	// dispatch cell count shader
 	cellCountShader->Bind();
-	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "ratio"), cellRatio);
-	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "numBoids"), flockSize);
-	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "cellCount"), cellCount);
-	glUniform2f(glGetUniformLocation(flockShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
+	glUniform1f(glGetUniformLocation(cellCountShader->GetProgramID(), "ratio"), cellRatio);
+	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "numBoids"), flockSize);
+	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCount"), cellCount);
+	glUniform2ui(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
 	cellCountShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	cellCountShader->Unbind();

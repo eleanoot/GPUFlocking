@@ -88,6 +88,8 @@ void FlockingSim::UpdateGame(float dt)
 		else
 			if (!usePartitioning)
 				flock->UpdateGPUFlock(dt);
+			else
+				flock->UpdatePartitionFlock(dt);
 	}
 
 	Debug::Print("Boids: " + std::to_string(flockSize), Vector2(10, 40));
