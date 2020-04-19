@@ -17,6 +17,11 @@ uniform float dt;
 uniform float maxSeeAhead;
 uniform int noOfObstacles;
 
+uniform int numBoids;
+uniform float ratio;
+uniform uvec2 cellCounts;
+uniform int cellCount;
+
 struct flock_member
 {
 	vec3 pos;
@@ -48,7 +53,20 @@ layout(std140, binding = 2) buffer Obstacles
 	obstacle obstacles[];
 };
 
+layout(std140, binding = 5) buffer BoidCounts
+{
+	uint boid_counts[];
+};
 
+layout(std140, binding = 6) buffer BoidOffsets
+{
+	uint boid_offsets[];
+};
+
+layout(std140, binding = 8) buffer BoidIndex
+{
+	uint boid_indexes[];
+};
 
 layout( local_size_x = 128, local_size_y = 1, local_size_z = 1 ) in;
 
@@ -75,6 +93,29 @@ vec3 Seek(vec3 pos, vec3 vel, vec3 target)
 	output_flock[gid].accel = desired - vel;
 	Limit(output_flock[gid].accel, maxForce);
 	return output_flock[gid].accel;
+}
+
+vec3 Separation(vec3 pos, vec3 vel, float groupNo, flock_member otherBoid, inout int count)
+{
+	vec3 steering = vec3(0, 0, 0);
+
+	vec3 otherPos = otherBoid.pos;
+
+	float d = abs(distance(pos, otherPos));
+
+	float dis = groupNo == otherBoid.groupNo ? sepDis : sepDis + 30;
+
+	if (d < dis && d > 0.0)
+	{
+		vec3 diff = vec3(0, 0, 0);
+		diff = pos - otherPos;
+		diff = normalize(diff);
+		diff /= d;
+		steering += diff;
+		count++;
+	}
+
+	return steering;
 }
 
 vec3 Separation(vec3 pos, vec3 vel, float groupNo)
@@ -268,7 +309,52 @@ float Angle(vec3 vel)
 
 vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 {
-	vec3 sep = Separation(pos, vel, groupNo);
+	uvec2 cell = uvec2(pos.xz * ratio);
+
+	vec3 sep = vec3(0, 0, 0);
+	int sepCount = 0;
+
+	for (int y = -1; y <= 1; ++y)
+	{
+		for (int x = -1; x <= 1; ++x)
+		{
+			uint cellNum = (cell.x + x + (cell.y + y) * cellCounts.x + cellCount) % cellCount;
+			uint i = boid_offsets[cellNum];
+			uint last = i + boid_counts[cellNum];
+
+			for (; i < last; ++i)
+			{
+				flock_member otherBoid = input_flock[boid_indexes[i]];
+				sep += Separation(pos, vel, groupNo, otherBoid, sepCount);
+			}
+		}
+	}
+
+	if (sepCount > 0.0)
+	{
+		sep /= sepCount;
+	}
+
+	if (length(sep) > 0.0)
+	{
+		sep = normalize(sep);
+		sep *= maxSpeed;
+		sep -= vel;
+		sep = Limit(sep, maxForce);
+	}
+
+	sep *= sepWeight;
+
+	accel = ApplyForce(accel, sep);
+
+	accel *= 0.4;
+	vel += accel * dt;
+	Limit(vel, maxSpeed);
+
+
+	return vel;
+
+	/*vec3 sep = Separation(pos, vel, groupNo);
 	vec3 align = Alignment(pos, vel);
 	vec3 cohesion = Cohesion(pos, vel);
 	vec3 avoidance = Avoidance(pos, vel);
@@ -287,13 +373,44 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 	vel += accel * dt;
 	Limit(vel, maxSpeed);
 
-	return vel;
+	return vel;*/
+
 }
 
 
 void main()
 {
 	uint gid = gl_GlobalInvocationID.x;
+
+	if (gid >= numBoids) return;
+
+	flock_member thisBoid = input_flock[gid];
+
+	uvec2 cell = uvec2(thisBoid.pos.xz * ratio);
+
+	vec3 newVel = Update(thisBoid.pos, thisBoid.vel, thisBoid.accel, thisBoid.groupNo);
+	input_flock[gid].accel = vec3(0, 0, 0);
+	output_flock[gid].accel = vec3(0, 0, 0);
+
+	vec3 pos = thisBoid.pos;
+	pos += newVel * dt;
+
+	if (pos.x < -1010)
+		pos.x += 2000;
+	if (pos.z < -1010)
+		pos.z += 2000;
+
+	if (pos.x > 1010)
+		pos.x -= 2000;
+	if (pos.z > 1010)
+		pos.z -= 2000;
+
+	output_flock[gid].vel = newVel;
+	output_flock[gid].pos = pos;
+
+	output_flock[gid].angle = Angle(newVel);
+
+	/*uint gid = gl_GlobalInvocationID.x;
 	uint lid = gl_LocalInvocationID.x;
 	flock_member thisMember = input_flock[gid];
 
@@ -317,5 +434,5 @@ void main()
 	output_flock[gid].vel = newVel;
 	output_flock[gid].pos = pos;
 
-	output_flock[gid].angle = Angle(newVel);
+	output_flock[gid].angle = Angle(newVel);*/
 }
