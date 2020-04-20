@@ -118,56 +118,6 @@ vec3 Separation(vec3 pos, vec3 vel, float groupNo, flock_member otherBoid, inout
 	return steering;
 }
 
-vec3 Separation(vec3 pos, vec3 vel, float groupNo)
-{
-	uint localID = gl_LocalInvocationID.x;
-
-	vec3 steering = vec3(0.0,0.0,0.0);
-	float count = 0.0;
-
-	for (uint i = 0; i < gl_NumWorkGroups.x; i++)
-	{
-		for (int j = 0; j < gl_WorkGroupSize.x; j++)
-		{
-			vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + j].pos;
-			if (i * gl_WorkGroupSize.x + j != gl_GlobalInvocationID.x)
-			{
-				float d = abs(distance(pos, otherPos));
-
-				float dis = groupNo == input_flock[i * gl_WorkGroupSize.x + j].groupNo ? sepDis : sepDis + 30;
-
-				if (d < dis && d > 0.0)
-				{
-					vec3 diff = vec3(0, 0, 0);
-					diff = pos - otherPos;
-					diff = normalize(diff);
-					diff /= d;
-					steering += diff;
-					count += 1.0;
-				}
-			}
-			
-		}
-		
-	}	
-
-
-	if (count > 0.0)
-	{
-		steering /= count;
-	}
-
-	if(length(steering) > 0.0)
-	{
-		steering = normalize(steering);
-		steering *= maxSpeed;
-		steering -= vel;
-		steering = Limit(steering, maxForce);
-	}
-
-	return steering;
-}
-
 vec3 Alignment(vec3 pos, vec3 vel, flock_member otherBoid, inout int alignCount)
 {
 	vec3 otherPos = otherBoid.pos;
@@ -181,48 +131,6 @@ vec3 Alignment(vec3 pos, vec3 vel, flock_member otherBoid, inout int alignCount)
 	}
 
 	return sum;
-}
-
-vec3 Alignment(vec3 pos, vec3 vel)
-{
-	uint localID = gl_LocalInvocationID.x;
-
-	vec3 sum = vec3(0.0,0.0,0.0);
-	float count = 0.0;
-
-	for (uint i = 0; i < gl_NumWorkGroups.x; i++)
-	{
-		for (int j = 0; j < gl_WorkGroupSize.x; j++)
-		{
-			vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + j].pos;
-			if (i * gl_WorkGroupSize.x + j != gl_GlobalInvocationID.x)
-			{
-				float d = abs(distance(pos, otherPos));
-
-				if (d < alignDis && d > 0.0)
-				{
-					sum += input_flock[i * gl_WorkGroupSize.x + j].vel;
-					count += 1.0;
-				}
-			}
-		}
-	}
-
-	if (count > 0.0)
-	{
-		sum /= count;
-		sum = normalize(sum);
-		sum *= maxSpeed;
-
-		vec3 steering = sum - vel;
-		steering = Limit(steering, maxForce);
-
-		return steering;
-	}
-	else
-	{
-		return vec3(0.0,0.0,0.0);
-	}
 }
 
 vec3 Cohesion(vec3 pos, vec3 vel, flock_member otherBoid, inout int cohCount)
@@ -239,41 +147,6 @@ vec3 Cohesion(vec3 pos, vec3 vel, flock_member otherBoid, inout int cohCount)
 	}
 
 	return steering;
-}
-
-vec3 Cohesion(vec3 pos, vec3 vel)
-{
-	uint localID = gl_LocalInvocationID.x;
-
-	vec3 steering = vec3(0.0,0.0,0.0);
-	float count = 0.0;
-	for (uint i = 0; i < gl_NumWorkGroups.x; i++)
-	{
-		for (int j = 0; j < gl_WorkGroupSize.x; j++)
-		{
-			vec3 otherPos = input_flock[i * gl_WorkGroupSize.x + j].pos;
-			if (i * gl_WorkGroupSize.x + j != gl_GlobalInvocationID.x)
-			{
-				float d = abs(distance(pos, otherPos));
-
-				if (d < cohDis && d > 0.0)
-				{
-					steering += otherPos;
-					count += 1.0;
-				}
-			}
-		}
-	}
-
-	if(count > 0.0)
-	{
-		steering /= count;
-		return Seek(pos, vel, steering);
-	}
-	else
-	{
-		return vec3(0.0,0.0,0.0);
-	}
 }
 
 bool LineCircleIntersect(vec3 ahead, vec3 ahead2, obstacle nextOb, vec3 pos)
@@ -334,12 +207,11 @@ float Angle(vec3 vel)
 {
 	vec3 tempVel = normalize(vel);
 	return atan(tempVel.x, -tempVel.z);
-	//return atan(tempVel.z, tempVel.x);
-	//return atan(vel.x, vel.z) * 180 / 3.14;
 }
 
 vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 {
+	// Find the cell this boid is in 
 	uvec2 cell = uvec2(pos.xz * ratio);
 
 	vec3 sep = vec3(0, 0, 0);
@@ -349,23 +221,31 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 	vec3 coh = vec3(0, 0, 0);
 	int cohCount = 0;
 
+	// Loop around each of the cells surrounding this one, including this cell 
+	// This will take boids one by one and calculate their contribution to each rule velocity 
+	// So do the mass rule value editing (based on neighbour counts etc) afterwards
 	for (int y = -1; y <= 1; ++y)
 	{
 		for (int x = -1; x <= 1; ++x)
 		{
 			uint cellNum = (cell.x + x + (cell.y + y) * cellCounts.x + cellCount) % cellCount;
-			uint i = boid_offsets[cellNum];
-			uint last = i + boid_counts[cellNum];
+			uint i = boid_offsets[cellNum]; // cell we're checking
+			uint last = i + boid_counts[cellNum]; // how many boids are in there?
 
 			for (; i < last; ++i)
 			{
+				// boid_indexes lets us go check which single boid we're talking about right now
 				flock_member otherBoid = input_flock[boid_indexes[i]];
 				sep += Separation(pos, vel, groupNo, otherBoid, sepCount);
 				align += Alignment(pos, vel, otherBoid, alignCount);
 				coh += Cohesion(pos, vel, otherBoid, cohCount);
+
+				// avoidance?
 			}
 		}
 	}
+
+	// All neighbours checked, limit the rule velocities
 
 	if (sepCount > 0.0)
 	{
@@ -410,28 +290,6 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 
 
 	return vel;
-
-	/*vec3 sep = Separation(pos, vel, groupNo);
-	vec3 align = Alignment(pos, vel);
-	vec3 cohesion = Cohesion(pos, vel);
-	vec3 avoidance = Avoidance(pos, vel);
-
-	sep *= sepWeight;
-	align *= alignWeight;
-	cohesion *= cohWeight;
-	avoidance *= avoidWeight;
-
-	accel = ApplyForce(accel, sep);
-	accel = ApplyForce(accel, align);
-	accel = ApplyForce(accel, cohesion);
-	accel = ApplyForce(accel, avoidance);
-
-	accel *= 0.4;
-	vel += accel * dt;
-	Limit(vel, maxSpeed);
-
-	return vel;*/
-
 }
 
 
@@ -442,8 +300,6 @@ void main()
 	if (gid >= numBoids) return;
 
 	flock_member thisBoid = input_flock[gid];
-
-	uvec2 cell = uvec2(thisBoid.pos.xz * ratio);
 
 	vec3 newVel = Update(thisBoid.pos, thisBoid.vel, thisBoid.accel, thisBoid.groupNo);
 	input_flock[gid].accel = vec3(0, 0, 0);
@@ -466,30 +322,4 @@ void main()
 	output_flock[gid].pos = pos;
 
 	output_flock[gid].angle = Angle(newVel);
-
-	/*uint gid = gl_GlobalInvocationID.x;
-	uint lid = gl_LocalInvocationID.x;
-	flock_member thisMember = input_flock[gid];
-
-	vec3 newVel = Update(thisMember.pos, thisMember.vel, thisMember.accel, thisMember.groupNo);
-	input_flock[gid].accel = vec3(0,0,0);
-	output_flock[gid].accel = vec3(0,0,0);
-
-	vec3 pos = thisMember.pos;
-	pos += newVel * dt;
-
-	if (pos.x < -1010)
-		pos.x += 2000;
-	if (pos.z < -1010)
-		pos.z += 2000;
-
-	if (pos.x > 1010)
-		pos.x -= 2000;
-	if (pos.z > 1010)
-		pos.z -= 2000;
-
-	output_flock[gid].vel = newVel;
-	output_flock[gid].pos = pos;
-
-	output_flock[gid].angle = Angle(newVel);*/
 }

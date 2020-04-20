@@ -139,11 +139,9 @@ void FlockSystem::InitPartitionFlock()
 	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(obstacle) * obstacleData.size(), &obstacleData[0], GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 	obPtr = (obstacle*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(obstacle) * obstacles.size(), flags);
 
-
-	// need to bind them
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, countsBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, offsetsBuffer);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, rangesBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, rangesBuffer); // not sure if this needed yet but we'll keep anyway for now...
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 8, indexBuffer);
 
 	if (offsets) delete[] offsets;
@@ -302,12 +300,7 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	{
 		offsets[i] = rollingOffset;
 		rollingOffset += counts[i];
-	}
-
-	/*glBindBuffer(GL_SHADER_STORAGE_BUFFER, offsetsBuffer);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLuint) * cellCount, &offsets);*/
-	for (int i = 0; i < cellCount; i++)
-	{
+		// Update the actual offsets buffer by its persistent point so the shader gets this info
 		oPtr[i] = offsets[i];
 	}
 
