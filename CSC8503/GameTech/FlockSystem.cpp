@@ -120,7 +120,7 @@ void FlockSystem::InitPartitionFlock()
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, indexBuffer);
 	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * flockSize, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
-	// create the boid objects - done in FlockingSim still 
+	// actual boid objects still created in flocking sim 
 
 
 	glGenBuffers(2, flockSSBO);
@@ -273,13 +273,13 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	// bind buffers for position in and out 
 	obstacles[0]->UpdateObstacle(dt);
 	obPtr[0].centre = obstacles[0]->GetTransform().GetWorldPosition();
-	// Execute the compute shader to get the positions
+
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, flockSSBO[bufferIndex]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, flockSSBO[bufferIndex ^ 1]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, obstacleSSBO);
 
 
-	// dispatch cell count shader
+	// dispatch cell count shader- determine which cell each boid is in and fill counts buffer with how many boids are in there
 	cellCountShader->Bind();
 	glUniform1f(glGetUniformLocation(cellCountShader->GetProgramID(), "ratio"), cellRatio);
 	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "numBoids"), flockSize);
@@ -294,13 +294,14 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, countsBuffer);
 	glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLuint) * cellCount, counts);
 
-	// form offset buffer from the counts
+	// form offset buffer from the counts- this will eventually tell indexing where to start for going through specific cells
+	// based on how many boids are listed as being in each cell
 	GLuint rollingOffset = 0;
 	for (int i = 0; i < cellCount; ++i)
 	{
 		offsets[i] = rollingOffset;
 		rollingOffset += counts[i];
-		// Update the actual offsets buffer by its persistent point so the shader gets this info
+		// Update the actual offsets buffer by its persistent pointer so the shader gets this info
 		oPtr[i] = offsets[i];
 	}
 
@@ -315,13 +316,13 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	indexShader->Unbind();
 
-	// write offsets again in case of mutation
+	// write offsets again since the index shader edits them 
 	for (int i = 0; i < cellCount; i++)
 	{
 		oPtr[i] = offsets[i];
 	}
 
-	// dispatch boid rules shader
+	// dispatch boid rules shader- basic movement as before (currently based on GPUBoid.glsl)
 	flockShader->Bind();
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "sepDis"), 20);
 	glUniform1f(glGetUniformLocation(flockShader->GetProgramID(), "alignDis"), 40);
