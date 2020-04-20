@@ -112,7 +112,7 @@ vec3 Separation(vec3 pos, vec3 vel, float groupNo, flock_member otherBoid, inout
 		diff = normalize(diff);
 		diff /= d;
 		steering += diff;
-		count++;
+		count += 1;
 	}
 
 	return steering;
@@ -168,6 +168,21 @@ vec3 Separation(vec3 pos, vec3 vel, float groupNo)
 	return steering;
 }
 
+vec3 Alignment(vec3 pos, vec3 vel, flock_member otherBoid, inout int alignCount)
+{
+	vec3 otherPos = otherBoid.pos;
+	vec3 sum = vec3(0.0, 0.0, 0.0);
+	float d = abs(distance(pos, otherPos));
+
+	if (d < alignDis && d > 0.0)
+	{
+		sum += otherBoid.vel;
+		alignCount += 1;
+	}
+
+	return sum;
+}
+
 vec3 Alignment(vec3 pos, vec3 vel)
 {
 	uint localID = gl_LocalInvocationID.x;
@@ -208,6 +223,22 @@ vec3 Alignment(vec3 pos, vec3 vel)
 	{
 		return vec3(0.0,0.0,0.0);
 	}
+}
+
+vec3 Cohesion(vec3 pos, vec3 vel, flock_member otherBoid, inout int cohCount)
+{
+	vec3 steering = vec3(0.0, 0.0, 0.0);
+	vec3 otherPos = otherBoid.pos;
+
+	float d = abs(distance(pos, otherPos));
+
+	if (d < cohDis && d > 0.0)
+	{
+		steering += otherPos;
+		cohCount += 1;
+	}
+
+	return steering;
 }
 
 vec3 Cohesion(vec3 pos, vec3 vel)
@@ -313,6 +344,10 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 
 	vec3 sep = vec3(0, 0, 0);
 	int sepCount = 0;
+	vec3 align = vec3(0, 0, 0);
+	int alignCount = 0;
+	vec3 coh = vec3(0, 0, 0);
+	int cohCount = 0;
 
 	for (int y = -1; y <= 1; ++y)
 	{
@@ -326,6 +361,8 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 			{
 				flock_member otherBoid = input_flock[boid_indexes[i]];
 				sep += Separation(pos, vel, groupNo, otherBoid, sepCount);
+				align += Alignment(pos, vel, otherBoid, alignCount);
+				coh += Cohesion(pos, vel, otherBoid, cohCount);
 			}
 		}
 	}
@@ -343,9 +380,29 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 		sep = Limit(sep, maxForce);
 	}
 
+	if (alignCount > 0.0)
+	{
+		align /= alignCount;
+		align = normalize(align);
+		align *= maxSpeed;
+
+		vec3 steering = align - vel;
+		align = Limit(align, maxForce);
+	}
+
+	if (cohCount > 0.0)
+	{
+		coh /= cohCount;
+		coh = Seek(pos, vel, coh);
+	}
+
 	sep *= sepWeight;
+	align *= alignWeight;
+	coh *= cohWeight;
 
 	accel = ApplyForce(accel, sep);
+	accel = ApplyForce(accel, align);
+	accel = ApplyForce(accel, coh);
 
 	accel *= 0.4;
 	vel += accel * dt;
