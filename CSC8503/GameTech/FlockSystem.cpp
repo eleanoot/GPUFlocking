@@ -196,6 +196,21 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 
 }
 
+void FlockSystem::CreateCPUQuadTree()
+{
+	QuadTree<CPUBoid*> tree(Vector2(1024, 1024), 7, 6);
+
+	for (int i = 0; i < flockSize; i++)
+	{
+		Vector3 halfSizes;
+		if (!allBoids[i]->GetBroadphaseAABB(halfSizes))
+			continue;
+
+		Vector3 pos = allBoids[i]->GetConstTransform().GetWorldPosition();
+		tree.Insert(allBoids[i], pos, halfSizes);
+	}
+}
+
 
 
 

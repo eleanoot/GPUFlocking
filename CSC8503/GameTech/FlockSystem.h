@@ -39,6 +39,8 @@ namespace NCL {
 
 			void SetFlockSize(int size) { flockSize = size; }
 
+			void CreateCPUQuadTree();
+
 			struct flock_member {
 				Vector3 position;
 				float angle;
