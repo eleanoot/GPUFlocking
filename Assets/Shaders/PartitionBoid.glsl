@@ -48,22 +48,22 @@ layout(std140, binding = 1) buffer Flock_Out
 	flock_member output_flock[];
 };
 
-layout(std140, binding = 2) buffer Obstacles
+layout(std430, binding = 2) buffer Obstacles
 {
 	obstacle obstacles[];
 };
 
-layout(std140, binding = 5) buffer BoidCounts
+layout(std430, binding = 5) buffer BoidCounts
 {
 	uint boid_counts[];
 };
 
-layout(std140, binding = 6) buffer BoidOffsets
+layout(std430, binding = 6) buffer BoidOffsets
 {
 	uint boid_offsets[];
 };
 
-layout(std140, binding = 8) buffer BoidIndex
+layout(std430, binding = 8) buffer BoidIndex
 {
 	uint boid_indexes[];
 };

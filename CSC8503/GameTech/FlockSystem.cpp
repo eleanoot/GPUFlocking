@@ -270,6 +270,7 @@ void FlockSystem::UpdateInstanceFlock(float dt)
 
 void FlockSystem::UpdatePartitionFlock(float dt)
 {
+
 	// bind buffers for position in and out 
 	obstacles[0]->UpdateObstacle(dt);
 	obPtr[0].centre = obstacles[0]->GetTransform().GetWorldPosition();
@@ -364,6 +365,22 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 		}
 
 	}
+
+	// clear out the cell count buffer from last time so it doesnt accumulate forever
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, countsBuffer);
+	glClearBufferData(GL_SHADER_STORAGE_BUFFER, GL_R32UI, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, indexBuffer);
+	glClearBufferData(GL_SHADER_STORAGE_BUFFER, GL_R32UI, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, offsetsBuffer);
+	glClearBufferData(GL_SHADER_STORAGE_BUFFER, GL_R32UI, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
 

@@ -21,7 +21,7 @@ layout(std140, binding = 0) buffer Flock_In
 	flock_member input_flock[];
 };
 
-layout(std140, binding = 5) buffer Boid_Counts
+layout(std430, binding = 5) buffer Boid_Counts
 {
 	uint boid_counts[];
 };

@@ -21,12 +21,12 @@ layout(std140, binding = 0) buffer Flock_In
 	flock_member input_flock[];
 };
 
-layout(std140, binding = 6) buffer Boid_Offsets
+layout(std430, binding = 6) buffer Boid_Offsets
 {
 	uint offsets[];
 };
 
-layout(std140, binding = 8) buffer Boid_Indexes
+layout(std430, binding = 8) buffer Boid_Indexes
 {
 	uint indexes[];
 };
