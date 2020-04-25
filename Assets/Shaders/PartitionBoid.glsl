@@ -220,6 +220,7 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 	int alignCount = 0;
 	vec3 coh = vec3(0, 0, 0);
 	int cohCount = 0;
+	vec3 avoidance = vec3(0, 0, 0);
 
 	// Loop around each of the cells surrounding this one, including this cell 
 	// This will take boids one by one and calculate their contribution to each rule velocity 
@@ -239,8 +240,7 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 				sep += Separation(pos, vel, groupNo, otherBoid, sepCount);
 				align += Alignment(pos, vel, otherBoid, alignCount);
 				coh += Cohesion(pos, vel, otherBoid, cohCount);
-
-				// avoidance?
+				avoidance += Avoidance(pos, vel);
 			}
 		}
 	}
@@ -279,10 +279,12 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 	sep *= sepWeight;
 	align *= alignWeight;
 	coh *= cohWeight;
+	avoidance *= avoidWeight;
 
 	accel = ApplyForce(accel, sep);
 	accel = ApplyForce(accel, align);
 	accel = ApplyForce(accel, coh);
+	accel = ApplyForce(accel, avoidance);
 
 	accel *= 0.4;
 	vel += accel * dt;
