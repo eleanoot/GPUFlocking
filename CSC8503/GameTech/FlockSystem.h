@@ -102,6 +102,7 @@ namespace NCL {
 
 			GLuint* offsets;
 			GLuint* oPtr;
+			GLuint* aPtr;
 			range* ranges;
 
 		};
