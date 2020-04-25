@@ -111,10 +111,13 @@ void FlockSystem::InitPartitionFlock()
 	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCount, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 	oPtr = (GLuint*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLuint) * cellCount, flags);
 
+	glGenBuffers(1, &atomicOffsetsBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, atomicOffsetsBuffer);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCount, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
-	glGenBuffers(1, &rangesBuffer);
+	/*glGenBuffers(1, &rangesBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, rangesBuffer);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(range) * cellCount, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(range) * cellCount, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);*/
 
 	glGenBuffers(1, &indexBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, indexBuffer);
@@ -141,7 +144,8 @@ void FlockSystem::InitPartitionFlock()
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, countsBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, offsetsBuffer);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, rangesBuffer); // not sure if this needed yet but we'll keep anyway for now...
+//	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, rangesBuffer); // not sure if this needed yet but we'll keep anyway for now...
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, atomicOffsetsBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 8, indexBuffer);
 
 	if (offsets) delete[] offsets;
@@ -318,10 +322,10 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	indexShader->Unbind();
 
 	// write offsets again since the index shader edits them 
-	for (int i = 0; i < cellCount; i++)
+	/*for (int i = 0; i < cellCount; i++)
 	{
 		oPtr[i] = offsets[i];
-	}
+	}*/
 
 	// dispatch boid rules shader- basic movement as before (currently based on GPUBoid.glsl)
 	flockShader->Bind();
@@ -366,7 +370,7 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 
 	}
 
-	// clear out the cell count buffer from last time so it doesnt accumulate forever
+	// clear out the buffers from last time so they dont accumulate forever
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, countsBuffer);
 	glClearBufferData(GL_SHADER_STORAGE_BUFFER, GL_R32UI, GL_RED, GL_UNSIGNED_BYTE, nullptr);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
@@ -378,6 +382,11 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, offsetsBuffer);
+	glClearBufferData(GL_SHADER_STORAGE_BUFFER, GL_R32UI, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, atomicOffsetsBuffer);
 	glClearBufferData(GL_SHADER_STORAGE_BUFFER, GL_R32UI, GL_RED, GL_UNSIGNED_BYTE, nullptr);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);

@@ -26,6 +26,11 @@ layout(std430, binding = 6) buffer Boid_Offsets
 	uint offsets[];
 };
 
+layout(std430, binding = 7) buffer Atomic_Offsets
+{
+	uint atOffsets[];
+};
+
 layout(std430, binding = 8) buffer Boid_Indexes
 {
 	uint indexes[];
@@ -42,7 +47,9 @@ void main()
 	uvec2 cell = uvec2(input_flock[gid].pos.xz * ratio);
 	uint cellNum = (cell.x + cell.y * cellCounts.x) % cellCount;
 
-	uint offset = atomicAdd(offsets[cellNum], 1);
+	/*uint offset = atomicAdd(offsets[cellNum], 1);
+	indexes[offset] = gid;*/
+	uint offset = atomicAdd(atOffsets[cellNum], 1);
 	indexes[offset] = gid;
 	
 }

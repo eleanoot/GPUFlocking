@@ -96,7 +96,8 @@ namespace NCL {
 			OGLComputeShader* indexShader = nullptr;
 			GLuint countsBuffer;
 			GLuint offsetsBuffer;
-			GLuint rangesBuffer;
+			GLuint atomicOffsetsBuffer;
+			//GLuint rangesBuffer;
 			GLuint indexBuffer;
 
 			GLuint* offsets;
