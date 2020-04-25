@@ -114,7 +114,6 @@ void FlockSystem::InitPartitionFlock()
 	glGenBuffers(1, &atomicOffsetsBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, atomicOffsetsBuffer);
 	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCount, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
-	aPtr = (GLuint*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLuint) * cellCount, flags);
 
 	/*glGenBuffers(1, &rangesBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, rangesBuffer);
@@ -309,7 +308,6 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 		rollingOffset += counts[i];
 		// Update the actual offsets buffer by its persistent pointer so the shader gets this info
 		oPtr[i] = offsets[i];
-		aPtr[i] = offsets[i];
 	}
 
 	// dispatch index shader

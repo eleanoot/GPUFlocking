@@ -267,8 +267,10 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 		align *= maxSpeed;
 
 		vec3 steering = align - vel;
-		align = Limit(align, maxForce);
+		align = Limit(steering, maxForce);
 	}
+	else
+		align = vec3(0, 0, 0);
 
 	if (cohCount > 0.0)
 	{
