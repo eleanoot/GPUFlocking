@@ -240,10 +240,13 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 				sep += Separation(pos, vel, groupNo, otherBoid, sepCount);
 				align += Alignment(pos, vel, otherBoid, alignCount);
 				coh += Cohesion(pos, vel, otherBoid, cohCount);
-				avoidance += Avoidance(pos, vel);
+				
 			}
 		}
 	}
+
+	// Avoidance only focuses on this boid, so calculate it outside of looping over all others
+	avoidance += Avoidance(pos, vel);
 
 	// All neighbours checked, limit the rule velocities
 
@@ -267,7 +270,7 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 		align *= maxSpeed;
 
 		vec3 steering = align - vel;
-		align = Limit(align, maxForce);
+		align = Limit(steering, maxForce);
 	}
 
 	if (cohCount > 0.0)
