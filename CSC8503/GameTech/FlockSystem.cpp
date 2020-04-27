@@ -98,6 +98,7 @@ void FlockSystem::InitPartitionFlock()
 	flockShader = new OGLComputeShader("PartitionBoid.glsl");
 	cellCountShader = new OGLComputeShader("CellCounts.glsl");
 	indexShader = new OGLComputeShader("Indexer.glsl");
+	gridRowShader = new OGLComputeShader("GridRowCounts.glsl");
 
 	flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
 
@@ -116,13 +117,13 @@ void FlockSystem::InitPartitionFlock()
 	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCount, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 	aPtr = (GLuint*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLuint) * cellCount, flags);
 
-	/*glGenBuffers(1, &rangesBuffer);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, rangesBuffer);
-	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(range) * cellCount, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);*/
-
 	glGenBuffers(1, &indexBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, indexBuffer);
 	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * flockSize, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+
+	glGenBuffers(1, &gridRowCountsBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, gridRowCountsBuffer);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCounts.x, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
 	// actual boid objects still created in flocking sim 
 
@@ -145,9 +146,10 @@ void FlockSystem::InitPartitionFlock()
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, countsBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, offsetsBuffer);
-//	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, rangesBuffer); // not sure if this needed yet but we'll keep anyway for now...
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, atomicOffsetsBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 8, indexBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 9, gridRowCountsBuffer);
+	
 
 	if (offsets) delete[] offsets;
 	offsets = new GLuint[cellCount];
@@ -300,17 +302,27 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, countsBuffer);
 	glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLuint) * cellCount, counts);
 
+	// CPU VERSION
 	// form offset buffer from the counts- this will eventually tell indexing where to start for going through specific cells
 	// based on how many boids are listed as being in each cell
-	GLuint rollingOffset = 0;
-	for (int i = 0; i < cellCount; ++i)
-	{
-		offsets[i] = rollingOffset;
-		rollingOffset += counts[i];
-		// Update the actual offsets buffer by its persistent pointer so the shader gets this info
-		oPtr[i] = offsets[i];
-		aPtr[i] = offsets[i];
-	}
+	//GLuint rollingOffset = 0;
+	//for (int i = 0; i < cellCount; ++i)
+	//{
+	//	offsets[i] = rollingOffset;
+	//	rollingOffset += counts[i];
+	//	// Update the actual offsets buffer by its persistent pointer so the shader gets this info
+	//	oPtr[i] = offsets[i];
+	//	aPtr[i] = offsets[i];
+	//}
+
+	// GPU VERSION
+	// make sure the offsets end up in offset AND atomic offset buffers for Indexer!!
+	gridRowShader->Bind();
+	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCount"), cellCount);
+	glUniform2ui(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
+	gridRowShader->Execute(cellCounts.x / WORK_GROUP_SIZE, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	gridRowShader->Unbind();
 
 	// dispatch index shader
 	indexShader->Bind();
@@ -322,12 +334,6 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	indexShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	indexShader->Unbind();
-
-	// write offsets again since the index shader edits them 
-	/*for (int i = 0; i < cellCount; i++)
-	{
-		oPtr[i] = offsets[i];
-	}*/
 
 	// dispatch boid rules shader- basic movement as before (currently based on GPUBoid.glsl)
 	flockShader->Bind();

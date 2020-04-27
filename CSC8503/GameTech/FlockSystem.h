@@ -97,8 +97,11 @@ namespace NCL {
 			GLuint countsBuffer;
 			GLuint offsetsBuffer;
 			GLuint atomicOffsetsBuffer;
-			//GLuint rangesBuffer;
 			GLuint indexBuffer;
+
+			// For GPU rolling offset
+			OGLComputeShader* gridRowShader = nullptr;
+			GLuint gridRowCountsBuffer;
 
 			GLuint* offsets;
 			GLuint* oPtr;
