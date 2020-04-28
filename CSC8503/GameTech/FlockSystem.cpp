@@ -318,18 +318,18 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	// GPU VERSION
 	// make sure the offsets end up in offset AND atomic offset buffers for Indexer!!
 	gridRowShader->Bind();
-	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCount"), cellCount);
-	glUniform2ui(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
-	gridRowShader->Execute(cellCounts.x / WORK_GROUP_SIZE, 1, 1);
+	glUniform1i(glGetUniformLocation(gridRowShader->GetProgramID(), "cellCount"), cellCount);
+	glUniform2ui(glGetUniformLocation(gridRowShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
+	gridRowShader->Execute(cellCounts.x, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	gridRowShader->Unbind();
 
 	// dispatch index shader
 	indexShader->Bind();
-	glUniform1f(glGetUniformLocation(cellCountShader->GetProgramID(), "ratio"), cellRatio);
-	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "numBoids"), flockSize);
-	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCount"), cellCount);
-	glUniform2ui(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
+	glUniform1f(glGetUniformLocation(indexShader->GetProgramID(), "ratio"), cellRatio);
+	glUniform1i(glGetUniformLocation(indexShader->GetProgramID(), "numBoids"), flockSize);
+	glUniform1i(glGetUniformLocation(indexShader->GetProgramID(), "cellCount"), cellCount);
+	glUniform2ui(glGetUniformLocation(indexShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
 
 	indexShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);

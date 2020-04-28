@@ -47,8 +47,6 @@ void main()
 	uvec2 cell = uvec2(input_flock[gid].pos.xz * ratio);
 	uint cellNum = (cell.x + cell.y * cellCounts.x) % cellCount;
 
-	/*uint offset = atomicAdd(offsets[cellNum], 1);
-	indexes[offset] = gid;*/
 	uint offset = atomicAdd(atOffsets[cellNum], 1);
 	indexes[offset] = gid;
 	
