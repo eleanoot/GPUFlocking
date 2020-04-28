@@ -320,7 +320,7 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	gridRowShader->Bind();
 	glUniform1i(glGetUniformLocation(gridRowShader->GetProgramID(), "cellCount"), cellCount);
 	glUniform2ui(glGetUniformLocation(gridRowShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
-	gridRowShader->Execute(cellCounts.x, 1, 1);
+	gridRowShader->Execute(ceil(cellCounts.x / WORK_GROUP_SIZE), 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	gridRowShader->Unbind();
 
