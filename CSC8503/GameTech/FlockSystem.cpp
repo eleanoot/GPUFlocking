@@ -99,6 +99,7 @@ void FlockSystem::InitPartitionFlock()
 	cellCountShader = new OGLComputeShader("CellCounts.glsl");
 	indexShader = new OGLComputeShader("Indexer.glsl");
 	gridRowShader = new OGLComputeShader("GridRowCounts.glsl");
+	rowAccShader = new OGLComputeShader("RowAcc.glsl");
 
 	flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
 
@@ -123,6 +124,10 @@ void FlockSystem::InitPartitionFlock()
 
 	glGenBuffers(1, &gridRowCountsBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, gridRowCountsBuffer);
+	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCounts.x, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
+
+	glGenBuffers(1, &rowAccBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, rowAccBuffer);
 	glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * cellCounts.x, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
 	// actual boid objects still created in flocking sim 
@@ -317,12 +322,21 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 
 	// GPU VERSION
 	// make sure the offsets end up in offset AND atomic offset buffers for Indexer!!
+
+	// shader 1: build up counts for each row
 	gridRowShader->Bind();
 	glUniform1i(glGetUniformLocation(gridRowShader->GetProgramID(), "cellCount"), cellCount);
 	glUniform2ui(glGetUniformLocation(gridRowShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
 	gridRowShader->Execute(cellCounts.x, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	gridRowShader->Unbind();
+
+	// shader 2: accumulate grid row counts
+	rowAccShader->Bind();
+	glUniform2ui(glGetUniformLocation(rowAccShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
+	rowAccShader->Execute(ceil(cellCounts.x / WORK_GROUP_SIZE), 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	rowAccShader->Unbind();
 
 	// dispatch index shader
 	indexShader->Bind();
