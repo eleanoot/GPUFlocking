@@ -344,7 +344,7 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	offsetShader->Bind();
 	glUniform1i(glGetUniformLocation(offsetShader->GetProgramID(), "numBoids"), flockSize);
 	glUniform2ui(glGetUniformLocation(offsetShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
-	offsetShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
+	offsetShader->Execute(cellCounts.x, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	offsetShader->Unbind();
 

@@ -23,19 +23,19 @@ layout(std430, binding = 10) buffer RowAccumulate
 	uint row_acc[];
 };
 
-layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in; /// ???
+layout(local_size_x = 25, local_size_y = 1, local_size_z = 1) in; /// ???
 
 void main()
 {
-	// acting with one invocation per cell 
-	uint gid = gl_GlobalInvocationID.x; // cell/offset index we're looking at
+	// one invocation per row
+	uint i = gl_LocalInvocationID.x * cellCounts.x;  // index to start from
+	uint last = i + cellCounts.x;
 
-	if (gid >= numBoids) return;
-
-	// determine which row this cell is on
-	uint rowNo = gid / cellCounts.x;
-
-	atOffsets[gid] = rowNo;
-
+	for (; i < last; i++)
+	{
+		// for every cell, add the accumulated sum for the row it's on 
+		boid_offsets[i] += row_acc[gl_LocalInvocationID.x];
+		atOffsets[i] = boid_offsets[i];
+	}
 
 }
