@@ -12,7 +12,7 @@ layout(std430, binding = 9) buffer GridRowCounts
 	uint row_counts[];
 };
 
-layout(std430, binding = 9) buffer RowAccumulate
+layout(std430, binding = 10) buffer RowAccumulate
 {
 	uint row_acc[];
 };

@@ -154,6 +154,7 @@ void FlockSystem::InitPartitionFlock()
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, atomicOffsetsBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 8, indexBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 9, gridRowCountsBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 10, rowAccBuffer);
 	
 
 	if (offsets) delete[] offsets;
