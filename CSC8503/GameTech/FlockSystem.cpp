@@ -413,6 +413,16 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	glClearBufferData(GL_SHADER_STORAGE_BUFFER, GL_R32UI, GL_RED, GL_UNSIGNED_BYTE, nullptr);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, gridRowCountsBuffer);
+	glClearBufferData(GL_SHADER_STORAGE_BUFFER, GL_R32UI, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, rowAccBuffer);
+	glClearBufferData(GL_SHADER_STORAGE_BUFFER, GL_R32UI, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
 
