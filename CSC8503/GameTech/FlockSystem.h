@@ -102,6 +102,7 @@ namespace NCL {
 			// For GPU rolling offset
 			OGLComputeShader* gridRowShader = nullptr;
 			OGLComputeShader* rowAccShader = nullptr;
+			OGLComputeShader* offsetShader = nullptr;
 			GLuint gridRowCountsBuffer;
 			GLuint rowAccBuffer;
 

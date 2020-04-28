@@ -100,6 +100,7 @@ void FlockSystem::InitPartitionFlock()
 	indexShader = new OGLComputeShader("Indexer.glsl");
 	gridRowShader = new OGLComputeShader("GridRowCounts.glsl");
 	rowAccShader = new OGLComputeShader("RowAcc.glsl");
+	offsetShader = new OGLComputeShader("RelativeOffsets.glsl");
 
 	flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
 
@@ -338,6 +339,14 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	rowAccShader->Execute(ceil(cellCounts.x / WORK_GROUP_SIZE), 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	rowAccShader->Unbind();
+
+	// shader 3: combine the relative offsets with the row counts to get absolute offsets
+	offsetShader->Bind();
+	glUniform1i(glGetUniformLocation(offsetShader->GetProgramID(), "numBoids"), flockSize);
+	glUniform2ui(glGetUniformLocation(offsetShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
+	offsetShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	offsetShader->Unbind();
 
 	// dispatch index shader
 	indexShader->Bind();
