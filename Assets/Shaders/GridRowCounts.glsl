@@ -22,7 +22,7 @@ layout(local_size_x = 25, local_size_y = 1, local_size_z = 1) in; /// ???
 void main()
 {
 	// go through a full row of cells in a for loop per thread 
-	uint i = gl_LocalInvocationID.x * cellCounts.x; // index to start from
+	uint i = gl_GlobalInvocationID.x * cellCounts.x; // index to start from
 	uint last = i + cellCounts.x;
 
 	uint rollingOffset = 0;
@@ -32,5 +32,5 @@ void main()
 		rollingOffset += boid_counts[i];
 	}
 
-	row_counts[gl_LocalInvocationID.x] = rollingOffset;
+	row_counts[gl_GlobalInvocationID.x] = rollingOffset;
 }

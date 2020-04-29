@@ -28,13 +28,13 @@ layout(local_size_x = 25, local_size_y = 1, local_size_z = 1) in; /// ???
 void main()
 {
 	// one invocation per row
-	uint i = gl_LocalInvocationID.x * cellCounts.x;  // index to start from
+	uint i = gl_GlobalInvocationID.x * cellCounts.x;  // index to start from
 	uint last = i + cellCounts.x;
 
 	for (; i < last; i++)
 	{
 		// for every cell, add the accumulated sum for the row it's on 
-		boid_offsets[i] += row_acc[gl_LocalInvocationID.x];
+		boid_offsets[i] += row_acc[gl_GlobalInvocationID.x];
 		atOffsets[i] = boid_offsets[i];
 	}
 

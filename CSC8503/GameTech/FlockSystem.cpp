@@ -300,7 +300,7 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "numBoids"), flockSize);
 	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCount"), cellCount);
 	glUniform2ui(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
-	cellCountShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
+	cellCountShader->Execute(ceil(flockSize / WORK_GROUP_SIZE), 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	cellCountShader->Unbind();
 
@@ -355,7 +355,7 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	glUniform1i(glGetUniformLocation(indexShader->GetProgramID(), "cellCount"), cellCount);
 	glUniform2ui(glGetUniformLocation(indexShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
 
-	indexShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
+	indexShader->Execute(ceil(flockSize / WORK_GROUP_SIZE), 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	indexShader->Unbind();
 
@@ -378,7 +378,7 @@ void FlockSystem::UpdatePartitionFlock(float dt)
 	glUniform1i(glGetUniformLocation(flockShader->GetProgramID(), "cellCount"), cellCount);
 	glUniform2ui(glGetUniformLocation(flockShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
 
-	flockShader->Execute(flockSize / WORK_GROUP_SIZE, 1, 1);
+	flockShader->Execute(ceil(flockSize / WORK_GROUP_SIZE), 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	flockShader->Unbind();
 
