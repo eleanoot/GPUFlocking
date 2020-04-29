@@ -193,7 +193,7 @@ void FlockSystem::InitPartitionInstance(OGLMesh* m, RenderObject* r)
 	cellCount = cellCounts.x * cellCounts.y;
 
 	// shader setup
-	flockShader = new OGLComputeShader("PartitionBoid.glsl");
+	flockShader = new OGLComputeShader("InstancePartition.glsl");
 	cellCountShader = new OGLComputeShader("CellCounts.glsl");
 	indexShader = new OGLComputeShader("Indexer.glsl");
 	gridRowShader = new OGLComputeShader("GridRowCounts.glsl");
