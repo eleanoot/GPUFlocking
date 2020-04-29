@@ -38,7 +38,9 @@ namespace NCL {
 			void UpdateInstanceFlock(float dt);
 
 			void InitPartitionFlock();
+			void InitPartitionInstance(OGLMesh* m, RenderObject* r);
 			void UpdatePartitionFlock(float dt);
+			void UpdatePartitionInstance(float dt);
 
 			void SetFlockSize(int size) { flockSize = size; }
 

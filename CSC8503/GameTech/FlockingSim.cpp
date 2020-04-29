@@ -20,7 +20,7 @@ FlockingSim::FlockingSim()
 	inSelectionMode = false;
 
 	useGPU = true;
-	useInstancing = false;
+	useInstancing = true;
 	usePartitioning = true;
 
 	flockSize = 128;
@@ -84,7 +84,10 @@ void FlockingSim::UpdateGame(float dt)
 	else
 	{
 		if (useInstancing)
-			flock->UpdateInstanceFlock(dt);
+			if (!usePartitioning)
+				flock->UpdateInstanceFlock(dt);
+			else
+				flock->UpdatePartitionInstance(dt);
 		else
 			if (!usePartitioning)
 				flock->UpdateGPUFlock(dt);
@@ -186,9 +189,13 @@ void FlockingSim::InitWorld() {
 		}
 		else
 		{
+
 			instanceGoose = AddGooseToWorld(Vector3(0, 10, 0));
 			InitObstacles();
-			flock->InitInstanceFlock(gooseMesh, instanceGoose->GetRenderObject());
+			if (!usePartitioning)
+				flock->InitInstanceFlock(gooseMesh, instanceGoose->GetRenderObject());
+			else
+				flock->InitPartitionInstance(gooseMesh, instanceGoose->GetRenderObject()); 
 		}
 		
 	}
