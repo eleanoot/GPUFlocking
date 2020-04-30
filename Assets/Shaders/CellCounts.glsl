@@ -4,6 +4,7 @@ uniform int numBoids;
 uniform float ratio;
 uniform uvec2 cellCounts;
 uniform int cellCount;
+uniform int worldSize;
 
 struct flock_member
 {
@@ -35,8 +36,11 @@ void main()
 	
 	if (gid >= numBoids) return;
 
-	uvec2 cell = uvec2(input_flock[gid].pos.xz * ratio);
-	uint cellNum = (cell.x + cell.y * cellCounts.x) % cellCount;
+	//uvec2 cell = uvec2(input_flock[gid].pos.xz * ratio);
+	int cellX = int((worldSize + input_flock[gid].pos.x) * ratio) % int(cellCounts.x);
 
+    int cellY = int((worldSize + input_flock[gid].pos.z) * ratio) % int(cellCounts.y);
+	//uint cellNum = (cell.x + cell.y * cellCounts.x) % cellCount;
+	uint cellNum = ((cellX + (cellY * int(cellCounts.x))) % cellCount);
 	atomicAdd(boid_counts[cellNum], 1);
 }

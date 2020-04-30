@@ -90,7 +90,7 @@ void FlockSystem::InitPartitionFlock()
 	cellSize = max(max(sepDis, alignDis), cohDis);
 	cellRatio = 1.0f / cellSize;
 
-	Vector2 worldBounds = Vector2(1000, 1000);
+	worldBounds = Vector2(1000, 1000);
 	cellCounts = Vector2(ceil(worldBounds.x / cellSize), ceil(worldBounds.y / cellSize));
 	cellCount = cellCounts.x * cellCounts.y;
 
@@ -550,6 +550,7 @@ void FlockSystem::UpdatePartitionInstance(float dt)
 	cellCountShader->Bind();
 	glUniform1f(glGetUniformLocation(cellCountShader->GetProgramID(), "ratio"), cellRatio);
 	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "numBoids"), flockSize);
+	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "worldSize"), worldBounds.x * worldBounds.y);
 	glUniform1i(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCount"), cellCount);
 	glUniform2ui(glGetUniformLocation(cellCountShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
 	cellCountShader->Execute(ceil(flockSize / WORK_GROUP_SIZE), 1, 1);
@@ -588,6 +589,7 @@ void FlockSystem::UpdatePartitionInstance(float dt)
 	indexShader->Bind();
 	glUniform1f(glGetUniformLocation(indexShader->GetProgramID(), "ratio"), cellRatio);
 	glUniform1i(glGetUniformLocation(indexShader->GetProgramID(), "numBoids"), flockSize);
+	glUniform1i(glGetUniformLocation(indexShader->GetProgramID(), "worldSize"), worldBounds.x * worldBounds.y);
 	glUniform1i(glGetUniformLocation(indexShader->GetProgramID(), "cellCount"), cellCount);
 	glUniform2ui(glGetUniformLocation(indexShader->GetProgramID(), "cellCounts"), cellCounts.x, cellCounts.y);
 

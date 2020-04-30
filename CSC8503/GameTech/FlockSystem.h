@@ -89,6 +89,7 @@ namespace NCL {
 			float cohDis;
 
 			// For partitioning 
+			Vector2 worldBounds;
 			float cellSize;
 			float cellRatio;
 			Vector2 cellCounts;
