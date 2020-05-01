@@ -188,7 +188,7 @@ void FlockSystem::InitPartitionInstance(OGLMesh* m, RenderObject* r)
 	cellSize = max(max(sepDis, alignDis), cohDis);
 	cellRatio = 1.0f / cellSize;
 
-	Vector2 worldBounds = Vector2(2000, 2000);
+	worldBounds = Vector2(2000, 2000);
 	cellCounts = Vector2(ceil(worldBounds.x / cellSize), ceil(worldBounds.y / cellSize));
 	cellCount = cellCounts.x * cellCounts.y;
 
