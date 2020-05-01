@@ -23,7 +23,7 @@ layout(std430, binding = 10) buffer RowAccumulate
 	uint row_acc[];
 };
 
-layout(local_size_x = 25, local_size_y = 1, local_size_z = 1) in; /// ???
+layout(local_size_x = 50, local_size_y = 1, local_size_z = 1) in; /// ???
 
 void main()
 {

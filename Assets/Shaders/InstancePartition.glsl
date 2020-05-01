@@ -313,7 +313,7 @@ void main()
 	vec3 pos = thisBoid.pos;
 	pos += newVel * dt;
 
-	if (pos.x < -1010)
+	/*if (pos.x < -1010)
 		pos.x += 2000;
 	if (pos.z < -1010)
 		pos.z += 2000;
@@ -321,6 +321,16 @@ void main()
 	if (pos.x > 1010)
 		pos.x -= 2000;
 	if (pos.z > 1010)
+		pos.z -= 2000;*/
+
+	if (pos.x < -990)
+		pos.x += 2000;
+	if (pos.z < -990)
+		pos.z += 2000;
+
+	if (pos.x > 990)
+		pos.x -= 2000;
+	if (pos.z > 990)
 		pos.z -= 2000;
 
 	output_flock[gid].vel = newVel;
