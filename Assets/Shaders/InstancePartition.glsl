@@ -21,6 +21,7 @@ uniform int numBoids;
 uniform float ratio;
 uniform uvec2 cellCounts;
 uniform int cellCount;
+uniform int worldSize;
 
 struct flock_member
 {
@@ -212,7 +213,11 @@ float Angle(vec3 vel)
 vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 {
 	// Find the cell this boid is in 
-	uvec2 cell = uvec2(pos.xz * ratio);
+	uint gid = gl_GlobalInvocationID.x;
+	//uvec2 cell = uvec2(pos.xz * ratio);
+	int cellX = int((worldSize + input_flock[gid].pos.x) * ratio) % int(cellCounts.x);
+
+	int cellY = int((worldSize + input_flock[gid].pos.z) * ratio) % int(cellCounts.y);
 
 	vec3 sep = vec3(0, 0, 0);
 	int sepCount = 0;
@@ -229,7 +234,8 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 	{
 		for (int x = -1; x <= 1; ++x)
 		{
-			uint cellNum = (cell.x + x + (cell.y + y) * cellCounts.x + cellCount) % cellCount;
+			//uint cellNum = (cell.x + x + (cell.y + y) * cellCounts.x + cellCount) % cellCount;
+			uint cellNum = ((cellX + (cellY * int(cellCounts.x))) % cellCount);
 			uint i = boid_offsets[cellNum]; // cell we're checking
 			uint last = i + boid_counts[cellNum]; // how many boids are in there?
 
