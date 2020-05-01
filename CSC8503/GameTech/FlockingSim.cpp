@@ -23,7 +23,7 @@ FlockingSim::FlockingSim()
 	useInstancing = true;
 	usePartitioning = true;
 
-	flockSize = 128;
+	flockSize = 1000000;
 
 	Debug::SetRenderer(renderer);
 
