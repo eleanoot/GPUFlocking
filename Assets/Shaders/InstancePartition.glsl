@@ -235,7 +235,7 @@ vec3 Update(vec3 pos, vec3 vel, vec3 accel, float groupNo)
 		for (int x = -1; x <= 1; ++x)
 		{
 			//uint cellNum = (cell.x + x + (cell.y + y) * cellCounts.x + cellCount) % cellCount;
-			uint cellNum = ((cellX + (cellY * int(cellCounts.x))) % cellCount);
+			uint cellNum = ((cellX + x + ((cellY + y)* int(cellCounts.x))) % cellCount);
 			uint i = boid_offsets[cellNum]; // cell we're checking
 			uint last = i + boid_counts[cellNum]; // how many boids are in there?
 
